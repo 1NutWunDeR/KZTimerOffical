@@ -22,6 +22,13 @@ public Teleport_OnStartTouch(const String:output[], bhop_block, client, Float:de
 	CreateTimer(0.2, RemoveValidation, client,TIMER_FLAG_NO_MAPCHANGE);
 }  
 
+//https://forums.alliedmods.net/showpost.php?p=1807997&postcount=14
+public OnNewRound(Handle:event, const String:name[], bool:dontBroadcast)
+{
+	if(g_hFullAlltalk != INVALID_HANDLE)
+		SetConVarInt(g_hFullAlltalk, 1);
+}
+
 //attack spam protection
 public Action:Event_OnFire(Handle:event, const String:name[], bool:dontBroadcast)
 {
@@ -83,12 +90,7 @@ PlayerSpawn(client)
 			EquipPlayerWeapon(client, weapon);	
 		}
 		else
-			GivePlayerItem(client, "weapon_usp_silencer");
-		if (!g_bStartWithUsp[client] && !IsFakeClient(client))
-		{
-			if (weapon != -1)
-				 SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);
-		}
+			CreateTimer(0.1, GiveUsp, client,TIMER_FLAG_NO_MAPCHANGE);
 	}	
 
 	//godmode
@@ -152,6 +154,7 @@ PlayerSpawn(client)
 			g_bPositionRestored[client] = true;
 			DoValidTeleport(client, g_fPlayerCordsRestore[client],g_fPlayerAnglesRestore[client],true);
 			g_bRestorePosition[client]  = false;
+			CreateTimer(0.15, DoCheckPointTimer, client,TIMER_FLAG_NO_MAPCHANGE);			
 		}
 		else
 			if (g_bRespawnPosition[client])
@@ -455,8 +458,6 @@ public Action:Event_OnPlayerTeam(Handle:event, const String:name[], bool:dontBro
 				g_fStartPauseTime[client] = g_fStartPauseTime[client] - g_fPauseTime[client];	
 		}
 		g_bSpectate[client] = true;
-		if (g_bPause[client])
-			g_bPauseWasActivated[client]=true;
 		g_bPause[client]=false;
 	}
 	return Plugin_Continue;

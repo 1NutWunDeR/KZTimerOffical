@@ -56,7 +56,7 @@ public CL_OnStartTimerPress(client)
 {	
 	if (!IsFakeClient(client))
 	{	
-		if (g_bNewReplay[client] || g_bSaving[client])
+		if (g_bNewReplay[client])
 			return;
 		if (!(g_bOnGround[client]) && g_bLegitButtons[client])
 			return;	
@@ -226,7 +226,6 @@ public CL_OnEndTimerPress(client)
 	new String:mapname[128];
 	Format(mapname, 128, "%s", g_szMapName);	
 	
-	//g_bSaving[client] = true;
 	g_FinishingType[client] = -1;
 	g_Sound_Type[client] = -1;
 	g_bMapRankToChat[client] = true;

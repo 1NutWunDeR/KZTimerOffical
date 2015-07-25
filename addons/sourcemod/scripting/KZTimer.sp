@@ -19,8 +19,8 @@
 #include <sourcebans>
 #include <mapchooser>
 
-#define VERSION "1.73"
-#define PLUGIN_VERSION 173
+#define VERSION "1.74"
+#define PLUGIN_VERSION 174
 #define ADMIN_LEVEL ADMFLAG_UNBAN
 #define ADMIN_LEVEL2 ADMFLAG_ROOT
 #define MYSQL 0
@@ -117,6 +117,7 @@ enum EJoinTeamReason
 // kztimer decl.
 new g_DbType;
 new g_ReplayRecordTps;
+new Handle:g_hFullAlltalk = INVALID_HANDLE;
 new Handle:g_hStaminaLandCost = INVALID_HANDLE;
 new Handle:g_hMaxSpeed = INVALID_HANDLE;
 new Handle:g_hWaterAccelerate = INVALID_HANDLE;
@@ -140,6 +141,7 @@ new Handle:hEndPress = INVALID_HANDLE;
 new Handle:g_hLangMenu = INVALID_HANDLE;
 new Handle:g_hCookie = INVALID_HANDLE;
 new Handle:g_hRecording[MAXPLAYERS+1];
+new Handle:g_hSpecAdvertTimer;
 new Handle:g_hLoadedRecordsAdditionalTeleport = INVALID_HANDLE;
 new Handle:g_hBotMimicsRecord[MAXPLAYERS+1] = {INVALID_HANDLE,...};
 new Handle:g_hP2PRed[MAXPLAYERS+1] = { INVALID_HANDLE,... };
@@ -294,6 +296,8 @@ new Handle:g_hExtraPoints = INVALID_HANDLE;
 new g_ExtraPoints;
 new Handle:g_hExtraPoints2 = INVALID_HANDLE;
 new g_ExtraPoints2;
+new Handle:g_hSpecsAdvert = INVALID_HANDLE;
+new Float:g_fSpecsAdvert;
 new Handle:g_hMinSkillGroup = INVALID_HANDLE;
 new g_MinSkillGroup;
 new Handle:g_hReplayBotProColor = INVALID_HANDLE;
@@ -357,7 +361,6 @@ new Float:g_js_fMax_Speed[MAXPLAYERS+1];
 new Float:g_js_fMax_Speed_Final[MAXPLAYERS +1];
 new Float:g_js_fMax_Height[MAXPLAYERS+1];
 new Float:g_js_AvgLadderSpeed[MAXPLAYERS+1];
-new Float:g_js_fLast_Jump_Time[MAXPLAYERS+1];
 new Float:g_js_Good_Sync_Frames[MAXPLAYERS+1];
 new Float:g_js_Sync_Frames[MAXPLAYERS+1];
 new Float:g_js_Strafe_Air_Time[MAXPLAYERS+1][100];
@@ -395,7 +398,6 @@ new Float:g_fLastAngles[MAXPLAYERS + 1][3];
 new Float:g_fLastTimeBhopBlock[MAXPLAYERS+1];
 new Float:g_js_fLadderDirection[MAXPLAYERS+1];
 new Float:g_fRecordTime;
-new Float:g_flastTimeSpecsChecked;
 new Float:g_fRecordTimePro;
 new Float:g_fStartButtonPos[3];
 new Float:g_fEndButtonPos[3];
@@ -436,7 +438,6 @@ new bool:g_bNoClipUsed[MAXPLAYERS+1];
 new bool:g_bMenuOpen[MAXPLAYERS+1];
 new bool:g_bRespawnAtTimer[MAXPLAYERS+1];
 new bool:g_bPause[MAXPLAYERS+1];
-new bool:g_bPauseWasActivated[MAXPLAYERS+1];
 new bool:g_bOverlay[MAXPLAYERS+1];
 new bool:g_bLastButtonJump[MAXPLAYERS+1];
 new bool:g_js_bPlayerJumped[MAXPLAYERS+1];
@@ -458,7 +459,6 @@ new bool:g_bRespawnPosition[MAXPLAYERS+1];
 new bool:g_bKickStatus[MAXPLAYERS+1]; 
 new bool:g_bUndo[MAXPLAYERS+1];
 new bool:g_bTouchedBooster[MAXPLAYERS+1]; 
-new bool:g_bHyperscroll[MAXPLAYERS+1]; 
 new bool:g_bProfileRecalc[MAX_PR_PLAYERS];
 new bool:g_bProfileSelected[MAXPLAYERS+1]; 
 new bool:g_bSelectProfile[MAXPLAYERS+1]; 
@@ -488,7 +488,6 @@ new g_EnableQuakeSounds[MAXPLAYERS+1];
 new bool:g_bShowNames[MAXPLAYERS+1]; 
 new bool:g_bSpecInfo[MAXPLAYERS+1];
 new bool:g_bStrafeSync[MAXPLAYERS+1];
-new bool:g_bSaving[MAXPLAYERS+1];
 new bool:g_bStartWithUsp[MAXPLAYERS+1];
 new bool:g_bGoToClient[MAXPLAYERS+1]; 
 new bool:g_bShowTime[MAXPLAYERS+1]; 
@@ -680,10 +679,10 @@ new const String:KZ_REPLAY_PATH[] = "data/kz_replays/";
 new const String:ANTICHEAT_LOG_PATH[] = "logs/kztimer_anticheat.log";
 new const String:BLOCKED_LIST_PATH[] = "configs/kztimer/hidden_chat_commands.txt";
 new const String:EXCEPTION_LIST_PATH[] = "configs/kztimer/exception_list.txt";
-new const String:CP_FULL_SOUND_PATH[] = "sound/quake/wickedsick.mp3";
-new const String:CP_RELATIVE_SOUND_PATH[] = "*quake/wickedsick.mp3";
-new const String:PRO_FULL_SOUND_PATH[] = "sound/quake/holyshit.mp3";
-new const String:PRO_RELATIVE_SOUND_PATH[] = "*quake/holyshit.mp3";
+new const String:CP_FULL_SOUND_PATH[] = "sound/quake/wickedsick_new.mp3";
+new const String:CP_RELATIVE_SOUND_PATH[] = "*quake/wickedsick_new.mp3";
+new const String:PRO_FULL_SOUND_PATH[] = "sound/quake/holyshit_new.mp3";
+new const String:PRO_RELATIVE_SOUND_PATH[] = "*quake/holyshit_new.mp3";
 new const String:UNSTOPPABLE_SOUND_PATH[] = "sound/quake/unstoppable.mp3";
 new const String:UNSTOPPABLE_RELATIVE_SOUND_PATH[] = "*quake/unstoppable.mp3";
 new const String:GODLIKE_FULL_SOUND_PATH[] = "sound/quake/godlike.mp3";
@@ -692,8 +691,6 @@ new const String:GODLIKE_RAMPAGE_FULL_SOUND_PATH[] = "sound/quake/rampage.mp3";
 new const String:GODLIKE_RAMPAGE_RELATIVE_SOUND_PATH[] = "*quake/rampage.mp3";
 new const String:GODLIKE_DOMINATING_FULL_SOUND_PATH[] = "sound/quake/dominating.mp3";
 new const String:GODLIKE_DOMINATING_RELATIVE_SOUND_PATH[] = "*quake/dominating.mp3";
-//new const String:OWNAGE_FULL_SOUND_PATH[] = "sound/quake/ownage.mp3";
-//new const String:OWNAGE_RELATIVE_SOUND_PATH[] = "*quake/ownage.mp3";
 new const String:PERFECT_FULL_SOUND_PATH[] = "sound/quake/perfect.mp3";
 new const String:PERFECT_RELATIVE_SOUND_PATH[] = "*quake/perfect.mp3";
 new const String:IMPRESSIVE_FULL_SOUND_PATH[] = "sound/quake/impressive_kz.mp3";
@@ -902,6 +899,10 @@ public OnPluginStart()
 	g_hExtraPoints2   = CreateConVar("kz_ranking_extra_points_firsttime", "25.0", "Gives players x (tp time = x, pro time = 2 * x) extra points for finishing a map (tp and pro) for the first time.", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 100.0);
 	g_ExtraPoints2    = GetConVarInt(g_hExtraPoints2);
 	HookConVarChange(g_hExtraPoints2, OnSettingChanged);	
+
+	g_hSpecsAdvert   = CreateConVar("kz_speclist_advert_interval", "300.0", "Amount of seconds between spectator list advertisements in chat. This advert appears when there are more than 2 spectators.", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 5.0, true, 9999.0);
+	g_fSpecsAdvert    = GetConVarFloat(g_hSpecsAdvert);
+	HookConVarChange(g_hSpecsAdvert, OnSettingChanged);
 	
 	g_hPointSystem    = CreateConVar("kz_point_system", "1", "on/off - Player point system", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_bPointSystem    = GetConVarBool(g_hPointSystem);
@@ -935,7 +936,7 @@ public OnPluginStart()
 	GetConVarString(g_hArmModel,g_sArmModel,256);
 	HookConVarChange(g_hArmModel, OnSettingChanged);
 	
-	g_hWelcomeMsg   = CreateConVar("kz_welcome_msg", " {yellow}>>{default} {grey}Welcome! This server is using {lime}KZTimer v1.73","Welcome message (supported color tags: {default}, {darkred}, {green}, {lightgreen}, {blue} {olive}, {lime}, {red}, {purple}, {grey}, {yellow}, {lightblue}, {steelblue}, {darkblue}, {pink}, {lightred})", FCVAR_PLUGIN|FCVAR_NOTIFY);
+	g_hWelcomeMsg   = CreateConVar("kz_welcome_msg", " {yellow}>>{default} {grey}Welcome! This server is using {lime}KZTimer v1.74","Welcome message (supported color tags: {default}, {darkred}, {green}, {lightgreen}, {blue} {olive}, {lime}, {red}, {purple}, {grey}, {yellow}, {lightblue}, {steelblue}, {darkblue}, {pink}, {lightred})", FCVAR_PLUGIN|FCVAR_NOTIFY);
 	GetConVarString(g_hWelcomeMsg,g_sWelcomeMsg,512);
 	HookConVarChange(g_hWelcomeMsg, OnSettingChanged);
 
@@ -987,9 +988,9 @@ public OnPluginStart()
 	{
 		g_hMaxBhopPreSpeed   = CreateConVar("kz_max_prespeed_bhop_dropbhop", "325.0", "Max counted pre speed for bhop,dropbhop (no speed limiter)", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 300.0, true, 400.0);
 		g_hdist_good_countjump    	= CreateConVar("kz_dist_min_cj", "240.0", "Minimum distance for count jumps to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-		g_hdist_perfect_countjump   	= CreateConVar("kz_dist_perfect_cj", "265.0", "Minimum distance for count jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
-		g_hdist_impressive_countjump   	= CreateConVar("kz_dist_impressive_cj", "270.0", "Minimum distance for count jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
-		g_hdist_godlike_countjump    	= CreateConVar("kz_dist_god_cj", "275.0", "Minimum distance for count jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 245.0, true, 999.0);	
+		g_hdist_perfect_countjump   	= CreateConVar("kz_dist_perfect_cj", "255.0", "Minimum distance for count jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
+		g_hdist_impressive_countjump   	= CreateConVar("kz_dist_impressive_cj", "260.0", "Minimum distance for count jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
+		g_hdist_godlike_countjump    	= CreateConVar("kz_dist_god_cj", "265.0", "Minimum distance for count jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 245.0, true, 999.0);	
 		g_hdist_good_lj    	= CreateConVar("kz_dist_min_lj", "235.0", "Minimum distance for long jumps to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
 		g_hdist_perfect_lj   	= CreateConVar("kz_dist_perfect_lj", "255.0", "Minimum distance for long jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
 		g_hdist_impressive_lj   	= CreateConVar("kz_dist_impressive_lj", "258.0", "Minimum distance for long jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
@@ -1052,10 +1053,10 @@ public OnPluginStart()
 		else
 		{
 			g_hMaxBhopPreSpeed   = CreateConVar("kz_max_prespeed_bhop_dropbhop", "350.0", "Max counted pre speed for bhop,dropbhop (no speed limiter)", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 300.0, true, 400.0);
-			g_hdist_good_countjump    	= CreateConVar("kz_dist_min_cj", "240.0", "Minimum distance for count jumps to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-			g_hdist_perfect_countjump   	= CreateConVar("kz_dist_perfect_cj", "275.0", "Minimum distance for count jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
-			g_hdist_impressive_countjump   	= CreateConVar("kz_dist_impressive_cj", "280.0", "Minimum distance for count jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
-			g_hdist_godlike_countjump    	= CreateConVar("kz_dist_god_cj", "285.0", "Minimum distance for count jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 245.0, true, 999.0);	
+			g_hdist_good_countjump    	= CreateConVar("kz_dist_min_cj", "230.0", "Minimum distance for count jumps to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
+			g_hdist_perfect_countjump   	= CreateConVar("kz_dist_perfect_cj", "270.0", "Minimum distance for count jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
+			g_hdist_impressive_countjump   	= CreateConVar("kz_dist_impressive_cj", "275.0", "Minimum distance for count jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
+			g_hdist_godlike_countjump    	= CreateConVar("kz_dist_god_cj", "280.0", "Minimum distance for count jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 245.0, true, 999.0);	
 			g_hdist_good_lj    	= CreateConVar("kz_dist_min_lj", "240.0", "Minimum distance for long jumps to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
 			g_hdist_perfect_lj   	= CreateConVar("kz_dist_perfect_lj", "260.0", "Minimum distance for long jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
 			g_hdist_impressive_lj   	= CreateConVar("kz_dist_impressive_lj", "265.0", "Minimum distance for long jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
@@ -1396,7 +1397,9 @@ public OnPluginStart()
 		SetFailState("Unable to prepare virtual function CBaseEntity::Touch")
 		return
 	}
-		
+
+	g_hFullAlltalk = FindConVar("sv_full_alltalk");
+	HookEvent("round_freeze_end", OnNewRound, EventHookMode_Pre);		
 	// 		
 	if(g_bLateLoaded) 
 	{ 
@@ -1616,7 +1619,7 @@ public OnMapStart()
 	CreateTimer(1.0, KZTimer2, INVALID_HANDLE, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	CreateTimer(60.0, AttackTimer, INVALID_HANDLE, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	CreateTimer(600.0, PlayerRanksTimer, INVALID_HANDLE, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-	CreateTimer(190.0, SpecInfo, INVALID_HANDLE, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	g_hSpecAdvertTimer = CreateTimer(g_fSpecsAdvert, SpecAdvertTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
 	//create buttons
 	CreateTimer(2.0, CreateMapButtons, INVALID_HANDLE, TIMER_FLAG_NO_MAPCHANGE);	
@@ -2339,7 +2342,14 @@ public OnSettingChanged(Handle:convar, const String:oldValue[], const String:new
 		
 	if(convar == g_hExtraPoints2)
 		g_ExtraPoints2 = StringToInt(newValue[0]);			
-	
+
+	if(convar == g_hSpecsAdvert)
+	{
+		g_fSpecsAdvert = StringToFloat(newValue[0]);	
+		if(g_hSpecAdvertTimer)
+			KillTimer(g_hSpecAdvertTimer);	
+		g_hSpecAdvertTimer	= CreateTimer(g_fSpecsAdvert, SpecAdvertTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);		
+	}	
 	if(convar == g_hdist_good_multibhop)
 		g_dist_min_multibhop = StringToFloat(newValue[0]);	
 

@@ -225,7 +225,7 @@
 	"TimerStartReminder"
 	{	
 		"#format"   ""
-		"en"        "<font color='#f4520b' size='24'><b>    Don't forget to hit\n    the start button!</b></font>"
+		"en"        "<font color='#FE642E' size='24' face ='Calibri'><b> Start the timer by pressing \n your 'USE' key at the start button</b></font>"
 	}
 	"TimeleftCounter"
 	{
@@ -815,7 +815,7 @@
 	"PositionRestored"
 	{
 		"#format"   ""
-		"en"        " \n   <font size='23'><b>Time and position restored</b></font>\n"
+		"en"         "<font color='#80FF00' size='24' face ='Calibri'><b>  \n   Your position has been restored!</b></font>"
 	}
 	"RadioCommandsDisabled"
 	{

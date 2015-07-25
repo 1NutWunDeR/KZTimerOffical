@@ -941,16 +941,19 @@ public SQL_db_GetDynamicTimelimitCallback(Handle:owner, Handle:hndl, const Strin
 						avg = 150;
 						
 					//set timelimit
-					decl String:szTimelimit[32];
-					Format(szTimelimit,32,"mp_timelimit %i;mp_roundtime %i", avg, avg);
-					ServerCommand(szTimelimit);
+					decl String:szBuffer[32];
+					Format(szBuffer,32,"mp_timelimit %i", avg);
+					ServerCommand(szBuffer);
+					if (avg > 60)
+						avg = 60;
+					Format(szBuffer,32,"mp_roundtime %i", avg);
+					ServerCommand(szBuffer);		
 					ServerCommand("mp_restartgame 1");
 				}
 			}
 		}
 	}
 }
-
 
 public db_viewPlayerAll(client, String:szPlayerName[MAX_NAME_LENGTH])
 {
@@ -5288,7 +5291,7 @@ public sql_selectPlayerNameCallback(Handle:owner, Handle:hndl, const String:erro
 		db_viewPersonalLJRecord(clientid,g_pr_szSteamID[clientid]);
 		db_viewPersonalLJBlockRecord(clientid,g_pr_szSteamID[clientid]);
 		if (IsValidClient(client))
-			PrintToConsole(client, "Profile refreshed (%s).", g_pr_szSteamID[clientid]);
+			PrintToConsole(client, "Profile refreshed (%s Total).", g_pr_szSteamID[clientid]);
 	}
 	else
 		if (IsValidClient(client))

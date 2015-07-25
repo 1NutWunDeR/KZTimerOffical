@@ -1,5 +1,4 @@
-// timer.sp
-public Action:SpecInfo(Handle:timer)
+public Action:SpecAdvertTimer(Handle:timer)
 {
 	new count;
 	decl String:szNameList[1024];
@@ -20,17 +19,9 @@ public Action:SpecInfo(Handle:timer)
 		}
 	}
 	if (count>2)
-	{
-		new Float:diff= GetEngineTime() - g_flastTimeSpecsChecked;
-		if (diff > 60.0)
-		{
-			PrintToChatAll(" %c>>%c Spectators (%c%i%c):%c %s",YELLOW,GRAY,LIMEGREEN,count,GRAY,WHITE,szNameList);
-			g_flastTimeSpecsChecked = GetEngineTime();
-		}
-	}
+		PrintToChatAll(" %c>>%c Spectators (%c%i%c):%c %s",YELLOW,GRAY,LIMEGREEN,count,GRAY,WHITE,szNameList);
 	return Plugin_Continue;
 }
-
 
 public Action:RemoveValidation(Handle:timer, any:client)
 {
@@ -42,6 +33,20 @@ public Action:OpenOptionsMenu(Handle:timer, any:client)
 	if (IsValidClient(client) && !IsFakeClient(client))
 	{
 		OptionMenu(client);
+	}
+}
+
+public Action:GiveUsp(Handle:timer, any:client)
+{
+	if (IsValidClient(client) && IsPlayerAlive(client))
+	{
+		new weapon = GetPlayerWeaponSlot(client, 2);
+		GivePlayerItem(client, "weapon_usp_silencer");
+		if (!g_bStartWithUsp[client] && !IsFakeClient(client))
+		{
+			if (weapon != -1)
+				 SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);
+		}
 	}
 }
 
@@ -565,17 +570,6 @@ public Action:SelectSpecTarget(Handle:timer, any:client)
 	}
 }
 
-public Action:GetJumpOffSpeedTimer(Handle:timer, any:client)
-{
-	if (IsValidClient(client))
-	{
-		decl Float:fVelocity[3];
-		GetEntPropVector(client, Prop_Data, "m_vecVelocity", fVelocity);
-		fVelocity[2] = 0.0;
-		g_js_fPreStrafe[client] = SquareRoot(Pow(fVelocity[0], 2.0) + Pow(fVelocity[1], 2.0) + Pow(fVelocity[2], 2.0));
-	}
-}
-
 public Action:StartMsgTimer(Handle:timer, any:client)
 {
 	if (IsValidClient(client) && !IsFakeClient(client))
@@ -593,6 +587,13 @@ public Action:StartMsgTimer(Handle:timer, any:client)
 		PrintMapRecords(client);	
 	}
 }
+
+public Action:DoCheckPointTimer(Handle:timer, any:client)
+{
+	if (IsValidClient(client))
+		DoCheckpoint(client);
+}
+
 
 public Action:CenterMsgTimer(Handle:timer, any:client)
 {

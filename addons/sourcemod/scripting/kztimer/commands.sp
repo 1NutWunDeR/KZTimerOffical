@@ -28,23 +28,13 @@ public Action:Command_Specs(client, args)
 			count++;
 		}
 	}
-	new Float:diff= GetEngineTime() - g_flastTimeSpecsChecked;
-	if (diff > 60.0)
-	{
-		if (count>2)
-		{
-			PrintToChatAll(" %c>>%c Spectators (%c%i%c):%c %s",YELLOW,GRAY,LIMEGREEN,count,GRAY,WHITE,szNameList);
-			g_flastTimeSpecsChecked = GetEngineTime();
-		}
-		else
-			PrintToChat(client," %c>>%c Spectators (%c%i%c):%c %s",YELLOW,GRAY,LIMEGREEN,count,GRAY,WHITE,szNameList);
-	}
-	else
+	if (count > 0)
 		PrintToChat(client," %c>>%c Spectators (%c%i%c):%c %s",YELLOW,GRAY,LIMEGREEN,count,GRAY,WHITE,szNameList);
+	else
+		PrintToChat(client," %c>>%c Spectators (%c%i%c)",YELLOW,GRAY,LIMEGREEN,count,GRAY);
 	
 	return Plugin_Handled;
 }
-
 
 
 public Action:Client_Ljblock(client, args)
@@ -1772,7 +1762,7 @@ public Action:Client_bhop(client, args)
 
 public DoCheckpoint(client)
 {
-	if (IsFakeClient(client) || !IsValidClient(client) || !IsPlayerAlive(client) || GetClientTeam(client) == 1 || g_bPause[client] || (StrEqual("kzpro", g_szMapPrefix[0]))) 
+	if (!g_bAllowCheckpoints || IsFakeClient(client) || !IsValidClient(client) || !IsPlayerAlive(client) || GetClientTeam(client) == 1 || g_bPause[client] || (StrEqual("kzpro", g_szMapPrefix[0]))) 
 		return;
 			
 			
@@ -2485,6 +2475,7 @@ public ShowSrvSettings(client)
 	PrintToConsole(client, "kz_round_end %b", g_bAllowRoundEndCvar);
 	PrintToConsole(client, "kz_settings_enforcer %b", g_bEnforcer);
 	PrintToConsole(client, "kz_slay_on_endbutton_press %b", g_bSlayPlayers);
+	PrintToConsole(client, "kz_speclist_advert_interval %f", g_fSpecsAdvert);
 	PrintToConsole(client, "kz_team_restriction %i", g_Team_Restriction);
 	PrintToConsole(client, "kz_use_radio %b", g_bRadioCommands);
 	PrintToConsole(client, "kz_vip_clantag %b", g_bVipClantag);

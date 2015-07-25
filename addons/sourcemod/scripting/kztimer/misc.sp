@@ -5,7 +5,6 @@ public SetServerConvars()
 	ConVar mp_respawn_on_death_t = FindConVar("mp_respawn_on_death_t");		
 	ConVar host_players_show = FindConVar("host_players_show");
 	ConVar sv_max_queries_sec = FindConVar("sv_max_queries_sec");
-	ConVar sv_full_alltalk = FindConVar("sv_full_alltalk");
 	ConVar sv_infinite_ammo = FindConVar("sv_infinite_ammo");
 	ConVar mp_do_warmup_period = FindConVar("mp_do_warmup_period");
 	ConVar mp_warmuptime = FindConVar("mp_warmuptime");
@@ -16,6 +15,7 @@ public SetServerConvars()
 	ConVar mp_match_restart_delay = FindConVar("mp_match_restart_delay");
 	ConVar mp_endmatch_votenextleveltime = FindConVar("mp_endmatch_votenextleveltime");
 	ConVar mp_endmatch_votenextmap = FindConVar("mp_endmatch_votenextmap");
+	ConVar sv_timebetweenducks = FindConVar("sv_timebetweenducks");
 	ConVar mp_halftime = FindConVar("mp_halftime");	
 	ConVar bot_zombie = FindConVar("bot_zombie");
 
@@ -60,7 +60,6 @@ public SetServerConvars()
 	}
 	SetConVarInt(host_players_show, 2);
 	SetConVarInt(sv_max_queries_sec, 6);
-	SetConVarBool(sv_full_alltalk, true);
 	SetConVarInt(sv_infinite_ammo, 2);
 	SetConVarBool(mp_endmatch_votenextmap, false);
 	SetConVarFloat(mp_warmuptime, 0.0);
@@ -69,6 +68,7 @@ public SetServerConvars()
 	SetConVarBool(mp_match_end_restart, false);
 	SetConVarInt(mp_match_restart_delay, 10);
 	SetConVarFloat(mp_endmatch_votenextleveltime, 3.0);
+	SetConVarFloat(sv_timebetweenducks, 0.1);
 	SetConVarBool(mp_halftime, false);
 	SetConVarBool(bot_zombie, true);
 	SetConVarBool(mp_do_warmup_period, false);
@@ -810,8 +810,6 @@ public SetClientDefaults(client)
 	g_fLastTimeBhopBlock[client] = GetEngineTime();
 	g_LastGroundEnt[client] = - 1;	
 	g_bFlagged[client] = false;
-	g_bSaving[client] = false;
-	g_bHyperscroll[client] = false;
 	g_fLastOverlay[client] = GetEngineTime() - 5.0;	
 	g_bValidTeleport[client]=false;
 	g_bProfileSelected[client]=false;
@@ -831,7 +829,6 @@ public SetClientDefaults(client)
 	g_bPrestrafeTooHigh[client] = false;
 	g_bPause[client] = false;
 	g_bPositionRestored[client] = false;
-	g_bPauseWasActivated[client]=false;
 	g_bTopMenuOpen[client] = false;
 	g_bMapMenuOpen[client] = false;
 	g_bRestorePosition[client] = false;
@@ -870,7 +867,6 @@ public SetClientDefaults(client)
 	g_fLastTimeButtonSound[client] = GetEngineTime();
 	g_fLastTimeNoClipUsed[client] = -1.0;
 	g_fStartTime[client] = -1.0;
-	g_fLastTimeBhopBlock[client] = GetEngineTime();
 	g_fPlayerLastTime[client] = -1.0;
 	g_js_GroundFrames[client] = 0;
 	g_fStartPauseTime[client] = 0.0;
@@ -1085,8 +1081,6 @@ public InitPrecache()
 	FakePrecacheSound( PERFECT_RELATIVE_SOUND_PATH );
 	AddFileToDownloadsTable( IMPRESSIVE_FULL_SOUND_PATH );
 	FakePrecacheSound( IMPRESSIVE_RELATIVE_SOUND_PATH );
-	//AddFileToDownloadsTable( OWNAGE_FULL_SOUND_PATH );
-	//FakePrecacheSound( OWNAGE_RELATIVE_SOUND_PATH );
 	AddFileToDownloadsTable("models/props/switch001.mdl");
 	AddFileToDownloadsTable("models/props/switch001.vvd");
 	AddFileToDownloadsTable("models/props/switch001.phy");
@@ -1184,7 +1178,6 @@ public MapFinishedMsgs(client, type)
 {	
 	if (IsValidClient(client))
 	{
-		g_bSaving[client]=false;
 		decl String:szTime[32];
 		decl String:szName[MAX_NAME_LENGTH];
 		GetClientName(client, szName, MAX_NAME_LENGTH);
@@ -1901,7 +1894,7 @@ public GetRGBColor(bot, String:color[256])
 
 public SpecList(client)
 {
-	if (!IsValidClient(client) || g_bMapMenuOpen[client] || g_bTopMenuOpen[client]  || IsFakeClient(client))
+	if (!IsValidClient(client) || g_bMapMenuOpen[client] || g_bTopMenuOpen[client]  || IsFakeClient(client) || IsPlayerAlive(client))
 		return;
 		
 	if (GetClientMenu(client) == MenuSource_None)
@@ -1914,7 +1907,7 @@ public SpecList(client)
 	if (g_bMenuOpen[client] || g_bClimbersMenuOpen[client]) 
 		return;
 	if(!StrEqual(g_szPlayerPanelText[client],""))
-	{
+	{		
 		new Handle:panel = CreatePanel();
 		DrawPanelText(panel, g_szPlayerPanelText[client]);
 		SendPanelToClient(panel, client, PanelHandler, 1);
@@ -3061,10 +3054,9 @@ public MacroBan(client)
 	}
 }
 
-//macrodox addon by 1nut
 public BhopPatternCheck(client)
 {
-	if (!IsValidClient(client) || !IsPlayerAlive(client) || IsFakeClient(client) || !g_bAntiCheat || g_bFlagged[client] || g_fafAvgPerfJumps[client] < 0.5 || g_fafAvgSpeed[client] < 290.0)
+	if (!IsValidClient(client) || !IsPlayerAlive(client) || IsFakeClient(client) || !g_bAntiCheat || g_bFlagged[client] || g_fafAvgPerfJumps[client] < 0.6 || g_fafAvgSpeed[client] < 300.0)
 		return;
 
 	//decl.
@@ -3086,7 +3078,7 @@ public BhopPatternCheck(client)
 	
 	//pattern check #1	
 	new Float:avg_scroll_pattern = float(pattern_sum) / float(jumps);
-	if (avg_scroll_pattern > 30.0)
+	if (avg_scroll_pattern > 30.0 && g_fafAvgSpeed[client] > 330.0)
 	{
 		MacroBan(client);
 		return;
@@ -3094,14 +3086,13 @@ public BhopPatternCheck(client)
 	//pattern check #2
 	for (new j = 2; j < 50; j++)
 	{
-		if (pattern_array[j] >= 20)		
+		if (pattern_array[j] >= 22)		
 		{
 			MacroBan(client);
 			return;
 		}
 	}	
 }
-
 //MultiPlayer Bunnyhop
 //https://forums.alliedmods.net/showthread.php?p=808724
 public Teleport(client, bhop,bool:mt)
