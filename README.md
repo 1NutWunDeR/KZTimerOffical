@@ -33,6 +33,16 @@ else: mp_respawn_on_death_ct 0;mp_respawn_on_death_t 0
 Changelog
 =======
 <SPOILER>
+v1.74
+- fixed an issue where players used boosters to gain speed for count jumps
+- fixed several minor jumpstats bugs
+- added server convar "kz_speclist_advert_interval" (default 300.0) (Amount of seconds between spectator list advertisements in chat. This advert appears only from 3 specs on)
+- added new versions of 'holyshit' and 'wickedsick' quake sounds
+- updated english language phrases
+- general optimization and bug fixes
+- changed files: "addons\sourcemod\plugins\KZTimerGlobal.smx", "sound\quake\holyshit_new.mp3", "sound\quake\holyshit_new.mp3 and sound\quake\wickedsick_new.mp3", "addons/sourcemod/translations/kztimer.phrases.txt"
+NOTE: Don't forget to upload the new sounds files to your fastdl
+
 v1.73
 - added server convar "kz_double_duck" (DEFAULT: 0): on/off - Allows you to get up edges that are 32 units high or less without jumping ("0": double duck feature is only enabled if your map timer is disabled. "1": always enabled; (credits to Mehis, https://forums.alliedmods.net/showpost.php?p=2308824&postcount=4)
 - added server convar "kz_team_restriction" (DEFAULT: 0): Team restriction (0 = both allowed, 1 = only ct allowed, 2 = only t allowed)
