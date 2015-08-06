@@ -679,22 +679,22 @@ new const String:KZ_REPLAY_PATH[] = "data/kz_replays/";
 new const String:ANTICHEAT_LOG_PATH[] = "logs/kztimer_anticheat.log";
 new const String:BLOCKED_LIST_PATH[] = "configs/kztimer/hidden_chat_commands.txt";
 new const String:EXCEPTION_LIST_PATH[] = "configs/kztimer/exception_list.txt";
-new const String:CP_FULL_SOUND_PATH[] = "sound/quake/wickedsick_new.mp3";
-new const String:CP_RELATIVE_SOUND_PATH[] = "*quake/wickedsick_new.mp3";
-new const String:PRO_FULL_SOUND_PATH[] = "sound/quake/holyshit_new.mp3";
-new const String:PRO_RELATIVE_SOUND_PATH[] = "*quake/holyshit_new.mp3";
-new const String:UNSTOPPABLE_SOUND_PATH[] = "sound/quake/unstoppable.mp3";
-new const String:UNSTOPPABLE_RELATIVE_SOUND_PATH[] = "*quake/unstoppable.mp3";
-new const String:GODLIKE_FULL_SOUND_PATH[] = "sound/quake/godlike.mp3";
-new const String:GODLIKE_RELATIVE_SOUND_PATH[] = "*quake/godlike.mp3";
-new const String:GODLIKE_RAMPAGE_FULL_SOUND_PATH[] = "sound/quake/rampage.mp3";
-new const String:GODLIKE_RAMPAGE_RELATIVE_SOUND_PATH[] = "*quake/rampage.mp3";
-new const String:GODLIKE_DOMINATING_FULL_SOUND_PATH[] = "sound/quake/dominating.mp3";
-new const String:GODLIKE_DOMINATING_RELATIVE_SOUND_PATH[] = "*quake/dominating.mp3";
-new const String:PERFECT_FULL_SOUND_PATH[] = "sound/quake/perfect.mp3";
-new const String:PERFECT_RELATIVE_SOUND_PATH[] = "*quake/perfect.mp3";
-new const String:IMPRESSIVE_FULL_SOUND_PATH[] = "sound/quake/impressive_kz.mp3";
-new const String:IMPRESSIVE_RELATIVE_SOUND_PATH[] = "*quake/impressive_kz.mp3";
+new String:CP_FULL_SOUND_PATH[128];
+new String:CP_RELATIVE_SOUND_PATH[128];
+new String:PRO_FULL_SOUND_PATH[128];
+new String:PRO_RELATIVE_SOUND_PATH[128];
+new String:UNSTOPPABLE_SOUND_PATH[128];
+new String:UNSTOPPABLE_RELATIVE_SOUND_PATH[128];
+new String:GODLIKE_FULL_SOUND_PATH[128];
+new String:GODLIKE_RELATIVE_SOUND_PATH[128];
+new String:GODLIKE_RAMPAGE_FULL_SOUND_PATH[128];
+new String:GODLIKE_RAMPAGE_RELATIVE_SOUND_PATH[128];
+new String:GODLIKE_DOMINATING_FULL_SOUND_PATH[128];
+new String:GODLIKE_DOMINATING_RELATIVE_SOUND_PATH[128];
+new String:PERFECT_FULL_SOUND_PATH[128];
+new String:PERFECT_RELATIVE_SOUND_PATH[128];
+new String:IMPRESSIVE_FULL_SOUND_PATH[128];
+new String:IMPRESSIVE_RELATIVE_SOUND_PATH[128];
 new String:RadioCMDS[][] = {"coverme", "takepoint", "holdpos", "regroup", "followme", "takingfire", "go", "fallback", "sticktog",
 	"getinpos", "stormfront", "report", "roger", "enemyspot", "needbackup", "sectorclear", "inposition", "reportingin",
 	"getout", "negative","enemydown","cheer","thanks","nice","compliment"};
@@ -738,6 +738,8 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 
 public OnPluginStart()
 {
+	//sounds
+	SetSoundPath();
 	
 	//get srv tick
 	new Float:fltickrate = 1.0 / GetTickInterval( );

@@ -74,6 +74,62 @@ public SetServerConvars()
 	SetConVarBool(mp_do_warmup_period, false);
 }
 
+public SetSoundPath()
+{
+	decl String:sPath[PLATFORM_MAX_PATH];
+	BuildPath(Path_SM, sPath, sizeof(sPath), "configs/kztimer/sounds.cfg");
+	
+	new i = 0;
+	new String:ssp[8][128];
+	
+	
+	if (FileExists(sPath))
+	{
+		new Handle:hKeyValues = CreateKeyValues("KZTimer.Sounds");
+		if(FileToKeyValues(hKeyValues, sPath) && KvGotoFirstSubKey(hKeyValues))
+		{
+			do
+			{
+				if (i < 8)
+				{
+					KvGetString(hKeyValues, "path", ssp[i], 128);
+				}
+				i++;
+			}
+			while (KvGotoNextKey(hKeyValues));
+		}
+		
+		Format(PRO_FULL_SOUND_PATH, sizeof(PRO_FULL_SOUND_PATH), "sound/%s", ssp[1]);
+		Format(PRO_RELATIVE_SOUND_PATH, sizeof(PRO_RELATIVE_SOUND_PATH), "*%s", ssp[1]);
+		
+		Format(CP_FULL_SOUND_PATH, sizeof(CP_FULL_SOUND_PATH), "sound/%s", ssp[1]);
+		Format(CP_RELATIVE_SOUND_PATH, sizeof(CP_RELATIVE_SOUND_PATH), "*%s", ssp[1]);
+		
+		Format(UNSTOPPABLE_SOUND_PATH, sizeof(UNSTOPPABLE_SOUND_PATH), "sound/%s", ssp[2]);
+		Format(UNSTOPPABLE_RELATIVE_SOUND_PATH, sizeof(UNSTOPPABLE_RELATIVE_SOUND_PATH), "*%s", ssp[2]);
+		
+		Format(GODLIKE_FULL_SOUND_PATH, sizeof(GODLIKE_FULL_SOUND_PATH), "sound/%s", ssp[3]);
+		Format(GODLIKE_RELATIVE_SOUND_PATH, sizeof(GODLIKE_RELATIVE_SOUND_PATH), "*%s", ssp[3]);
+		
+		Format(GODLIKE_RAMPAGE_FULL_SOUND_PATH, sizeof(GODLIKE_RAMPAGE_FULL_SOUND_PATH), "sound/%s", ssp[4]);
+		Format(GODLIKE_RAMPAGE_RELATIVE_SOUND_PATH, sizeof(GODLIKE_RAMPAGE_RELATIVE_SOUND_PATH), "*%s", ssp[4]);
+		
+		Format(GODLIKE_DOMINATING_FULL_SOUND_PATH, sizeof(GODLIKE_DOMINATING_FULL_SOUND_PATH), "sound/%s", ssp[5]);
+		Format(GODLIKE_DOMINATING_RELATIVE_SOUND_PATH, sizeof(GODLIKE_DOMINATING_RELATIVE_SOUND_PATH), "*%s", ssp[5]);
+		
+		Format(PERFECT_FULL_SOUND_PATH, sizeof(PERFECT_FULL_SOUND_PATH), "sound/%s", ssp[6]);
+		Format(PERFECT_RELATIVE_SOUND_PATH, sizeof(PERFECT_RELATIVE_SOUND_PATH), "*%s", ssp[6]);
+		
+		Format(IMPRESSIVE_FULL_SOUND_PATH, sizeof(IMPRESSIVE_FULL_SOUND_PATH), "sound/%s", ssp[7]);
+		Format(IMPRESSIVE_RELATIVE_SOUND_PATH, sizeof(IMPRESSIVE_RELATIVE_SOUND_PATH), "*%s", ssp[7]);
+		
+		if (hKeyValues != INVALID_HANDLE)
+			CloseHandle(hKeyValues);
+	}
+	else
+		SetFailState("<KZTIMER> addons/sourcemod/configs/kztimer/sounds.cfg not found.");
+}
+
 public DoValidTeleport(client, Float:origin[3],Float:angles[3],bool:VEL_NULLVECTOR)
 {
 	if (!IsValidClient(client))
