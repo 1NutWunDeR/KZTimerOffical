@@ -1,7 +1,5 @@
 Alliedmodders: https://forums.alliedmods.net/showthread.php?t=223274    
 KZTimer steam group: http://steamcommunity.com/groups/KZTIMER (provides KZTimer Global Version download-link, update/kreedz news, videos and more)                                                                      
-**Known but unsolved problems and bugs:**
-[SM] Native "PushArrayArray" reported: Failed to grow array
 
 **Please read the following information carefully before you start asking stupid questions:**
 - Download includes DHooks2 extension (https://forums.alliedmods.net/showthread.php?t=180114), Cleaner extension (https://forums.alliedmods.net/showthread.php?t=195008)  and latest GeoIP database (http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/)
@@ -33,6 +31,25 @@ else: mp_respawn_on_death_ct 0;mp_respawn_on_death_t 0
 Changelog
 =======
 <SPOILER>
+- fixed several undo-tp exploits
+- added convar kz_player_transparency (default: 100): Modifies the transparency of players. 0 is invisible and 255 is visible.
+- added ability to change the quake sounds (scripted by AzaZPPL)
+- added client option "replay route" / client command "!route" (shows the route of the quickest replay bot with glowing dots)
+- added hgr:source support
+- integrated language option into the options menu
+- removed arrow/triangle icon above player heads
+- minor bug fixes and optimizations
+
+modified files:
+addons\sourcemod\gamedata\dhooks-test.games.txt
+addons\sourcemod\extensions\dhooks.ext.dll
+addons\sourcemod\extensions\dhooks.ext.so
+addons\sourcemod\configs\geoip\GeoIP.dat
+addons\sourcemod\configs\kztimer\hidden_chat_commands.txt
+addons\sourcemod\configs\kztimer\sounds.cfg (NEW)
+addons\sourcemod\plugins\KZTimerGlobal.smx
+addons\sourcemod\translations\*ALL FILES MODIFIED*
+
 v1.74
 - fixed an issue where players used boosters to gain speed for count jumps
 - fixed several minor jumpstats bugs
