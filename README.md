@@ -31,6 +31,7 @@ else: mp_respawn_on_death_ct 0;mp_respawn_on_death_t 0
 Changelog
 =======
 <SPOILER>
+v1.75
 - fixed several undo-tp exploits
 - added convar kz_player_transparency (default: 100): Modifies the transparency of players. 0 is invisible and 255 is visible.
 - added ability to change the quake sounds (scripted by AzaZPPL)
