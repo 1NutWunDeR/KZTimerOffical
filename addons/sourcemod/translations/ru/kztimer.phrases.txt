@@ -1,5 +1,59 @@
 ﻿"Phrases"
 {
+	"UndoLadder"
+	{
+		"#format"   "{1:c},{2:c},{3:c}"
+		"ru"        "[{1}KZ{2}] {3} Нельзя отменить телепорт, когда ты находился на лестнице"
+	}
+	"UndoMidAir"
+	{
+		"#format"   "{1:c},{2:c},{3:c}"
+		"ru"        "[{1}KZ{2}] {3}Нельзя отменить телепорт, когда ты находился в воздухе"
+	}
+	"mapinfo1"
+	{
+		"#format"   "{1:c},{2:c},{3:c},{4:c},{5:s},{6:c},{7:c},{8:s},{9:c},{10:c},{11:s},{12:c}"
+		"ru"       "[{1}KZ{2}] {3}Текущая карта: {4}{5}{6}, Сложность: {7}{8}{9} (Утверждено {10}{11}{12})"
+	}
+	"mapinfo2"
+	{
+		"#format"   "{1:c},{2:c},{3:c},{4:c},{5:s},{6:c}"
+		"ru"       "[{1}KZ{2}] {3}Текущая карта {4}{5}{6} (Не утверждена)"
+	}
+	"options_lang_en"
+	{
+		"ru"       "Language - English"
+	}
+	"options_lang_de"
+	{
+		"ru"       "Language - German"
+	}
+	"options_lang_sv"
+	{
+		"ru"       "Language - Swedish"
+	}
+	"options_lang_fr"
+	{
+		"ru"       "Language - French"
+	}
+	"options_lang_ru"
+	{
+		"ru"       "Language - Russian"
+	}
+	"options_lang_cn"
+	{
+		"ru"       "Language - Chinese"
+	}
+	"Route1"
+	{
+		"#format"   "{1:c},{2:c}"
+		"ru"        "[{1}KZ{2}] Replay route enabled."
+	}
+	"Route2"
+	{
+		"#format"   "{1:c},{2:c}"
+		"ru"        "[{1}KZ{2}] Replay route disabled."
+	}
 	"stopsound"
 	{
 		"#format"   "{1:c},{2:c}"
@@ -13,6 +67,14 @@
 	"kick_msg_low_fps"
 	{
 		"ru"       "Please set your fps_max greater than or equal to 120"
+	}
+	"options_rp_on"
+	{
+		"ru"       "Replay route (requires replay bots)  -  Enabled"
+	}
+	"options_rp_off"
+	{
+		"ru"       "Replay route (requires replay bots)  -  Disabled"
 	}
 	"options_adv_on"
 	{
@@ -342,7 +404,7 @@
 	"AntiCheatEnabled"
 	{
 		"#format"   "{1:c},{2:c},{3:c}"
-		"ru"       "[{1}KZ{2}] {3}Античит включен."
+		"ru"       "[{1}KZ{2}] {3}Hypersrolling и bhop скрипты приведут к бану!"
 	}	
 	"NoCpsDuringChallenge"
 	{
@@ -1396,6 +1458,6 @@
 	"LjBlock"
 	{
 		"#format"   "{1:c},{2:c},{3:i},{4:c}"
-		"ru"        " {1}[{2}{3} Block{4}]"
+		"ru"        " {1}[{2}{3} блок{4}]"
 	}		
 }

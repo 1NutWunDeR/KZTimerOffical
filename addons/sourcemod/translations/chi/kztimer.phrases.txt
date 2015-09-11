@@ -1,9 +1,39 @@
 ﻿"Phrases"
 {
+	"UndoLadder"
+	{
+		"#format"   "{1:c},{2:c},{3:c}"
+		"chi"        "[{1}KZ{2}] {3}Undo TP not allowed because your last teleport origin is on a ladder"
+	}
+	"UndoMidAir"
+	{
+		"#format"   "{1:c},{2:c},{3:c}"
+		"chi"        "[{1}KZ{2}] {3}Undo TP not allowed because your last teleport origin is in midair"
+	}
+	"mapinfo1"
+	{
+		"#format"   "{1:c},{2:c},{3:c},{4:c},{5:s},{6:c},{7:c},{8:s},{9:c},{10:c},{11:s},{12:c}"
+		"chi"       "[{1}KZ{2}] {3}当前地图: {4}{5}{6}, 难度: {7}{8}{9} (审批人 {10}{11}{12})"
+	}
+	"mapinfo2"
+	{
+		"#format"   "{1:c},{2:c},{3:c},{4:c},{5:s},{6:c}"
+		"chi"        "[{1}KZ{2}] {3}当前地图: {4}{5}{6} (未审批)"
+	}
+	"Route1"
+	{
+		"#format"   "{1:c},{2:c}"
+		"chi"        "[{1}KZ{2}] 回放录像打开."
+	}
+	"Route2"
+	{
+		"#format"   "{1:c},{2:c}"
+		"chi"        "[{1}KZ{2}] 回放录像关闭."
+	}
 	"stopsound"
 	{
 		"#format"   "{1:c},{2:c}"
-		"chi"        "[{1}KZ{2}] Map music stopped."
+		"chi"        "[{1}KZ{2}] 地图音乐已停止."
 	}
 	"kick_msg_skill_group"
 	{
@@ -13,6 +43,15 @@
 	"kick_msg_low_fps"
 	{
 		"chi"  	    "请打开控制台输入fps_max 120 或更高"
+	}
+	"options_rp_on"
+	{
+		"chi"        "回放路线 (需要回放机器人)  -   已开启"
+
+	}
+	"options_rp_off"
+	{
+		"chi"       "回放路线 (需要回放机器人)  -  已关闭"
 	}
 	"options_advcp_on"
 	{
@@ -165,32 +204,32 @@
 	"HideChat1"
 	{
 		"#format"   "{1:c},{2:c}"
-		"chi"        "[{1}KZ{2}] Hide chat enabled."
+		"chi"        "[{1}KZ{2}] 屏蔽所有聊天和语言  -  已开启"
 	}
 	"HideChat2"
 	{
 		"#format"   "{1:c},{2:c}"
-		"chi"        "[{1}KZ{2}] Hide chat disabled."
+		"chi"        "[{1}KZ{2}] 武器和手臂显示  -  已关闭"
 	}
 	"HideViewModel1"
 	{
 		"#format"   "{1:c},{2:c}"
-		"chi"        "[{1}KZ{2}] Weapon viewmodel disabled."
+		"chi"        "[{1}KZ{2}] 武器和手臂显示  -  已关闭"
 	}
 	"HideViewModel2"
 	{
 		"#format"   "{1:c},{2:c}"
-		"chi"        "[{1}KZ{2}]  Waffe eingeblendet."
+		"chi"        "[{1}KZ{2}]  武器和手臂显示  -  已开启"
 	}
 	"PlayerJumpBeam1"
 	{
 		"#format"   "{1:c},{2:c}"
-		"chi"        "[{1}KZ{2}] Jump beam enabled."
+		"chi"        "[{1}KZ{2}] 跳跃光束  - 已开启"
 	}
 	"PlayerJumpBeam2"
 	{
 		"#format"   "{1:c},{2:c}"
-		"chi"        "[{1}KZ{2}] Jump beam disabled."
+		"chi"        "[{1}KZ{2}] 跳跃光束   -  已关闭"
 	}
 	"ClientLadderJump1"
 	{
@@ -356,7 +395,7 @@
 	"AntiCheatEnabled"
 	{
 		"#format"   "{1:c},{2:c},{3:c}"
-		"chi"       "[{1}KZ{2}] {3}反作弊启用."
+		"chi"         "[{1}KZ{2}] {3}使用非法软件加速,或者连跳脚本将被封禁!"
 	}	
 	"NoCpsDuringChallenge"
 	{
@@ -1325,5 +1364,29 @@
 	{
 		"#format"   "{1:c},{2:c},{3:i},{4:c}"
 		"chi"        " {1}[{2}{3} 板块{4}]"
+	}
+	"options_lang_en"
+	{
+		"chi"       "Language - English"
+	}
+	"options_lang_de"
+	{
+		"chi"       "Language - German"
+	}
+	"options_lang_sv"
+	{
+		"chi"       "Language - Swedish"
+	}
+	"options_lang_fr"
+	{
+		"chi"       "Language - French"
+	}
+	"options_lang_ru"
+	{
+		"chi"       "Language - Russian"
+	}
+	"options_lang_cn"
+	{
+		"chi"       "Language - Chinese"
 	}
 }

@@ -479,7 +479,7 @@ public Prethink (client, bool:ladderjump)
 	
 	//noclip check
 	if ((GetEngineTime() - g_fLastTimeNoClipUsed[client]) < 4.0)
-		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, Float:{0.0,0.0,-100.0});
+		DoValidTeleport(client, NULL_VECTOR, NULL_VECTOR, Float:{0.0,0.0,-100.0});
 }
 
 public Postthink(client)

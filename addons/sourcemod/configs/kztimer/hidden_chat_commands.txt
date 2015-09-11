@@ -1,4 +1,4 @@
-//list of hidden chat commands (you can also add chat commands of other plugins..)
+//list of hidden chat commands (you can also add chat commands of other plugins..) [Requires map restart]
 !help
 !help2
 !usp
@@ -21,14 +21,17 @@
 !adv
 !info
 !hide
+!beam
 !sync
 !bhop
 !speed
 !showkeys
-!knife
 !measure
 !avg
 !wr
 !hidechat
 !hideweapon
 !stopsound
+!route
+!mapinfo
+!globalcheck

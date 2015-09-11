@@ -1,5 +1,59 @@
 ﻿"Phrases"
 {
+	"UndoLadder"
+	{
+		"#format"   "{1:c},{2:c},{3:c}"
+		"sv"        "[{1}KZ{2}] {3}Undo TP not allowed because your last teleport origin is on a ladder"
+	}
+	"UndoMidAir"
+	{
+		"#format"   "{1:c},{2:c},{3:c}"
+		"sv"        "[{1}KZ{2}] {3}Undo TP not allowed because your last teleport origin is in midair"
+	}
+	"mapinfo1"
+	{
+		"#format"   "{1:c},{2:c},{3:c},{4:c},{5:s},{6:c},{7:c},{8:s},{9:c},{10:c},{11:s},{12:c}"
+		"sv"       "[{1}KZ{2}] {3}Current map: {4}{5}{6}, Difficulty: {7}{8}{9} (approved by {10}{11}{12})"
+	}
+	"mapinfo2"
+	{
+		"#format"   "{1:c},{2:c},{3:c},{4:c},{5:s},{6:c}"
+		"sv"       "[{1}KZ{2}] {3}Current map: {4}{5}{6} (not approved)"
+	}
+	"options_lang_en"
+	{
+		"sv"       "Language - English"
+	}
+	"options_lang_de"
+	{
+		"sv"       "Language - German"
+	}
+	"options_lang_sv"
+	{
+		"sv"       "Language - Swedish"
+	}
+	"options_lang_fr"
+	{
+		"sv"       "Language - French"
+	}
+	"options_lang_ru"
+	{
+		"sv"       "Language - Russian"
+	}
+	"options_lang_cn"
+	{
+		"sv"       "Language - Chinese"
+	}
+	"Route1"
+	{
+		"#format"   "{1:c},{2:c}"
+		"sv"        "[{1}KZ{2}] Replay route enabled."
+	}
+	"Route2"
+	{
+		"#format"   "{1:c},{2:c}"
+		"sv"        "[{1}KZ{2}] Replay route disabled."
+	}
 	"stopsound"
 	{
 		"#format"   "{1:c},{2:c}"
@@ -13,6 +67,14 @@
 	"kick_msg_low_fps"
 	{
 		"sv"       "Please set your fps_max greater than or equal to 120"
+	}
+	"options_rp_on"
+	{
+		"sv"       "Replay route (requires replay bots)  -  Enabled"
+	}
+	"options_rp_off"
+	{
+		"sv"       "Replay route (requires replay bots)  -  Disabled"
 	}
 	"options_adv_on"
 	{

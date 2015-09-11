@@ -1,5 +1,49 @@
 ﻿"Phrases"
 {
+	"UndoLadder"
+	{
+		"#format"   "{1:c},{2:c},{3:c}"
+		"fr"        "[{1}KZ{2}] {3}Undo TP not allowed because your last teleport origin is on a ladder"
+	}
+	"UndoMidAir"
+	{
+		"#format"   "{1:c},{2:c},{3:c}"
+		"fr"        "[{1}KZ{2}] {3}Undo TP not allowed because your last teleport origin is in midair"
+	}
+	"mapinfo1"
+	{
+		"#format"   "{1:c},{2:c},{3:c},{4:c},{5:s},{6:c},{7:c},{8:s},{9:c},{10:c},{11:s},{12:c}"
+		"fr"       "[{1}KZ{2}] {3}Current map: {4}{5}{6}, Difficulty: {7}{8}{9} (approved by {10}{11}{12})"
+	}
+	"mapinfo2"
+	{
+		"#format"   "{1:c},{2:c},{3:c},{4:c},{5:s},{6:c}"
+		"fr"       "[{1}KZ{2}] {3}Current map: {4}{5}{6} (not approved)"
+	}
+	"options_lang_en"
+	{
+		"fr"       "Language - English"
+	}
+	"options_lang_de"
+	{
+		"fr"       "Language - German"
+	}
+	"options_lang_sv"
+	{
+		"fr"       "Language - Swedish"
+	}
+	"options_lang_fr"
+	{
+		"fr"       "Language - French"
+	}
+	"options_lang_ru"
+	{
+		"fr"       "Language - Russian"
+	}
+	"options_lang_cn"
+	{
+		"fr"       "Language - Chinese"
+	}
 	"stopsound"
 	{
 		"#format"   "{1:c},{2:c}"
@@ -14,29 +58,37 @@
 	{
 		"fr"       "Please set your fps_max greater than or equal to 120"
 	}
+	"options_rp_on"
+	{
+		"fr"       "Replay route (requires replay bots)  -  activé"
+	}
+	"options_rp_off"
+	{
+		"fr"       "Replay route (requires replay bots)  -  désactivé"
+	}
 	"options_adv_on"
 	{
-		"fr"       "Adv checkpoint menu  -  Enabled"
+		"fr"       "Adv checkpoint menu  -  activé"
 	}
 	"options_adv_off"
 	{
-		"fr"       "Adv checkpoint menu  -  Disabled"
+		"fr"       "Adv checkpoint menu  -  désactivé"
 	}
 	"options_hide_on"
 	{
-		"fr"       "Hide other players  -  Enabled"
+		"fr"       "Hide other players  -  activé"
 	}
 	"options_hide_off"
 	{
-		"fr"       "Hide other players  -  Disabled"
+		"fr"       "Hide other players  -  désactivé"
 	}
 	"options_colorchat_off"
 	{
-		"fr"       "Color chat (jumpstats)  -  Disabled (except yours)"
+		"fr"       "Color chat (jumpstats)  -  désactivé (except yours)"
 	}
 	"options_colorchat_on"
 	{
-		"fr"       "Color chat (jumpstats)  -  Enabled"
+		"fr"       "Color chat (jumpstats)  -  activé"
 	}
 	"options_colorchat_only_red"
 	{
@@ -44,19 +96,19 @@
 	}
 	"options_cpmessage_on"
 	{
-		"fr"       "Checkpoint done chat message  -  Enabled"
+		"fr"       "Checkpoint done chat message  -  activé"
 	}
 	"options_cpmessage_off"
 	{
-		"fr"       "Checkpoint done chat message  -  Disabled"
+		"fr"       "Checkpoint done chat message  -  désactivé"
 	}
 	"options_menusounds_on"
 	{
-		"fr"       "Checkpoint menu sounds  -  Enabled"
+		"fr"       "Checkpoint menu sounds  -  activé"
 	}
 	"options_menusounds_off"
 	{
-		"fr"       "Checkpoint menu sounds  -  Disabled"
+		"fr"       "Checkpoint menu sounds  -  désactivé"
 	}
 	"options_quakesounds_none"
 	{
@@ -72,19 +124,19 @@
 	}
 	"options_strafesync_on"
 	{
-		"fr"       "Print strafe sync to chat  -  Enabled"
+		"fr"       "Print strafe sync to chat  -  activé"
 	}
 	"options_strafesync_off"
 	{
-		"fr"       "Print strafe sync to chat  -  Disabled"
+		"fr"       "Print strafe sync to chat  -  désactivé"
 	}
 	"options_timertext_on"
 	{
-		"fr"       "Show timer text  -  Enabled"
+		"fr"       "Show timer text  -  activé"
 	}
 	"options_timertext_off"
 	{
-		"fr"       "Show timer text  -  Disabled"
+		"fr"       "Show timer text  -  désactivé"
 	}
 	"options_speclist_on"
 	{
@@ -96,23 +148,23 @@
 	}
 	"options_speclist_off"
 	{
-		"fr"       "Spectator list  -  Disabled"
+		"fr"       "Spectator list  -  désactivé"
 	}
 	"options_centerpanel_on"
 	{
-		"fr"       "Center panel (jump distance, speed, keys)  -  Enabled"
+		"fr"       "Center panel (jump distance, speed, keys)  -  activé"
 	}
 	"options_centerpanel_off"
 	{
-		"fr"       "Center panel (jump distance, speed, keys)  -  Disabled"
+		"fr"       "Center panel (jump distance, speed, keys)  -  désactivé"
 	}
 	"options_advcp_on"
 	{
-		"fr"       "Adv center panel (lj takeoff info)  -  Enabled"
+		"fr"       "Adv center panel (lj takeoff info)  -  activé"
 	}
 	"options_advcp_off"
 	{
-		"fr"       "Adv center panel (lj takeoff info)  -  Disabled"
+		"fr"       "Adv center panel (lj takeoff info)  -  désactivé"
 	}
 	"options_start_weapon_usp"
 	{
@@ -124,11 +176,11 @@
 	}
 	"options_jumpbeam_on"
 	{
-		"fr"       "Jump beam  -  Enabled"
+		"fr"       "Jump beam  -  activé"
 	}
 	"options_jumpbeam_off"
 	{
-		"fr"       "Jump beam  -  Disabled"
+		"fr"       "Jump beam  -  désactivé"
 	}
 	"options_chat_hidden"
 	{
@@ -148,19 +200,19 @@
 	}
 	"options_gotome_on"
 	{
-		"fr"       "Goto me  -  Enabled"
+		"fr"       "Goto me  -  activé"
 	}
 	"options_gotome_off"
 	{
-		"fr"       "Goto me  -  Disabled"
+		"fr"       "Goto me  -  désactivé"
 	}
 	"options_autobhop_on"
 	{
-		"fr"       "AutoBhop  -  Enabled"
+		"fr"       "AutoBhop  -  activé"
 	}
 	"options_autobhop_off"
 	{
-		"fr"       "AutoBhop  -  Disabled"
+		"fr"       "AutoBhop  -  désactivé"
 	}
 	"HideChat1"
 	{
@@ -333,7 +385,7 @@
 		"#format"   "{1:c},{2:c},{3:i},{4:.1f},{5:.1f},{6:.1f}"
 		"fr"       "[{1}KZ{2}]  Point trouvé {3} à la position X: {4}, Y: {5}, Z: {6}"
 	}	
-	"AntiCheatEnabled"
+	"AntiCheatactivé"
 	{
 		"#format"   "{1:c},{2:c},{3:c}"
 		"fr"       "[{1}KZ{2}] {3}AntiCheat activé."
@@ -358,7 +410,7 @@
 		"#format"   "{1:c},{2:c},{3:c}"
 		"fr"        "[{1}KZ{2}] {3}Annuler TP n'est pas autorisé quand vous êtes en mouvement."
 	}
-	"JumpstatsDisabled"
+	"Jumpstatsdésactivé"
 	{
 		"#format"   "{1:c},{2:c}"
 		"fr"        "[{1}KZ{2}] Info: JumpStats désactivé!"
@@ -667,12 +719,12 @@
 		"#format"   "{1:c},{2:c}"
 		"fr"        "[{1}KZ{2}] Noclip désactivé (côté serveur)"
 	}
-	"CMenuDisabled"
+	"CMenudésactivé"
 	{
 		"#format"   "{1:c},{2:c}"
 		"fr"        "[{1}KZ{2}] Le menu Climbers est désactivé."
 	}
-	"StartDisabled"
+	"Startdésactivé"
 	{
 		"#format"   "{1:c},{2:c},{3:c},{4:c}"
 		"fr"        "[{1}KZ{2}] La commande {3}!start{4} est désactivé."
@@ -742,6 +794,16 @@
 		"#format"   "{1:c},{2:c},{3:s}"
 		"fr"        "[{1}KZ{2}] Joueur {3} a désactivé le fait de pouvoir se téléporter jusqu'à lui."
 	}
+	"Route1"
+	{
+		"#format"   "{1:c},{2:c}"
+		"de"        "[{1}KZ{2}] Replay route activé."
+	}
+	"Route2"
+	{
+		"#format"   "{1:c},{2:c}"
+		"de"        "[{1}KZ{2}] Replay route désactivé."
+	}
 	"SpeedMeter1"
 	{
 		"#format"   "{1:c},{2:c}"
@@ -757,7 +819,7 @@
 		"#format"   "{1:c},{2:c}"
 		"fr"        "[{1}KZ{2}] Chronomètre arrêté."
 	}
-	"CheckpointsDisabled"
+	"Checkpointsdésactivé"
 	{
 		"#format"   "{1:c},{2:c}"
 		"fr"        "[{1}KZ{2}] Les Checkpoints sont désactivés."
@@ -782,12 +844,12 @@
 		"#format"   "{1:c},{2:c}"
 		"fr"        "[{1}KZ{2}] Aucun checkpoint n'a été trouvé."
 	}
-	"SettingsEnforcerEnabled"
+	"SettingsEnforceractivé"
 	{
 		"#format"   "{1:c},{2:c},{3:c}"
 		"fr"        "[{1}KZ{2}] {3}Paramètre Enforcer activé."
 	}
-	"SettingsEnforcerDisabled"
+	"SettingsEnforcerdésactivé"
 	{
 		"#format"   "{1:c},{2:c},{3:c}"
 		"fr"        "[{1}KZ{2}] {3}Paramètre Enforcer désactivé."
@@ -797,7 +859,7 @@
 		"#format"   ""
 		"fr"        " \n   <font size='23'><b>Votre temps et votre position ont été restaurés</b></font>\n"
 	}
-	"RadioCommandsDisabled"
+	"RadioCommandsdésactivé"
 	{
 		"#format"   "{1:c},{2:c}"
 		"fr"        "[{1}KZ{2}] Les commandes radios ont été désactivées."

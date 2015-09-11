@@ -166,7 +166,6 @@ public LoadReplays()
 	BuildPath(Path_SM, sPath2, sizeof(sPath2), "%s%s_tp.rec", KZ_REPLAY_PATH,g_szMapName);		
 	g_bProReplay=false;
 	g_bTpReplay=false;
-	
 	new Handle:hFilex = OpenFile(sPath1, "r");
 	if(hFilex != INVALID_HANDLE)
 	{
@@ -180,12 +179,28 @@ public LoadReplays()
 		CloseHandle(hFilex2);	
 	}	
 	
+	
 	g_ProBot = -1;
 	g_TpBot = -1;
+	
+	if (!g_bTpReplay && g_bProReplay)
+		g_bRoutePro=true;
+	else
+		if (g_bTpReplay && !g_bProReplay)
+			g_bRoutePro=false;
+		else
+			if (g_fRecordTime <= g_fRecordTimePro)
+				g_bRoutePro=false;
+			else
+				g_bRoutePro=true;
 	if (g_bProReplay)
+	{
 		LoadReplayPro();
+	}
 	if (g_bTpReplay)
-		LoadReplayTp();
+	{
+		LoadReplayTp();		
+	}
 }
 
 public PlayRecord(client, type)
@@ -204,6 +219,7 @@ public PlayRecord(client, type)
 	LoadRecordFromFile(sPath, iFileHeader);
 
 	g_ReplayRecordTps = iFileHeader[_:FH_Checkpoints];
+	
 	if (g_ReplayRecordTps > 0)
 	{
 		Format(g_szReplayTimeTp, sizeof(g_szReplayTimeTp), "%s", iFileHeader[_:FH_Time]);	
@@ -231,6 +247,11 @@ public PlayRecord(client, type)
 	// Respawn him to get him moving!
 	if(IsValidClient(client) && !IsPlayerAlive(client) && GetClientTeam(client) >= CS_TEAM_T)
 		CS_RespawnPlayer(client);
+	
+	if (client == g_ProBot)
+		SetEntityRenderColor(client, g_ReplayBotProColor[0], g_ReplayBotProColor[1], g_ReplayBotProColor[2], g_TransPlayerModels);  		
+	if (client == g_TpBot)
+		SetEntityRenderColor(client, g_ReplayBotTpColor[0], g_ReplayBotTpColor[1], g_ReplayBotTpColor[2], g_TransPlayerModels);	
 }
 
 	
@@ -326,6 +347,8 @@ public Action:RefreshBotTp(Handle:timer)
 
 public LoadReplayPro()
 {
+	if (!g_bProReplay)
+		return;
 	g_ProBot = -1;
 	for(new i = 1; i <= MaxClients; i++)
 	{
@@ -343,12 +366,13 @@ public LoadReplayPro()
 
 	if(g_ProBot > 0 && IsValidClient(g_ProBot))
 	{		
+		if (g_bRoutePro)
+			g_TmpRouteID = g_ProBot;
 		decl String:clantag[100];
 		CS_GetClientClanTag(g_ProBot, clantag, sizeof(clantag)); 
 		if (StrContains(clantag,"REPLAY") == -1)
 			g_bNewProBot=true;
 		PlayRecord(g_ProBot,0);
-		SetEntityRenderColor(g_ProBot, g_ReplayBotProColor[0], g_ReplayBotProColor[1], g_ReplayBotProColor[2], 50);
 		if (g_bPlayerSkinChange)
 		{
 			SetEntityModel(g_ProBot, g_sReplayBotPlayerModel);
@@ -369,12 +393,14 @@ public LoadReplayPro()
 		decl String:szBuffer[64];
 		Format(szBuffer, sizeof(szBuffer), "bot_quota %i", count); 	
 		ServerCommand(szBuffer);				
-		CreateTimer(1.0, RefreshBot,TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(2.0, RefreshBot,TIMER_FLAG_NO_MAPCHANGE);
 	}
 }
 
 public LoadReplayTp()
 {
+	if (!g_bTpReplay)
+		return;
 	g_TpBot = -1;
 	for(new i = 1; i <= MaxClients; i++)
 	{
@@ -392,12 +418,13 @@ public LoadReplayTp()
 
 	if(g_TpBot > 0 && IsValidClient(g_TpBot))
 	{		
+		if (!g_bRoutePro)
+			g_TmpRouteID = g_TpBot;
 		decl String:clantag[100];
 		CS_GetClientClanTag(g_TpBot, clantag, sizeof(clantag)); 
 		if (StrContains(clantag,"REPLAY") == -1)
 			g_bNewTpBot=true;	
 		PlayRecord(g_TpBot,1);
-		SetEntityRenderColor(g_TpBot, g_ReplayBotTpColor[0], g_ReplayBotTpColor[1], g_ReplayBotTpColor[2], 50);
 		if (g_bPlayerSkinChange)
 		{
 			SetEntityModel(g_TpBot, g_sReplayBotPlayerModel2);
@@ -505,6 +532,8 @@ public RecordReplay(client, &buttons, &subtype, &seed, &impulse, &weapon, Float:
 {
 	if(g_hRecording[client] != INVALID_HANDLE && !IsFakeClient(client))
 	{
+		if (g_bPause[client])
+			return;
 		new iFrame[FRAME_INFO_SIZE];
 		iFrame[playerButtons] = buttons;
 		iFrame[playerImpulse] = impulse;
@@ -574,6 +603,21 @@ public RecordReplay(client, &buttons, &subtype, &seed, &impulse, &weapon, Float:
 	}
 }
 
+public SetupRouteArrays(client)
+{
+	if (g_hRouteArray[client] == INVALID_HANDLE || g_hReplayRouteArray == INVALID_HANDLE)
+		return;
+		
+	ClearArray(g_hReplayRouteArray);
+	for (new i = 0; i < GetArraySize(g_hRouteArray[client]); i++)
+	{
+		decl Float: beam_org[3];
+		GetArrayArray(g_hRouteArray[client],i,beam_org,3)		
+		PushArrayArray(g_hReplayRouteArray,beam_org,3)
+	}
+	ClearArray(g_hRouteArray[client]);
+}
+
 public PlayReplay(client, &buttons, &subtype, &seed, &impulse, &weapon, Float:angles[3], Float:vel[3])
 {
 	if(g_hBotMimicsRecord[client] != INVALID_HANDLE && IsFakeClient(client))
@@ -582,10 +626,14 @@ public PlayReplay(client, &buttons, &subtype, &seed, &impulse, &weapon, Float:an
 			return;
 		
 		if(g_BotMimicTick[client] >= g_BotMimicRecordTickCount[client])
-		{
+		{	
+		
+			if (g_TmpRouteID == client)
+				SetupRouteArrays(client);			
 			g_BotMimicTick[client] = 0;
-			g_CurrentAdditionalTeleportIndex[client] = 0;
-		}			
+			g_CurrentAdditionalTeleportIndex[client] = 0;			
+		}	
+				
 		new iFrame[FRAME_INFO_SIZE];
 		GetArrayArray(g_hBotMimicsRecord[client], g_BotMimicTick[client], iFrame, _:FrameInfo);		
 		buttons = iFrame[playerButtons];
@@ -601,9 +649,13 @@ public PlayReplay(client, &buttons, &subtype, &seed, &impulse, &weapon, Float:an
 		{
 			new iAT[AT_SIZE], Handle:hAdditionalTeleport, String:sPath[PLATFORM_MAX_PATH];
 			if (client==g_ProBot)
+			{
 				Format(sPath, sizeof(sPath), "%s%s.rec", KZ_REPLAY_PATH,g_szMapName);
+			}
 			else
+			{
 				Format(sPath, sizeof(sPath), "%s%s_tp.rec", KZ_REPLAY_PATH,g_szMapName);
+			}
 			BuildPath(Path_SM, sPath, sizeof(sPath), "%s", sPath);
 			if (g_hLoadedRecordsAdditionalTeleport != INVALID_HANDLE)
 			{
@@ -753,57 +805,3 @@ public PlayReplay(client, &buttons, &subtype, &seed, &impulse, &weapon, Float:an
 	}
 }
 
-//dhooks
-public MRESReturn:DHooks_OnTeleport(client, Handle:hParams)
-{
-	// This one is currently mimicing something.
-	if(g_hBotMimicsRecord[client] != INVALID_HANDLE)
-	{
-		// We didn't allow that teleporting. STOP THAT.
-		if(!g_bValidTeleportCall[client])
-			return MRES_Supercede;
-		g_bValidTeleportCall[client] = false;
-		return MRES_Ignored;
-	}
-	
-	// Don't care if he's not recording.
-	if(g_hRecording[client] == INVALID_HANDLE)
-		return MRES_Ignored;
-	
-	new Float:origin[3], Float:angles[3], Float:velocity[3];
-	new bool:bOriginNull = DHookIsNullParam(hParams, 1);
-	new bool:bAnglesNull = DHookIsNullParam(hParams, 2);
-	new bool:bVelocityNull = DHookIsNullParam(hParams, 3);
-	
-	if(!bOriginNull)
-		DHookGetParamVector(hParams, 1, origin);
-	
-	if(!bAnglesNull)
-	{
-		for(new i=0;i<3;i++)
-			angles[i] = DHookGetParamObjectPtrVar(hParams, 2, i*4, ObjectValueType_Float);
-	}
-	
-	if(!bVelocityNull)
-		DHookGetParamVector(hParams, 3, velocity);
-	
-	if(bOriginNull && bAnglesNull && bVelocityNull)
-		return MRES_Ignored;
-	
-	new iAT[AT_SIZE];
-	Array_Copy(origin, iAT[_:atOrigin], 3);
-	Array_Copy(angles, iAT[_:atAngles], 3);
-	Array_Copy(velocity, iAT[_:atVelocity], 3);
-	
-	// Remember, 
-	if(!bOriginNull)
-		iAT[_:atFlags] |= ADDITIONAL_FIELD_TELEPORTED_ORIGIN;
-	if(!bAnglesNull)
-		iAT[_:atFlags] |= ADDITIONAL_FIELD_TELEPORTED_ANGLES;
-	if(!bVelocityNull)
-		iAT[_:atFlags] |= ADDITIONAL_FIELD_TELEPORTED_VELOCITY;
-	
-	PushArrayArray(g_hRecordingAdditionalTeleport[client], iAT, AT_SIZE);
-	
-	return MRES_Ignored;
-}

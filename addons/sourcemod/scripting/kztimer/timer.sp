@@ -1,3 +1,24 @@
+public Action:CheckTeleport(Handle:timer, any:client)
+{
+	if (!IsValidClient(client) || !IsPlayerAlive(client))
+		return;
+
+	new Float:diff = GetEngineTime() - g_fLastTimeBhopBlock[client];
+	new Float:diff2 = GetEngineTime() - g_fTeleportValidationTime[client];
+	if (!g_bRestorePosition[client] && !g_bRespawnPosition[client] && diff > 1.0 && diff2 > 2.0)
+	{
+		ResetJump(client);
+		if (g_bTimeractivated[client])
+		{
+			decl Float:org[3];
+			GetClientAbsOrigin(client,org);
+			PrintToChat(client,"[%cKZ%c] Unverified client teleport detected. Your position: %f, %f, %f on %s",MOSSGREEN,WHITE,org[0],org[1],org[2],g_szMapName);
+			PrintToConsole(client,"[KZ] Unverified client teleport detected. Your position: %f, %f, %f on %s",org[0],org[1],org[2],g_szMapName);
+			Client_Stop(client,0);
+		}	
+	}
+}	
+	
 public Action:SpecAdvertTimer(Handle:timer)
 {
 	new count;
@@ -23,11 +44,6 @@ public Action:SpecAdvertTimer(Handle:timer)
 	return Plugin_Continue;
 }
 
-public Action:RemoveValidation(Handle:timer, any:client)
-{
-	if (!g_bOnBhopPlattform[client] && IsValidClient(client))
-		g_bValidTeleport[client]=false;
-}
 public Action:OpenOptionsMenu(Handle:timer, any:client)
 {
 	if (IsValidClient(client) && !IsFakeClient(client))
@@ -149,14 +165,6 @@ public Action:PlayerRanksTimer(Handle:timer)
 	return Plugin_Continue;
 }
 
-public Action:DelayedStuff(Handle:timer)
-{
-	if (FileExists("cfg/sourcemod/kztimer/main.cfg"))
-		ServerCommand("exec sourcemod/kztimer/main.cfg");
-	else
-		SetFailState("<KZTIMER> cfg/sourcemod/kztimer/main.cfg not found.");
-}
-
 public Action:KZTimer1(Handle:timer)
 {
 	if (g_bRoundEnd)
@@ -261,15 +269,43 @@ public Action:KZTimer2(Handle:timer)
 		}
 	}
 
+	//replay route
+	SetReplayRoute();
+	
 	//info bot name
 	SetInfoBotName(g_InfoBot);	
 	
-	decl i;
-	for (i = 1; i <= MaxClients; i++)
+	for (new i = 1; i <= MaxClients; i++)
 	{	
 		if (!IsValidClient(i) || i == g_InfoBot)
 			continue;	
 
+		//bot color
+		if (i == g_ProBot)
+			SetEntityRenderColor(i, g_ReplayBotProColor[0], g_ReplayBotProColor[1], g_ReplayBotProColor[2], g_TransPlayerModels);
+		else
+			if (i == g_TpBot)
+			SetEntityRenderColor(i, g_ReplayBotTpColor[0], g_ReplayBotTpColor[1], g_ReplayBotTpColor[2], g_TransPlayerModels); 
+		
+		//set route
+		if (g_hRouteArray[i] != INVALID_HANDLE && g_RouteTick[i] == 3 && g_fCurrentRunTime[i] <= 3600.0)
+		{				
+			//route
+			decl Float:origin[3];
+			decl Float:ground_origin[3];
+			GetClientAbsOrigin(i, origin);
+			if (g_bOnGround[i])
+				origin[2]+=10;
+			GetGroundOrigin(i,ground_origin);
+			if (FloatAbs(origin[2]-ground_origin[2]) < 66.0)
+			{
+				origin = ground_origin;
+				origin[2]+=15;
+			}
+			PushArrayArray(g_hRouteArray[i], origin,3);		
+			g_RouteTick[i] = 0;
+		}
+		g_RouteTick[i]++;
 		
 		if (!IsFakeClient(i))
 		{
@@ -284,9 +320,8 @@ public Action:KZTimer2(Handle:timer)
 			}
 			
 		}
-		
-		//stop replay to prevent server crashes because of a massive recording array (max. 2h)
-		if(g_hRecording[i] != INVALID_HANDLE && g_fCurrentRunTime[i] > 6720.0)
+
+		if(g_hRecording[i] != INVALID_HANDLE && g_fCurrentRunTime[i] > 3600.0)
 		{
 			StopRecording(i);
 			g_hRecording[i] = INVALID_HANDLE;
@@ -330,6 +365,7 @@ public Action:KZTimer2(Handle:timer)
 			//spec hud
 			SpecListMenuAlive(i);
 			
+				
 			//challenge check
 			if (g_bChallenge_Request[i])
 			{
@@ -341,10 +377,23 @@ public Action:KZTimer2(Handle:timer)
 					g_bChallenge_Request[i] = false;
 				}
 			}
-			
-			//Last Cords & Angles
-			GetClientAbsOrigin(i,g_fPlayerCordsLastPosition[i]);
-			GetClientEyeAngles(i,g_fPlayerAnglesLastPosition[i]);
+	
+			//Last Time, Cords & Angles		
+			if (GetEntityFlags(i)&FL_ONGROUND)
+			{
+				if (g_bTimeractivated[i])
+				{
+					if (g_bPause[i])
+					{
+						new Float: flPt = GetEngineTime() - g_fStartPauseTime[i];
+						g_fPlayerLastTime[i] = GetEngineTime() - g_fStartTime[i] - flPt;	
+					}
+					else
+						g_fPlayerLastTime[i] = GetEngineTime() - g_fStartTime[i] - g_fPauseTime[i];
+				}
+				GetClientAbsOrigin(i,g_fPlayerCordsLastPosition[i]);
+				GetClientEyeAngles(i,g_fPlayerAnglesLastPosition[i]);
+			}
 		}
 		else
 			SpecListMenuDead(i);
@@ -371,10 +420,18 @@ public Action:KZTimer2(Handle:timer)
 	}
 	return Plugin_Continue;
 }
+
 		
-public Action:CreateMapButtons(Handle:timer)
+public Action:OnMapStartTimer(Handle:timer)
 {
+	if (FileExists("cfg/sourcemod/kztimer/main.cfg"))
+		ServerCommand("exec sourcemod/kztimer/main.cfg");
+	else
+		SetFailState("<KZTIMER> cfg/sourcemod/kztimer/main.cfg not found.");
 	db_selectMapButtons();
+	LoadReplays();
+	LoadInfoBot();
+	
 }
 
 public Action:KickPlayer(Handle:Timer, any:client)
@@ -417,17 +474,6 @@ public Action:Timer_Countdown(Handle:timer, any:client)
 	return Plugin_Continue;
 }
 
-public Action:ResetUndo(Handle:timer, any:client)
-{
-	if (IsValidClient(client) && !g_bUndo[client])
-	{
-		decl Float: diff;
-		diff = GetEngineTime() - g_fLastUndo[client];
-		if (diff >= 0.5)
-			g_bUndoTimer[client] = false;
-	}
-}
-
 public Action:TpReplayTimer(Handle:timer, any:client)
 {
 	if (IsValidClient(client) && !IsFakeClient(client))
@@ -462,8 +508,8 @@ public Action:CheckChallenge(Handle:timer, any:client)
 						GetClientName(client,szName,32);
 						g_bChallenge[client]=false;
 						g_bChallenge[i]=false;
-						SetEntityRenderColor(client, 255,255,255,255);
-						SetEntityRenderColor(i, 255,255,255,255);
+						SetEntityRenderColor(client, 255,255,255,g_TransPlayerModels);
+						SetEntityRenderColor(i, 255,255,255,g_TransPlayerModels);
 						PrintToChat(client, "%t", "ChallengeAborted",RED,WHITE,GREEN,szNameTarget,WHITE);
 						PrintToChat(i, "%t", "ChallengeAborted",RED,WHITE,GREEN,szName,WHITE);
 						SetEntityMoveType(client, MOVETYPE_WALK);
@@ -474,7 +520,7 @@ public Action:CheckChallenge(Handle:timer, any:client)
 		}
 		if (!oppenent)
 		{				
-			SetEntityRenderColor(client, 255,255,255,255);
+			SetEntityRenderColor(client, 255,255,255,g_TransPlayerModels);
 			g_bChallenge[client]=false;
 			
 			//db challenge entry
@@ -574,26 +620,12 @@ public Action:StartMsgTimer(Handle:timer, any:client)
 {
 	if (IsValidClient(client) && !IsFakeClient(client))
 	{
-		
-		if (!g_bLanguageSelected[client])
-			PrintToChat(client, "%t", "LanguageSwitch", MOSSGREEN,WHITE,GRAY,WHITE);
-		if (g_bAntiCheat)
-			PrintToChat(client, "%t", "AntiCheatEnabled", MOSSGREEN,WHITE,LIMEGREEN);
-		if (g_bEnforcer)
-			PrintToChat(client, "%t", "SettingsEnforcerEnabled", MOSSGREEN,WHITE,LIMEGREEN);
-		else
+		if (!g_bEnforcer)
 			PrintToChat(client, "%t", "SettingsEnforcerDisabled", MOSSGREEN,WHITE,GRAY);	
 			
 		PrintMapRecords(client);	
 	}
 }
-
-public Action:DoCheckPointTimer(Handle:timer, any:client)
-{
-	if (IsValidClient(client))
-		DoCheckpoint(client);
-}
-
 
 public Action:CenterMsgTimer(Handle:timer, any:client)
 {

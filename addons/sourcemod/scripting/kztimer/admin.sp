@@ -210,7 +210,7 @@ public KzAdminMenu(client)
 		Format(szTmp, sizeof(szTmp), "[34.] Double-Duck technique  -  Enabled"); 	
 	else
 		Format(szTmp, sizeof(szTmp), "[34.] Double-Duck technique  -  Disabled"); 		
-	AddMenuItem(adminmenu, szTmp, szTmp);	
+	AddMenuItem(adminmenu, szTmp, szTmp);
 	SetMenuExitButton(adminmenu, true);
 	SetMenuOptionFlags(adminmenu, MENUFLAG_BUTTON_EXIT);	
 	if (g_AdminMenuLastPage[client] < 6)

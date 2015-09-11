@@ -1,3 +1,76 @@
+public OnWeaponSwitchPost(client, weapon) 
+{
+    if(IsValidEntity(weapon))
+    {
+        SetEntityRenderMode(weapon, RenderMode:RENDER_TRANSCOLOR);
+        SetEntityRenderColor(weapon, 255, 255, 255, g_TransPlayerModels);
+    } 
+}	
+
+//dhooks
+public MRESReturn:DHooks_OnTeleport(client, Handle:hParams)
+{
+	if (!IsValidClient(client))
+		return MRES_Ignored;
+	
+	// valid teleport?
+	if (!IsFakeClient(client) && !g_bOnBhopPlattform[client])
+		CreateTimer(0.1, CheckTeleport, client,TIMER_FLAG_NO_MAPCHANGE);
+		
+	// This one is currently mimicing something.
+	if(g_hBotMimicsRecord[client] != INVALID_HANDLE)
+	{
+		// We didn't allow that teleporting. STOP THAT.
+		if(!g_bValidTeleportCall[client])
+			return MRES_Supercede;
+		g_bValidTeleportCall[client] = false;
+		return MRES_Ignored;
+	}
+	
+	// Don't care if he's not recording.
+	if(g_hRecording[client] == INVALID_HANDLE)
+		return MRES_Ignored;
+	
+	new Float:origin[3], Float:angles[3], Float:velocity[3];
+	new bool:bOriginNull = DHookIsNullParam(hParams, 1);
+	new bool:bAnglesNull = DHookIsNullParam(hParams, 2);
+	new bool:bVelocityNull = DHookIsNullParam(hParams, 3);
+	
+	if(!bOriginNull)
+		DHookGetParamVector(hParams, 1, origin);
+	
+	if(!bAnglesNull)
+	{
+		for(new i=0;i<3;i++)
+			angles[i] = DHookGetParamObjectPtrVar(hParams, 2, i*4, ObjectValueType_Float);
+	}
+	
+	if(!bVelocityNull)
+		DHookGetParamVector(hParams, 3, velocity);
+	
+	if(bOriginNull && bAnglesNull && bVelocityNull)
+	{
+		return MRES_Ignored;
+	}
+	
+	new iAT[AT_SIZE];
+	Array_Copy(origin, iAT[_:atOrigin], 3);
+	Array_Copy(angles, iAT[_:atAngles], 3);
+	Array_Copy(velocity, iAT[_:atVelocity], 3);
+	
+	// Remember, 
+	if(!bOriginNull)
+		iAT[_:atFlags] |= ADDITIONAL_FIELD_TELEPORTED_ORIGIN;
+	if(!bAnglesNull)
+		iAT[_:atFlags] |= ADDITIONAL_FIELD_TELEPORTED_ANGLES;
+	if(!bVelocityNull)
+		iAT[_:atFlags] |= ADDITIONAL_FIELD_TELEPORTED_VELOCITY;
+	
+	PushArrayArray(g_hRecordingAdditionalTeleport[client], iAT, AT_SIZE);
+	
+	return MRES_Ignored;
+}
+
 //trigger_teleport/trigger_multiple hook
 public Teleport_OnStartTouch(const String:output[], bhop_block, client, Float:delay)
 {
@@ -18,8 +91,7 @@ public Teleport_OnStartTouch(const String:output[], bhop_block, client, Float:de
 		g_fLastPositionOnGround[client] = g_fLastPosition[client];
 		g_bLastInvalidGround[client] = g_js_bInvalidGround[client];	
 	}	
-	g_bValidTeleport[client]=true;
-	CreateTimer(0.2, RemoveValidation, client,TIMER_FLAG_NO_MAPCHANGE);
+	g_fTeleportValidationTime[client] = GetEngineTime() + 1.0;
 }  
 
 //https://forums.alliedmods.net/showpost.php?p=1807997&postcount=14
@@ -65,7 +137,7 @@ public Action:Event_OnPlayerSpawn(Handle:event, const String:name[], bool:dontBr
 
 PlayerSpawn(client)
 {
-	if (!IsValidClient(client))
+	if (!IsValidClient(client) || (GetClientTeam(client) == 1))
 		return;
 	g_fStartCommandUsed_LastTime[client] = GetEngineTime();
 	g_js_bPlayerJumped[client] = false;
@@ -73,26 +145,23 @@ PlayerSpawn(client)
 	g_bPause[client] = false;
 	g_bFirstButtonTouch[client]=true;
 	SetEntityMoveType(client, MOVETYPE_WALK);
-	SetEntityRenderMode(client, RENDER_NORMAL);
 	SetEntPropEnt(client, Prop_Send, "m_bSpotted", 0);
+	SetEntityRenderMode(client, RENDER_TRANSCOLOR);
+	SetEntityRenderColor(client, _,_,_, g_TransPlayerModels);  	
 	
 	//strip weapons
-	if ((GetClientTeam(client) > 1) && IsValidClient(client))
+	StripAllWeapons(client);
+	new weapon = GetPlayerWeaponSlot(client, 2);
+	if (IsFakeClient(client))
 	{			
-		StripAllWeapons(client);
-		new weapon = GetPlayerWeaponSlot(client, 2);
-		if (IsFakeClient(client))
-		{
-			
-			if (weapon != -1)
-				SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);
-			weapon = GivePlayerItem(client, "weapon_usp_silencer");
-			EquipPlayerWeapon(client, weapon);	
-		}
-		else
-			CreateTimer(0.1, GiveUsp, client,TIMER_FLAG_NO_MAPCHANGE);
-	}	
-
+		if (weapon != -1)
+			SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);
+		weapon = GivePlayerItem(client, "weapon_usp_silencer");
+		EquipPlayerWeapon(client, weapon);	
+	}
+	else
+		CreateTimer(0.1, GiveUsp, client,TIMER_FLAG_NO_MAPCHANGE);
+	
 	//godmode
 	if (g_bgodmode || IsFakeClient(client))
 		SetEntProp(client, Prop_Data, "m_takedamage", 0, 1);
@@ -105,61 +174,42 @@ PlayerSpawn(client)
 	//botmimic2		
 	if(g_hBotMimicsRecord[client] != INVALID_HANDLE && IsFakeClient(client))
 	{
-		g_BotMimicTick[client] = 0;
-		g_CurrentAdditionalTeleportIndex[client] = 0;
-	}	
-	
-	if (IsFakeClient(client))	
-	{
 		if (client==g_ProBot)
 			CS_SetClientClanTag(client, "PRO REPLAY"); 		
 		else
 		if (client==g_TpBot)
 			CS_SetClientClanTag(client, "TP REPLAY"); 	
-		else
-		if (client==g_InfoBot)
-			CS_SetClientClanTag(client, ""); 	
-		else
-			CS_SetClientClanTag(client, "LOCALHOST"); 	
+		g_BotMimicTick[client] = 0;
+		g_CurrentAdditionalTeleportIndex[client] = 0;
+	}	
+	if (IsFakeClient(client))
 		return;
-	}
-	
-	//fps Check
-	QueryClientConVar(client, "fps_max", ConVarQueryFinished:FPSCheck, client);		
-	
 	
 	//change player skin
-	if (g_bPlayerSkinChange && (GetClientTeam(client) > 1))
+	if (g_bPlayerSkinChange)
 	{
-		SetEntPropString(client, Prop_Send, "m_szArmsModel", g_sArmModel);
+		SetEntPropString(client, Prop_Send, "m_szArmsModel", g_sArmModel); 
 		SetEntityModel(client,  g_sPlayerModel);
 	}		
 
 	//1st spawn & t/ct
-	if (g_bFirstSpawn[client] && (GetClientTeam(client) > 1))		
+	if (g_bFirstSpawn[client])		
 	{
-		StartRecording(client);
 		CreateTimer(1.5, CenterMsgTimer, client,TIMER_FLAG_NO_MAPCHANGE);		
 		g_bFirstSpawn[client] = false;
 	}
 	
-	//get start pos for challenge
-	GetClientAbsOrigin(client, g_fSpawnPosition[client]);
-	
 	//restore position (before spec or last session) && Climbers Menu
-	if ((GetClientTeam(client) > 1))
-	{
-		if (g_bRestorePosition[client])
+	if (g_bRestorePosition[client])
 		{		
 			g_bPositionRestored[client] = true;
-			DoValidTeleport(client, g_fPlayerCordsRestore[client],g_fPlayerAnglesRestore[client],true);
-			g_bRestorePosition[client]  = false;
-			CreateTimer(0.15, DoCheckPointTimer, client,TIMER_FLAG_NO_MAPCHANGE);			
+			DoValidTeleport(client, g_fPlayerCordsRestore[client],g_fPlayerAnglesRestore[client],NULL_VECTOR);
+			g_bRestorePosition[client]  = false;	
 		}
 		else
 			if (g_bRespawnPosition[client])
 			{
-				DoValidTeleport(client, g_fPlayerCordsRestore[client],g_fPlayerAnglesRestore[client],true);
+				DoValidTeleport(client, g_fPlayerCordsRestore[client],g_fPlayerAnglesRestore[client],NULL_VECTOR);
 				g_bRespawnPosition[client] = false;
 			}		
 			else
@@ -173,33 +223,24 @@ PlayerSpawn(client)
 					g_fStartTime[client] = -1.0;
 					g_fCurrentRunTime[client] = -1.0;	
 				}			
-		CreateTimer(0.0, ClimbersMenuTimer, client,TIMER_FLAG_NO_MAPCHANGE);
-	}
 
 	
-	//hide radar
-	CreateTimer(0.0, HideRadar, client,TIMER_FLAG_NO_MAPCHANGE);
-	
-	//set clantag
-	CreateTimer(1.5, SetClanTag, client,TIMER_FLAG_NO_MAPCHANGE);	
-			
-	//set speclist
-	Format(g_szPlayerPanelText[client], 512, "");		
-	
-	if (g_bClimbersMenuwasOpen[client] && (GetClientTeam(client) > 1))
+	if (g_bClimbersMenuwasOpen[client])
 	{
 		g_bClimbersMenuwasOpen[client] = false;
 		ClimbersMenu(client);
 	}
-
 	if (!g_bViewModel[client])
 		Client_SetDrawViewModel(client,false);
-		
-		
-	//get speed & origin
+	Format(g_szPlayerPanelText[client], 512, "");	
+	CreateTimer(0.0, ClimbersMenuTimer, client,TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(0.0, HideRadar, client,TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(1.5, SetClanTag, client,TIMER_FLAG_NO_MAPCHANGE);	
+	QueryClientConVar(client, "fps_max", ConVarQueryFinished:FPSCheck, client);	
 	g_fSpawnTime[client] = GetEngineTime();
 	g_fLastSpeed[client] = GetSpeed(client);
-	GetClientAbsOrigin(client, g_fLastPosition[client]);	
+	GetClientAbsOrigin(client, g_fSpawnPosition[client]);
+	g_fLastPosition[client] = g_fSpawnPosition[client];
 }
 
 
@@ -387,37 +428,6 @@ public Action:Say_Hook(client, const String:command[], argc)
 	return Plugin_Continue;
 }
 
-public Action:Event_OnPlayerTeamRestriction(Handle:event, const String:name[], bool:dontBroadcast)
-{
-	if (g_Team_Restriction > 0) 
-	{
-		new NewTeam = GetEventInt(event, "team");
-		new OldTeam = GetEventInt(event, "oldteam");
-		new clientID = GetClientOfUserId(GetEventInt(event, "userid"));
-		decl BadTeam;
-		decl GoodTeam;
-		if (g_Team_Restriction == 1)
-		{
-			GoodTeam = 3;
-			BadTeam = 2;
-		}
-		else	
-		{
-			GoodTeam = 2;
-			BadTeam = 3;
-		}
-		if ((OldTeam == CS_TEAM_NONE || OldTeam == CS_TEAM_SPECTATOR) && NewTeam == BadTeam)
-		{
-			CreateTimer(0.0, Timer_SwapFirstJoin, clientID);
-			return Plugin_Handled;
-		}
-		else if (OldTeam == GoodTeam && NewTeam == BadTeam)
-		{
-			return Plugin_Handled;
-		}
-	}
-	return Plugin_Continue;
-}
 
 public Action:Timer_SwapFirstJoin(Handle:timer, any:client)
 {
@@ -439,7 +449,9 @@ public Action:Event_OnPlayerTeam(Handle:event, const String:name[], bool:dontBro
 	new client = GetClientOfUserId(GetEventInt(event, "userid"));
 	if (!IsValidClient(client) || IsFakeClient(client))
 		return Plugin_Continue;
+	SetClientLangByID(client,g_ClientLang[client]);
 	new team = GetEventInt(event, "team");
+	new Handle:mp_teammates_are_enemies = FindConVar("mp_teammates_are_enemies");
 	if(team == 1)
 	{
 		g_bMenuOpen[client] = false;
@@ -458,8 +470,13 @@ public Action:Event_OnPlayerTeam(Handle:event, const String:name[], bool:dontBro
 				g_fStartPauseTime[client] = g_fStartPauseTime[client] - g_fPauseTime[client];	
 		}
 		g_bSpectate[client] = true;
-		g_bPause[client]=false;
+		g_bPause[client]=false;	
+		SendConVarValue(client, mp_teammates_are_enemies, "0");
 	}
+	else
+		SendConVarValue(client, mp_teammates_are_enemies, "1");
+	if (mp_teammates_are_enemies != INVALID_HANDLE)
+		CloseHandle(mp_teammates_are_enemies);	
 	return Plugin_Continue;
 }
 
@@ -489,23 +506,20 @@ public Action:Hook_SetTransmit(entity, client)
 { 
     if (client != entity && (0 < entity <= MaxClients) && IsValidClient(client)) 
 	{
-			if (g_bPause[client] || g_bNoClip[client])
+		if (g_bChallenge[client] && !g_bHide[client])
+		{
+			if (!StrEqual(g_szSteamID[entity], g_szChallenge_OpponentID[client], false))
 				return Plugin_Handled;
+		}
+		else
+			if (g_bHide[client] && entity != g_SpecTarget[client])
+				return Plugin_Handled; 
 			else
-				if (g_bChallenge[client] && !g_bHide[client])
-				{
-					if (!StrEqual(g_szSteamID[entity], g_szChallenge_OpponentID[client], false))
-						return Plugin_Handled;
-				}
-				else
-					if (g_bHide[client] && entity != g_SpecTarget[client])
-						return Plugin_Handled; 
-					else
-						if (entity == g_InfoBot && entity != g_SpecTarget[client])
-							return Plugin_Handled;
+				if (entity == g_InfoBot && entity != g_SpecTarget[client])
+					return Plugin_Handled;
 	}	
     return Plugin_Continue; 
-}  
+}   
 
 public Action:Event_OnPlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
 {
@@ -532,13 +546,14 @@ public Action:Event_OnPlayerDeath(Handle:event, const String:name[], bool:dontBr
 					
 public Action:CS_OnTerminateRound(&Float:delay, &CSRoundEndReason:reason)
 {
+	if (reason == CSRoundEnd_GameStart)
+		return Plugin_Handled;
 	new timeleft;
 	GetMapTimeLeft(timeleft);
 	if (timeleft>= -1 && !g_bAllowRoundEndCvar)
 		return Plugin_Handled;
 	return Plugin_Continue;
 } 
-
 public Action:Event_OnRoundEnd(Handle:event, const String:name[], bool:dontBroadcast)
 {
 	g_bRoundEnd=true;
@@ -681,6 +696,38 @@ public FPSCheck(QueryCookie:cookie, client, ConVarQueryResult:result, const Stri
 	}
 }
 
+public Action:Event_OnPlayerTeamRestriction(Handle:event, const String:name[], bool:dontBroadcast)
+{
+	if (g_Team_Restriction > 0) 
+	{
+		new NewTeam = GetEventInt(event, "team");
+		new OldTeam = GetEventInt(event, "oldteam");
+		new clientID = GetClientOfUserId(GetEventInt(event, "userid"));
+		decl BadTeam;
+		decl GoodTeam;
+		if (g_Team_Restriction == 1)
+		{
+			GoodTeam = 3;
+			BadTeam = 2;
+		}
+		else	
+		{
+			GoodTeam = 2;
+			BadTeam = 3;
+		}
+		if ((OldTeam == CS_TEAM_NONE || OldTeam == CS_TEAM_SPECTATOR) && NewTeam == BadTeam)
+		{
+			CreateTimer(0.0, Timer_SwapFirstJoin, clientID);
+			return Plugin_Handled;
+		}
+		else if (OldTeam == GoodTeam && NewTeam == BadTeam)
+		{
+			return Plugin_Handled;
+		}
+	}
+	return Plugin_Continue;
+}
+
 //thx to TnTSCS (player slap stops timer)
 //https://forums.alliedmods.net/showthread.php?t=233966
 public Action:OnLogAction(Handle:source, Identity:ident, client, target, const String:message[])
@@ -777,16 +824,12 @@ public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:ang
 		MenuTitleRefreshing(client);
 
 		//undo check
-		if(g_bUndo[client] || g_bUndoTimer[client])
+		new Float:fLastUndo = GetEngineTime() - g_fLastUndo[client];
+		if (fLastUndo < 1.5 && g_bOnBhopPlattform[client])
 		{
 			buttons &= ~IN_JUMP;
-			buttons &= ~IN_DUCK;
-			if ((g_bOnGround[client]) && g_bUndo[client])
-			{
-				CreateTimer(0.5, ResetUndo, client, TIMER_FLAG_NO_MAPCHANGE);
-				g_bUndo[client] = false;
-			}
-		}
+			buttons &= ~IN_DUCK;		
+		}	
 		
 		//other
 		SpeedCap(client);		
@@ -806,7 +849,6 @@ public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:ang
 		CalcJumpSync(client, speed, ang[1], buttons);
 		CalcLastJumpHeight(client, buttons, origin);		
 		LjBlockCheck(client,origin);
-		HookCheck(client);
 		SetPlayerBeam(client, origin);
 	
 		//Bhop AntiCheat
@@ -867,14 +909,13 @@ public Action:Event_OnJump(Handle:Event2, const String:Name[], bool:Broadcast)
 	client = GetClientOfUserId(GetEventInt(Event2, "userid"));
 	g_JumpCheck2[client]++;
 	g_bBeam[client]=true;	
-	decl bool:touchwall;
-	touchwall = WallCheck(client);	
-	if (g_bJumpStats && !touchwall)
+	if (g_bJumpStats && !WallCheck(client))
 		Prethink(client, false);
 }
 			
 public Hook_PostThinkPost(entity)
 {
+	SetEntProp(entity, Prop_Send, "m_iAddonBits", 0);
 	SetEntProp(entity, Prop_Send, "m_bInBuyZone", 0);
 } 
 
@@ -882,6 +923,7 @@ public Teleport_OnEndTouch(const String:output[], caller, client, Float:delay)
 {
 	if (IsValidClient(client) && g_bOnBhopPlattform[client])
 	{
+		g_fTeleportValidationTime[client] = GetEngineTime() + 1.0;
 		g_bOnBhopPlattform[client] = false;
 		g_fLastTimeBhopBlock[client] = GetEngineTime();
 	}	
@@ -965,7 +1007,5 @@ public Action:Event_JoinTeamFailed(Handle:event, const String:name[], bool:dontB
 			return Plugin_Continue;
 		}
 	}
-	ChangeClientTeam(client, g_SelectedTeam[client]);
-
 	return Plugin_Handled;
 }

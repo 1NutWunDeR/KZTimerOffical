@@ -1,5 +1,49 @@
 ﻿"Phrases"
 {
+	"UndoLadder"
+	{
+		"#format"   "{1:c},{2:c},{3:c}"
+		"en"        "[{1}KZ{2}] {3}Undo TP not allowed because your last teleport origin is on a ladder"
+	}
+	"UndoMidAir"
+	{
+		"#format"   "{1:c},{2:c},{3:c}"
+		"en"        "[{1}KZ{2}] {3}Undo TP not allowed because your last teleport origin is in midair"
+	}
+	"mapinfo1"
+	{
+		"#format"   "{1:c},{2:c},{3:c},{4:c},{5:s},{6:c},{7:c},{8:s},{9:c},{10:c},{11:s},{12:c}"
+		"en"       "[{1}KZ{2}] {3}Current map: {4}{5}{6}, Difficulty: {7}{8}{9} (approved by {10}{11}{12})"
+	}
+	"mapinfo2"
+	{
+		"#format"   "{1:c},{2:c},{3:c},{4:c},{5:s},{6:c}"
+		"en"       "[{1}KZ{2}] {3}Current map: {4}{5}{6} (not approved)"
+	}
+	"options_lang_en"
+	{
+		"en"       "Language - English"
+	}
+	"options_lang_de"
+	{
+		"en"       "Language - German"
+	}
+	"options_lang_sv"
+	{
+		"en"       "Language - Swedish"
+	}
+	"options_lang_fr"
+	{
+		"en"       "Language - French"
+	}
+	"options_lang_ru"
+	{
+		"en"       "Language - Russian"
+	}
+	"options_lang_cn"
+	{
+		"en"       "Language - Chinese"
+	}
 	"stopsound"
 	{
 		"#format"   "{1:c},{2:c}"
@@ -22,6 +66,14 @@
 	{
 		"en"       "Adv center panel (lj takeoff info)  -  Disabled"
 	}
+	"options_rp_on"
+	{
+		"en"       "Replay route (requires replay bots)  -  Enabled"
+	}
+	"options_rp_off"
+	{
+		"en"       "Replay route (requires replay bots)  -  Disabled"
+	}
 	"options_adv_on"
 	{
 		"en"       "Adv checkpoint menu  -  Enabled"
@@ -40,11 +92,11 @@
 	}
 	"options_colorchat_off"
 	{
-		"en"       "Color chat (jumpstats)  -  Disabled (except yours)"
+		"en"       "Color chat (jumpstats)  -  None (except yours)"
 	}
 	"options_colorchat_on"
 	{
-		"en"       "Color chat (jumpstats)  -  Enabled"
+		"en"       "Color chat (jumpstats)  -  All"
 	}
 	"options_colorchat_only_red"
 	{
@@ -356,7 +408,7 @@
 	"AntiCheatEnabled"
 	{
 		"#format"   "{1:c},{2:c},{3:c}"
-		"en"       "[{1}KZ{2}] {3}AntiCheat enabled."
+		"en"       "[{1}KZ{2}] {3}Cheating (including hyperscrolling and macro scripts) will result in a permanent ban from all kztimer servers!"
 	}	
 	"NoCpsDuringChallenge"
 	{
@@ -510,7 +562,7 @@
 	"ChallengeL"
 	{
 		"#format"   "{1:c},{2:c},{3:c},{4:s},{5:c},{6:c},{7:i},{8:c}"
-		"en"        "[{1}KZ{2}] {3}{4}{5} has lost {6}{7} {8} points!"
+		"en"        "[{1}KZ{2}] {3}{4}{5} has lost {6}{7}points{8}"
 	}
 	"NoReplayFound"
 	{
@@ -997,6 +1049,16 @@
 	{
 		"#format"   "{1:c},{2:c}"
 		"en"        "[{1}KZ{2}] Colorchat disabled."
+	}
+	"Route1"
+	{
+		"#format"   "{1:c},{2:c}"
+		"en"        "[{1}KZ{2}] Replay route enabled."
+	}
+	"Route2"
+	{
+		"#format"   "{1:c},{2:c}"
+		"en"        "[{1}KZ{2}] Replay route disabled."
 	}
 	"Info1"
 	{

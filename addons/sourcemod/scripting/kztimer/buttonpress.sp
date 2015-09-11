@@ -36,7 +36,8 @@ public OnUsePost(entity, activator, caller, UseType:type, Float:value)
 	GetEntPropString(entity, Prop_Data, "m_iName", targetname, sizeof(targetname));
 	new Float: speed = GetSpeed(activator);
 	if(StrEqual(targetname,"climb_startbuttonx") && speed < 251.0)
-	{		
+	{	
+		g_global_SelfBuiltButtons=true;
 		g_bLegitButtons[activator] = false;
 		Call_StartForward(hStartPress);
 		Call_PushCell(activator);
@@ -44,6 +45,7 @@ public OnUsePost(entity, activator, caller, UseType:type, Float:value)
 	} 
 	else if(StrEqual(targetname,"climb_endbuttonx")) 
 	{
+		g_global_SelfBuiltButtons=true;
 		g_bLegitButtons[activator] = false;
 		Call_StartForward(hEndPress);
 		Call_PushCell(activator);
@@ -54,6 +56,8 @@ public OnUsePost(entity, activator, caller, UseType:type, Float:value)
 // - Climb Button OnStartPress -
 public CL_OnStartTimerPress(client)
 {	
+	ClearArray(g_hRouteArray[client]);
+	
 	if (!IsFakeClient(client))
 	{	
 		if (g_bNewReplay[client])
@@ -102,7 +106,6 @@ public CL_OnStartTimerPress(client)
 		g_bRespawnAtTimer[client] = true;
 		g_bPause[client] = false;
 		SetEntityMoveType(client, MOVETYPE_WALK);
-		SetEntityRenderMode(client, RENDER_NORMAL);
 		g_fStartTime[client] = GetEngineTime();	
 		g_bMenuOpen[client] = false;		
 		g_bTopMenuOpen[client] = false;	
@@ -321,7 +324,10 @@ public CL_OnEndTimerPress(client)
 		Format(g_szRecordPlayerPro, MAX_NAME_LENGTH, "%s", szName);
 		if (g_Sound_Type[client] != 1)
 			g_Sound_Type[client] = 2;
-			
+		
+		if (g_fFinalTime[client] < g_fRecordTime)		
+			SetupRouteArrays(client);
+		
 		//save replay	
 		if (g_bReplayBot && !g_bPositionRestored[client])
 		{
@@ -340,6 +346,10 @@ public CL_OnEndTimerPress(client)
 		Format(g_szRecordPlayer, MAX_NAME_LENGTH, "%s", szName);
 		if (g_Sound_Type[client] != 1)
 			g_Sound_Type[client] = 3;
+			
+		if (g_fFinalTime[client] < g_fRecordTimePro)		
+			SetupRouteArrays(client);
+			
 		//save replay	
 		if (g_bReplayBot && !g_bPositionRestored[client])
 		{
@@ -355,7 +365,7 @@ public CL_OnEndTimerPress(client)
 	//Challenge
 	if (g_bChallenge[client])
 	{
-		SetEntityRenderColor(client, 255,255,255,255);		
+		SetEntityRenderColor(client, 255,255,255,g_TransPlayerModels);		
 		for (new i = 1; i <= MaxClients; i++)
 		{
 			if (IsValidClient(i) && i != client && i != g_ProBot && i != g_TpBot)
@@ -364,7 +374,7 @@ public CL_OnEndTimerPress(client)
 				{	
 					g_bChallenge[client]=false;
 					g_bChallenge[i]=false;
-					SetEntityRenderColor(i, 255,255,255,255);
+					SetEntityRenderColor(i, 255,255,255,g_TransPlayerModels);
 					db_insertPlayerChallenge(client);
 					GetClientName(i, szNameOpponent, MAX_NAME_LENGTH);	
 					for (new k = 1; k <= MaxClients; k++)
