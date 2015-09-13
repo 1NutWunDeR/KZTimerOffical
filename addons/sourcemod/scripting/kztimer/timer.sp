@@ -8,14 +8,14 @@ public Action:CheckTeleport(Handle:timer, any:client)
 	if (!g_bRestorePosition[client] && !g_bRespawnPosition[client] && diff > 1.0 && diff2 > 2.0)
 	{
 		ResetJump(client);
-		if (g_bTimeractivated[client])
+		/*if (g_bTimeractivated[client])
 		{
 			decl Float:org[3];
 			GetClientAbsOrigin(client,org);
 			PrintToChat(client,"[%cKZ%c] Unverified client teleport detected. Your position: %f, %f, %f on %s",MOSSGREEN,WHITE,org[0],org[1],org[2],g_szMapName);
 			PrintToConsole(client,"[KZ] Unverified client teleport detected. Your position: %f, %f, %f on %s",org[0],org[1],org[2],g_szMapName);
 			Client_Stop(client,0);
-		}	
+		}*/
 	}
 }	
 	
