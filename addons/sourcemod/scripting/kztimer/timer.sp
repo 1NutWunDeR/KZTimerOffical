@@ -170,9 +170,6 @@ public Action:KZTimer1(Handle:timer)
 	if (g_bRoundEnd)
 		return Plugin_Continue;
 		
-	if (g_bAllowCheckpoints && (StrEqual("kzpro", g_szMapPrefix[0])))
-		ServerCommand("kz_checkpoints 0");
-		
 	decl client;
 	for (client = 1; client <= MaxClients; client++)
 	{		
