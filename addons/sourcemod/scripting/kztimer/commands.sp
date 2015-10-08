@@ -1786,9 +1786,9 @@ public DoCheckpoint(client)
 {
 	if (!g_bAllowCheckpoints || IsFakeClient(client) || !IsValidClient(client) || !IsPlayerAlive(client) || GetClientTeam(client) == 1 || g_bPause[client]) 
 		return;
-			
-	if (StrEqual("kzpro", g_szMapPrefix[0]) && g_bTimeractivated[client])	
-		return;			
+		
+	if (StrEqual("kzpro", g_szMapPrefix[0]) && g_bTimeractivated[client])
+		return;
 		
 	if (!g_bChallenge_Checkpoints[client] && g_bChallenge[client])
 	{
