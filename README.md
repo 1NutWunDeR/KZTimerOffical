@@ -31,6 +31,14 @@ else: mp_respawn_on_death_ct 0;mp_respawn_on_death_t 0
 Changelog
 =======
 <SPOILER>
+v1.76
+- enforced sv_ladder_scale_speed to 1.0
+- fixed a bug where players could get a pre-speed > 276 through weapon switching
+- optimized undo-tp mid-air detection
+- adjusted default jumpstats values for blue/green/red jumps (tickrate 64,102,128)
+- added checkpoint support on kzpro_ maps while the timer is not running (thx 2 AzaZPLL)
+- minor bug fixes
+
 v1.75
 - fixed several undo-tp exploits
 - added convar kz_player_transparency (default: 100): Modifies the transparency of players. 0 is invisible and 255 is visible.
