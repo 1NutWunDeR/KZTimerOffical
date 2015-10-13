@@ -480,51 +480,6 @@ public StringToUpper(String:input[])
 	}
 }
 
-public GetServerInfo()
-{
-	GetConVarString(FindConVar("hostname"),g_szServerName,sizeof(g_szServerName));
-	
-	new pieces[4];
-	decl String:code2[3];
-	decl String:NetIP[256];
-	new longip = GetConVarInt(FindConVar("hostip"));
-	new port = GetConVarInt( FindConVar( "hostport" ));
-	pieces[0] = (longip >> 24) & 0x000000FF;
-	pieces[1] = (longip >> 16) & 0x000000FF;
-	pieces[2] = (longip >> 8) & 0x000000FF;
-	pieces[3] = longip & 0x000000FF;
-	Format(NetIP, sizeof(NetIP), "%d.%d.%d.%d", pieces[0], pieces[1], pieces[2], pieces[3]);
-	
-	//kreedz europe 128 tick exception cccc debug
-	//Format(NetIP, sizeof(NetIP), "37.187.171.52");
-	
-	
-	GeoipCountry(NetIP, g_szServerCountry, 100);
-
-	if(!strcmp(g_szServerCountry, NULL_STRING))
-		Format( g_szServerCountry, 100, "Unknown", g_szServerCountry );
-	else				
-		if( StrContains( g_szServerCountry, "United", false ) != -1 || 
-			StrContains( g_szServerCountry, "Republic", false ) != -1 || 
-			StrContains( g_szServerCountry, "Federation", false ) != -1 || 
-			StrContains( g_szServerCountry, "Island", false ) != -1 || 
-			StrContains( g_szServerCountry, "Netherlands", false ) != -1 || 
-			StrContains( g_szServerCountry, "Isle", false ) != -1 || 
-			StrContains( g_szServerCountry, "Bahamas", false ) != -1 || 
-			StrContains( g_szServerCountry, "Maldives", false ) != -1 || 
-			StrContains( g_szServerCountry, "Philippines", false ) != -1 || 
-			StrContains( g_szServerCountry, "Vatican", false ) != -1 )
-		{
-			Format( g_szServerCountry, 100, "The %s", g_szServerCountry );
-		}	
-	if(GeoipCode2(NetIP, code2))
-		Format(g_szServerCountryCode, 16, "%s",code2);
-	else
-		Format(g_szServerCountryCode, 16, "??",code2);
-	Format(g_szServerIp, sizeof(g_szServerIp), "%s:%i",NetIP,port);
-	
-}
-
 public GetCountry(client)
 {
 	if(client != 0)
@@ -1914,7 +1869,6 @@ stock BooltoInt(bool:status)
 		return 0;
 }
 
-
 public PlayQuakeSound_Spec(client, String:buffer[255])
 {
 	new SpecMode;
@@ -1924,7 +1878,7 @@ public PlayQuakeSound_Spec(client, String:buffer[255])
 	
 	for(new x = 1; x <= MaxClients; x++) 
 	{
-		if (IsValidClient(x) && !IsPlayerAlive(x))
+		if (IsValidClient(x) && !IsPlayerAlive(x) && g_EnableQuakeSounds[client] >= 1)
 		{			
 			SpecMode = GetEntProp(x, Prop_Send, "m_iObserverMode");
 			if (SpecMode == 4 || SpecMode == 5)
@@ -1939,6 +1893,7 @@ public PlayQuakeSound_Spec(client, String:buffer[255])
 		}		
 	}
 }
+
 public SetPlayerBeam(client, Float:origin[3])
 {	
 	if(!g_bBeam[client] || g_bOnGround[client] || !g_js_bPlayerJumped[client])
@@ -2005,171 +1960,175 @@ public bool:WallCheck(client)
 	return false;
 }
 
+
 public Prestrafe(client, Float: ang, &buttons)
-{				
-	if (!IsValidClient(client) || !IsPlayerAlive(client) || !(g_bOnGround[client]))
+{		
+	if (!IsValidClient(client) || !IsPlayerAlive(client) || !(GetEntityFlags(client) & FL_ONGROUND))
 		return;
 
-	decl bool: turning_right;
-	turning_right = false;
-	decl bool: turning_left;
-	turning_left = false;
+	//decl.
+	new Float:flDefaultKnifeSpeed = 1.0;
+	new Float:flMaxKnifeSpeed = 1.107;	
+	new Float:flDefaultUspSpeed= 1.041667;
+	new Float:flMaxUspSpeed = 1.153;			
+	new bool: turning_right;
+	new bool: turning_left;	
+	decl MaxFrameCount;	
+	decl Float: IncSpeed, Float: DecSpeed;
+	new Float: speed = GetSpeed(client);
+	new bool: bForward;
 	
+	//get weapon
+	decl String:classname[64];
+	GetClientWeapon(client, classname, 64);
+
+	if (!g_bPreStrafe || (!(StrEqual(classname, "weapon_hkp2000") && !StrEqual(classname, "weapon_knife"))))
+	{				
+		if (StrEqual(classname, "weapon_hkp2000"))
+			SetEntPropFloat(client, Prop_Send, "m_flVelocityModifier", flDefaultUspSpeed);
+		else
+			SetEntPropFloat(client, Prop_Send, "m_flVelocityModifier", flDefaultKnifeSpeed);		
+	}
+
+	
+	// get turning direction
 	if( ang < g_fLastAngles[client][1])
 		turning_right = true;
 	else 
 		if( ang > g_fLastAngles[client][1])
 			turning_left = true;	
-
-			
-	decl String:classname[64];
-	GetClientWeapon(client, classname, 64);
-	if (!g_bPreStrafe)
-	{		
-
-		if(StrEqual(classname, "weapon_hkp2000"))
-			SetEntPropFloat(client, Prop_Send, "m_flVelocityModifier", 1.042);
-		else
-			SetEntPropFloat(client, Prop_Send, "m_flVelocityModifier", 1.0);
-	}
-	else
-	{		
-		if (StrContains(classname,"knife",true) == -1 && StrContains(classname,"usp",true) == -1 && StrContains(classname,"hkp2000",true) == -1)
-			SetEntPropFloat(client, Prop_Send, "m_flVelocityModifier", 1.0);
 	
-		//var
-		decl MaxFrameCount;	
-		decl Float: IncSpeed, Float: DecSpeed;
-		decl Float:  speed;
-		speed = GetSpeed(client);
-		decl bool: bForward;
-		
-		//direction
-		if (GetClientMovingDirection(client,false) > 0.0)
-			bForward=true;
-		else
-			bForward=false;
+	//get moving direction
+	if (GetClientMovingDirection(client,false) > 0.0)
+		bForward=true;
 			
-		
-		//no mouse movement?
-		if (!turning_right && !turning_left)
-		{	
-			decl Float: diff;
-			diff = GetEngineTime() - g_fVelocityModifierLastChange[client]
-			if (diff > 0.2)
-			{
-				if(StrEqual(classname, "weapon_hkp2000"))
-					g_PrestrafeVelocity[client] = 1.042;
-				else
-					g_PrestrafeVelocity[client] = 1.0;
-				g_fVelocityModifierLastChange[client] = GetEngineTime();
-				SetEntPropFloat(client, Prop_Send, "m_flVelocityModifier", g_PrestrafeVelocity[client]);
-			}
-			return;
-		}
 
-		if ((g_bOnGround[client]) && ((buttons & IN_MOVERIGHT) || (buttons & IN_MOVELEFT)) && speed > 249.0)
-		{       				
-			//tickrate depending values
-			if (g_Server_Tickrate == 64)
-			{
-				MaxFrameCount = 47;
-				IncSpeed = 0.0016;
-				if ((g_PrestrafeVelocity[client] > 1.08 && StrEqual(classname, "weapon_hkp2000")) || (g_PrestrafeVelocity[client] > 1.04 && !StrEqual(classname, "weapon_hkp2000")))
-					IncSpeed = 0.00125;
-				DecSpeed = 0.005;
-			}
+	new Float: flVelMd =	GetEntPropFloat(client, Prop_Send, "m_flVelocityModifier");
+	if (StrEqual(classname, "weapon_knife") && flVelMd > flMaxKnifeSpeed+0.007)
+		SetEntPropFloat(client, Prop_Send, "m_flVelocityModifier", flMaxKnifeSpeed-0.001);		
 			
-			if (g_Server_Tickrate == 102)
-			{
-				MaxFrameCount = 60;	
-				IncSpeed = 0.0011;
-				if ((g_PrestrafeVelocity[client] > 1.08 && StrEqual(classname, "weapon_hkp2000")) || (g_PrestrafeVelocity[client] > 1.04 && !StrEqual(classname, "weapon_hkp2000")))
-					IncSpeed = 0.001;			
-				DecSpeed = 0.005;
-				
-			}
+	//no mouse movement?
+	if (!turning_right && !turning_left)
+	{
+		decl Float: diff;
+		diff = GetEngineTime() - g_fVelocityModifierLastChange[client]
+		if (diff > 0.2)
+		{
+			if(StrEqual(classname, "weapon_hkp2000"))
+				g_PrestrafeVelocity[client] = flDefaultUspSpeed;
+			else
+				g_PrestrafeVelocity[client] = flDefaultKnifeSpeed;
+			g_fVelocityModifierLastChange[client] = GetEngineTime();
+			SetEntPropFloat(client, Prop_Send, "m_flVelocityModifier", g_PrestrafeVelocity[client]);
+		}
+		return;
+	}
+
+	if (((buttons & IN_MOVERIGHT) || (buttons & IN_MOVELEFT)) && speed > 249.0)
+	{  
+		//tickrate depending values
+		if (g_Server_Tickrate == 64)
+		{
+			MaxFrameCount = 45;
+			IncSpeed = 0.0015;
+			if ((g_PrestrafeVelocity[client] > 1.08 && StrEqual(classname, "weapon_hkp2000")) || (g_PrestrafeVelocity[client] > 1.04 && !StrEqual(classname, "weapon_hkp2000")))
+				IncSpeed = 0.001;
+			DecSpeed = 0.0045;
+		}
+		
+		if (g_Server_Tickrate == 102)
+		{
+			MaxFrameCount = 60;	
+			IncSpeed = 0.0011;
+			if ((g_PrestrafeVelocity[client] > 1.08 && StrEqual(classname, "weapon_hkp2000")) || (g_PrestrafeVelocity[client] > 1.04 && !StrEqual(classname, "weapon_hkp2000")))
+				IncSpeed = 0.001;			
+			DecSpeed = 0.0045;
 			
-			if (g_Server_Tickrate == 128)
-			{
-				MaxFrameCount = 75;	
-				IncSpeed = 0.0009;
-				if ((g_PrestrafeVelocity[client] > 1.08 && StrEqual(classname, "weapon_hkp2000")) || (g_PrestrafeVelocity[client] > 1.04 && !StrEqual(classname, "weapon_hkp2000")))
-					IncSpeed = 0.001;			
-				DecSpeed = 0.005;
-			}
-			if (((buttons & IN_MOVERIGHT && turning_right || turning_left && !bForward)) || ((buttons & IN_MOVELEFT && turning_left || turning_right && !bForward)))
-			{		
-				g_PrestrafeFrameCounter[client]++;						
-				//Add speed if Prestrafe frames are less than max frame count	
-				
-				if (g_PrestrafeFrameCounter[client] < MaxFrameCount)
-				{	
-					//increase speed
-					g_PrestrafeVelocity[client]+= IncSpeed;
-					
-					//usp
-					if(StrEqual(classname, "weapon_hkp2000"))
-					{		
-						if (g_PrestrafeVelocity[client] > 1.15)
-							g_PrestrafeVelocity[client]-=0.007;
-					}
-					else
-						if (g_PrestrafeVelocity[client] > 1.104)
-							g_PrestrafeVelocity[client]-=0.007;
-					
-					g_PrestrafeVelocity[client]+= IncSpeed;
+		}
+		
+		if (g_Server_Tickrate == 128)
+		{
+			MaxFrameCount = 75;	
+			IncSpeed = 0.0009;
+			if ((g_PrestrafeVelocity[client] > 1.08 && StrEqual(classname, "weapon_hkp2000")) || (g_PrestrafeVelocity[client] > 1.04 && !StrEqual(classname, "weapon_hkp2000")))
+				IncSpeed = 0.001;			
+			DecSpeed = 0.0045;
+		}
+		if (((buttons & IN_MOVERIGHT && turning_right || turning_left && !bForward)) || ((buttons & IN_MOVELEFT && turning_left || turning_right && !bForward)))
+		{		
+			g_PrestrafeFrameCounter[client]++;						
+			//Add speed if Prestrafe frames are less than max frame count	
+			
+			if (g_PrestrafeFrameCounter[client] < MaxFrameCount)
+			{	
+				//increase speed
+				g_PrestrafeVelocity[client]+= IncSpeed;
+				//usp
+				if(StrEqual(classname, "weapon_hkp2000"))
+				{		
+					if (g_PrestrafeVelocity[client] > flMaxUspSpeed)
+						g_PrestrafeVelocity[client]-=0.007;					
 				}
 				else
 				{
-					//decrease speed
-					g_PrestrafeVelocity[client]-= DecSpeed;
-					
-					//usp reset 250.0 speed
-					if(StrEqual(classname, "weapon_hkp2000"))
+					if (g_PrestrafeVelocity[client] > flMaxKnifeSpeed)
 					{
-						if (g_PrestrafeVelocity[client]< 1.042)
-						{
-							g_PrestrafeFrameCounter[client] = 0;
-							g_PrestrafeVelocity[client]= 1.042;
-						}
+						if (g_PrestrafeVelocity[client] > flMaxKnifeSpeed+0.007)
+							g_PrestrafeVelocity[client] = flMaxKnifeSpeed-0.001;
+						else
+							g_PrestrafeVelocity[client]-=0.007;
 					}
-					else	
-						//knife reset 250.0 speed
-						if (g_PrestrafeVelocity[client]< 1.0)
-						{	
-							g_PrestrafeFrameCounter[client] = 0;
-							g_PrestrafeVelocity[client]= 1.0;	
-						}
-					g_PrestrafeFrameCounter[client] = g_PrestrafeFrameCounter[client] - 2;
 				}
+				g_PrestrafeVelocity[client]+= IncSpeed;
 			}
 			else
 			{
-				//no prestrafe
-				g_PrestrafeVelocity[client] -= 0.04;
+				//decrease speed
+				g_PrestrafeVelocity[client]-= DecSpeed;
+				g_PrestrafeFrameCounter[client] = g_PrestrafeFrameCounter[client] - 2;
+				
+				//usp reset 250.0 speed
 				if(StrEqual(classname, "weapon_hkp2000"))
 				{
-					if (g_PrestrafeVelocity[client]< 1.042)
-						g_PrestrafeVelocity[client]= 1.042;
+					if (g_PrestrafeVelocity[client]< flDefaultUspSpeed)
+					{
+						g_PrestrafeFrameCounter[client] = 0;
+						g_PrestrafeVelocity[client]= flDefaultUspSpeed;
+					}
 				}
-				else						
-				if (g_PrestrafeVelocity[client]< 1.0)
-					g_PrestrafeVelocity[client]= 1.0;		
+				else	
+					//knife reset 250.0 speed
+					if (g_PrestrafeVelocity[client]< flDefaultKnifeSpeed)
+					{	
+						g_PrestrafeFrameCounter[client] = 0;
+						g_PrestrafeVelocity[client]= flDefaultKnifeSpeed;	
+					}			
 			}
 		}
 		else
 		{
+			g_PrestrafeVelocity[client] -= 0.04;
 			if(StrEqual(classname, "weapon_hkp2000"))
-				g_PrestrafeVelocity[client] = 1.042;
-			else
-				g_PrestrafeVelocity[client] = 1.0;	
-			g_PrestrafeFrameCounter[client] = 0;
+			{
+				if (g_PrestrafeVelocity[client]< flDefaultUspSpeed)
+					g_PrestrafeVelocity[client]= flDefaultUspSpeed;
+			}
+			else						
+			if (g_PrestrafeVelocity[client]< flDefaultKnifeSpeed)
+				g_PrestrafeVelocity[client]= flDefaultKnifeSpeed;		
 		}
 		
 		//Set VelocityModifier	
 		SetEntPropFloat(client, Prop_Send, "m_flVelocityModifier", g_PrestrafeVelocity[client]);
-		g_fVelocityModifierLastChange[client] = GetEngineTime();
+		g_fVelocityModifierLastChange[client] = GetEngineTime();		
+	}
+	else
+	{
+		if(StrEqual(classname, "weapon_hkp2000"))
+			SetEntPropFloat(client, Prop_Send, "m_flVelocityModifier", flDefaultUspSpeed);
+		else
+			SetEntPropFloat(client, Prop_Send, "m_flVelocityModifier", flDefaultKnifeSpeed);
+		g_PrestrafeFrameCounter[client] = 0;
 	}
 }
 
@@ -3120,7 +3079,7 @@ public Teleport(client, bhop,bool:mt)
 				GetEntPropVector(dest, Prop_Send, "m_vecOrigin", pos);
 								
 				//synergy fix
-				if ((StrContains(g_szMapName,"kz_synergy_ez") != -1 || StrContains(g_szMapName,"kz_synergy_x") != -1) && StrEqual(targetName,"1-1"))
+				if ((StrContains(g_szMapName,"bkz_synergy_ez") != -1 || StrContains(g_szMapName,"bkz_synergy_x") != -1) && StrEqual(targetName,"1-1"))
 				{	
 				}
 				else
@@ -4285,7 +4244,7 @@ public RegServerConVars()
 	GetConVarString(g_hArmModel,g_sArmModel,256);
 	HookConVarChange(g_hArmModel, OnSettingChanged);
 	
-	g_hWelcomeMsg   = CreateConVar("kz_welcome_msg", " {yellow}>>{default} {grey}Welcome! This server is using {lime}KZTimer v1.75","Welcome message (supported color tags: {default}, {darkred}, {green}, {lightgreen}, {blue} {olive}, {lime}, {red}, {purple}, {grey}, {yellow}, {lightblue}, {steelblue}, {darkblue}, {pink}, {lightred})", FCVAR_PLUGIN|FCVAR_NOTIFY);
+	g_hWelcomeMsg   = CreateConVar("kz_welcome_msg", " {yellow}>>{default} {grey}Welcome! This server is using {lime}KZTimer v1.76","Welcome message (supported color tags: {default}, {darkred}, {green}, {lightgreen}, {blue} {olive}, {lime}, {red}, {purple}, {grey}, {yellow}, {lightblue}, {steelblue}, {darkblue}, {pink}, {lightred})", FCVAR_PLUGIN|FCVAR_NOTIFY);
 	GetConVarString(g_hWelcomeMsg,g_sWelcomeMsg,512);
 	HookConVarChange(g_hWelcomeMsg, OnSettingChanged);
 
@@ -4338,29 +4297,29 @@ public RegServerConVars()
 	{
 		g_hMaxBhopPreSpeed   = CreateConVar("kz_max_prespeed_bhop_dropbhop", "325.0", "Max counted pre speed for bhop,dropbhop (no speed limiter)", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 300.0, true, 400.0);
 		g_hdist_good_countjump    	= CreateConVar("kz_dist_min_cj", "240.0", "Minimum distance for count jumps to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-		g_hdist_perfect_countjump   	= CreateConVar("kz_dist_perfect_cj", "255.0", "Minimum distance for count jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
-		g_hdist_impressive_countjump   	= CreateConVar("kz_dist_impressive_cj", "260.0", "Minimum distance for count jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
-		g_hdist_godlike_countjump    	= CreateConVar("kz_dist_god_cj", "265.0", "Minimum distance for count jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 245.0, true, 999.0);	
+		g_hdist_perfect_countjump   	= CreateConVar("kz_dist_perfect_cj", "240.0", "Minimum distance for count jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
+		g_hdist_impressive_countjump   	= CreateConVar("kz_dist_impressive_cj", "245.0", "Minimum distance for count jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
+		g_hdist_godlike_countjump    	= CreateConVar("kz_dist_god_cj", "250.0", "Minimum distance for count jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 245.0, true, 999.0);	
 		g_hdist_good_lj    	= CreateConVar("kz_dist_min_lj", "235.0", "Minimum distance for long jumps to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-		g_hdist_perfect_lj   	= CreateConVar("kz_dist_perfect_lj", "255.0", "Minimum distance for long jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
-		g_hdist_impressive_lj   	= CreateConVar("kz_dist_impressive_lj", "258.0", "Minimum distance for long jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
-		g_hdist_godlike_lj    	= CreateConVar("kz_dist_god_lj", "263.0", "Minimum distance for long jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 245.0, true, 999.0);	
+		g_hdist_perfect_lj   	= CreateConVar("kz_dist_perfect_lj", "250.0", "Minimum distance for long jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
+		g_hdist_impressive_lj   	= CreateConVar("kz_dist_impressive_lj", "255.0", "Minimum distance for long jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
+		g_hdist_godlike_lj    	= CreateConVar("kz_dist_god_lj", "260.0", "Minimum distance for long jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 245.0, true, 999.0);	
 		g_hdist_good_weird  = CreateConVar("kz_dist_min_wj", "250.0", "Minimum distance for weird jumps to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-		g_hdist_perfect_weird  = CreateConVar("kz_dist_perfect_wj", "265.0", "Minimum distance for weird jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-		g_hdist_impressive_weird  = CreateConVar("kz_dist_impressive_wj", "275.0", "Minimum distance for weird jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-		g_hdist_godlike_weird   = CreateConVar("kz_dist_god_wj", "278.0", "Minimum distance for weird jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
+		g_hdist_perfect_weird  = CreateConVar("kz_dist_perfect_wj", "260.0", "Minimum distance for weird jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
+		g_hdist_impressive_weird  = CreateConVar("kz_dist_impressive_wj", "265.0", "Minimum distance for weird jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
+		g_hdist_godlike_weird   = CreateConVar("kz_dist_god_wj", "270.0", "Minimum distance for weird jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
 		g_hdist_good_dropbhop  = CreateConVar("kz_dist_min_dropbhop", "240.0", "Minimum distance for drop bhops to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-		g_hdist_perfect_dropbhop  = CreateConVar("kz_dist_perfect_dropbhop", "290.0", "Minimum distance for drop bhops to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);	
-		g_hdist_impressive_dropbhop  = CreateConVar("kz_dist_impressive_dropbhop", "295.0", "Minimum distance for drop bhops to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-		g_hdist_godlike_dropbhop   = CreateConVar("kz_dist_god_dropbhop", "298.0", "Minimum distance for drop bhops to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
+		g_hdist_perfect_dropbhop  = CreateConVar("kz_dist_perfect_dropbhop", "285.0", "Minimum distance for drop bhops to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);	
+		g_hdist_impressive_dropbhop  = CreateConVar("kz_dist_impressive_dropbhop", "290.0", "Minimum distance for drop bhops to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
+		g_hdist_godlike_dropbhop   = CreateConVar("kz_dist_god_dropbhop", "290.0", "Minimum distance for drop bhops to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
 		g_hdist_good_bhop  = CreateConVar("kz_dist_min_bhop", "240.0", "Minimum distance for bhops to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-		g_hdist_perfect_bhop  = CreateConVar("kz_dist_perfect_bhop", "290.0", "Minimum distance for bhops to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-		g_hdist_impressive_bhop  = CreateConVar("kz_dist_impressive_bhop", "295.0", "Minimum distance for bhops to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-		g_hdist_godlike_bhop   = CreateConVar("kz_dist_god_bhop", "298.0", "Minimum distance for bhops to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
+		g_hdist_perfect_bhop  = CreateConVar("kz_dist_perfect_bhop", "285.0", "Minimum distance for bhops to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
+		g_hdist_impressive_bhop  = CreateConVar("kz_dist_impressive_bhop", "290.0", "Minimum distance for bhops to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
+		g_hdist_godlike_bhop   = CreateConVar("kz_dist_god_bhop", "295.0", "Minimum distance for bhops to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
 		g_hdist_good_multibhop  = CreateConVar("kz_dist_min_multibhop", "300.0", "Minimum distance for multi-bhops to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 9999.0);
 		g_hdist_perfect_multibhop  = CreateConVar("kz_dist_perfect_multibhop", "330.0", "Minimum distance for multi-bhops to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 9999.0);
-		g_hdist_impressive_multibhop  = CreateConVar("kz_dist_impressive_multibhop", "340.0", "Minimum distance for multi-bhops to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 9999.0);
-		g_hdist_godlike_multibhop   = CreateConVar("kz_dist_god_multibhop", "343.0", "Minimum distance for multi-bhops to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 9999.0);
+		g_hdist_impressive_multibhop  = CreateConVar("kz_dist_impressive_multibhop", "335.0", "Minimum distance for multi-bhops to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 9999.0);
+		g_hdist_godlike_multibhop   = CreateConVar("kz_dist_god_multibhop", "340.0", "Minimum distance for multi-bhops to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 9999.0);
 		g_hdist_good_ladder  = CreateConVar("kz_dist_min_ladder", "100.0", "Minimum distance for ladder jumps to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 70.0, true, 9999.0);
 		g_hdist_perfect_ladder  = CreateConVar("kz_dist_perfect_ladder", "150.0", "Minimum distance for ladder jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 100.0, true, 9999.0);
 		g_hdist_impressive_ladder  = CreateConVar("kz_dist_impressive_ladder", "155.0", "Minimum distance for ladder jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 100.0, true, 9999.0);
@@ -4372,9 +4331,9 @@ public RegServerConVars()
 		{
 			g_hMaxBhopPreSpeed   = CreateConVar("kz_max_prespeed_bhop_dropbhop", "360.0", "Max counted pre speed for bhop,dropbhop (no speed limiter)", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 300.0, true, 400.0);
 			g_hdist_good_countjump    	= CreateConVar("kz_dist_min_cj", "240.0", "Minimum distance for count jumps to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-			g_hdist_perfect_countjump   	= CreateConVar("kz_dist_perfect_cj", "280.0", "Minimum distance for count jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
-			g_hdist_impressive_countjump   	= CreateConVar("kz_dist_impressive_cj", "285.0", "Minimum distance for count jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
-			g_hdist_godlike_countjump    	= CreateConVar("kz_dist_god_cj", "290.0", "Minimum distance for count jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 245.0, true, 999.0);	
+			g_hdist_perfect_countjump   	= CreateConVar("kz_dist_perfect_cj", "285.0", "Minimum distance for count jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
+			g_hdist_impressive_countjump   	= CreateConVar("kz_dist_impressive_cj", "290.0", "Minimum distance for count jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
+			g_hdist_godlike_countjump    	= CreateConVar("kz_dist_god_cj", "295.0", "Minimum distance for count jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 245.0, true, 999.0);	
 			g_hdist_good_lj    	= CreateConVar("kz_dist_min_lj", "240.0", "Minimum distance for long jumps to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
 			g_hdist_perfect_lj   	= CreateConVar("kz_dist_perfect_lj", "265.0", "Minimum distance for long jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
 			g_hdist_impressive_lj   	= CreateConVar("kz_dist_impressive_lj", "270.0", "Minimum distance for long jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
@@ -4394,7 +4353,7 @@ public RegServerConVars()
 			g_hdist_good_multibhop  = CreateConVar("kz_dist_min_multibhop", "300.0", "Minimum distance for multi-bhops to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 9999.0);
 			g_hdist_perfect_multibhop  = CreateConVar("kz_dist_perfect_multibhop", "340.0", "Minimum distance for multi-bhops to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 9999.0);
 			g_hdist_impressive_multibhop  = CreateConVar("kz_dist_impressive_multibhop", "345.0", "Minimum distance for multi-bhops to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 9999.0);
-			g_hdist_godlike_multibhop   = CreateConVar("kz_dist_god_multibhop", "348.0", "Minimum distance for multi-bhops to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 9999.0);
+			g_hdist_godlike_multibhop   = CreateConVar("kz_dist_god_multibhop", "350.0", "Minimum distance for multi-bhops to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 9999.0);
 			g_hdist_good_ladder  = CreateConVar("kz_dist_min_ladder", "100.0", "Minimum distance for ladder jumps to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 70.0, true, 9999.0);
 			g_hdist_perfect_ladder  = CreateConVar("kz_dist_perfect_ladder", "155.0", "Minimum distance for ladder jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 100.0, true, 9999.0);
 			g_hdist_impressive_ladder  = CreateConVar("kz_dist_impressive_ladder", "165.0", "Minimum distance for ladder jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 100.0, true, 9999.0);
@@ -4412,25 +4371,25 @@ public RegServerConVars()
 			g_hdist_impressive_lj   	= CreateConVar("kz_dist_impressive_lj", "265.0", "Minimum distance for long jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
 			g_hdist_godlike_lj    	= CreateConVar("kz_dist_god_lj", "270.0", "Minimum distance for long jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 245.0, true, 999.0);	
 			g_hdist_good_weird  = CreateConVar("kz_dist_min_wj", "250.0", "Minimum distance for weird jumps to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-			g_hdist_perfect_weird  = CreateConVar("kz_dist_perfect_wj", "280.0", "Minimum distance for weird jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-			g_hdist_impressive_weird  = CreateConVar("kz_dist_impressive_wj", "285.0", "Minimum distance for weird jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-			g_hdist_godlike_weird   = CreateConVar("kz_dist_god_wj", "288.0", "Minimum distance for weird jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
+			g_hdist_perfect_weird  = CreateConVar("kz_dist_perfect_wj", "270.0", "Minimum distance for weird jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
+			g_hdist_impressive_weird  = CreateConVar("kz_dist_impressive_wj", "275.0", "Minimum distance for weird jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
+			g_hdist_godlike_weird   = CreateConVar("kz_dist_god_wj", "280.0", "Minimum distance for weird jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
 			g_hdist_good_dropbhop  = CreateConVar("kz_dist_min_dropbhop", "240.0", "Minimum distance for drop bhops to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-			g_hdist_perfect_dropbhop  = CreateConVar("kz_dist_perfect_dropbhop", "310.0", "Minimum distance for drop bhops to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);	
-			g_hdist_impressive_dropbhop  = CreateConVar("kz_dist_impressive_dropbhop", "315.0", "Minimum distance for drop bhops to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-			g_hdist_godlike_dropbhop   = CreateConVar("kz_dist_god_dropbhop", "320.0", "Minimum distance for drop bhops to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
+			g_hdist_perfect_dropbhop  = CreateConVar("kz_dist_perfect_dropbhop", "300.0", "Minimum distance for drop bhops to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);	
+			g_hdist_impressive_dropbhop  = CreateConVar("kz_dist_impressive_dropbhop", "305.0", "Minimum distance for drop bhops to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
+			g_hdist_godlike_dropbhop   = CreateConVar("kz_dist_god_dropbhop", "310.0", "Minimum distance for drop bhops to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
 			g_hdist_good_bhop  = CreateConVar("kz_dist_min_bhop", "240.0", "Minimum distance for bhops to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-			g_hdist_perfect_bhop  = CreateConVar("kz_dist_perfect_bhop", "315.0", "Minimum distance for bhops to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-			g_hdist_impressive_bhop  = CreateConVar("kz_dist_impressive_bhop", "320.0", "Minimum distance for bhops to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-			g_hdist_godlike_bhop   = CreateConVar("kz_dist_god_bhop", "325.0", "Minimum distance for bhops to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
+			g_hdist_perfect_bhop  = CreateConVar("kz_dist_perfect_bhop", "305.0", "Minimum distance for bhops to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
+			g_hdist_impressive_bhop  = CreateConVar("kz_dist_impressive_bhop", "310.0", "Minimum distance for bhops to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
+			g_hdist_godlike_bhop   = CreateConVar("kz_dist_god_bhop", "315.0", "Minimum distance for bhops to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
 			g_hdist_good_multibhop  = CreateConVar("kz_dist_min_multibhop", "300.0", "Minimum distance for multi-bhops to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 9999.0);
-			g_hdist_perfect_multibhop  = CreateConVar("kz_dist_perfect_multibhop", "335.0", "Minimum distance for multi-bhops to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 9999.0);
-			g_hdist_impressive_multibhop  = CreateConVar("kz_dist_impressive_multibhop", "340.0", "Minimum distance for multi-bhops to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 9999.0);
-			g_hdist_godlike_multibhop   = CreateConVar("kz_dist_god_multibhop", "345.0", "Minimum distance for multi-bhops to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 9999.0);
+			g_hdist_perfect_multibhop  = CreateConVar("kz_dist_perfect_multibhop", "330.0", "Minimum distance for multi-bhops to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 9999.0);
+			g_hdist_impressive_multibhop  = CreateConVar("kz_dist_impressive_multibhop", "335.0", "Minimum distance for multi-bhops to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 9999.0);
+			g_hdist_godlike_multibhop   = CreateConVar("kz_dist_god_multibhop", "340.0", "Minimum distance for multi-bhops to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 9999.0);
 			g_hdist_good_ladder  = CreateConVar("kz_dist_min_ladder", "100.0", "Minimum distance for ladder jumps to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 70.0, true, 9999.0);
 			g_hdist_perfect_ladder  = CreateConVar("kz_dist_perfect_ladder", "150.0", "Minimum distance for ladder jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 100.0, true, 9999.0);
-			g_hdist_impressive_ladder  = CreateConVar("kz_dist_impressive_ladder", "160.0", "Minimum distance for ladder jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 100.0, true, 9999.0);
-			g_hdist_godlike_ladder   = CreateConVar("kz_dist_god_ladder", "170.0", "Minimum distance for ladder jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 100.0, true, 9999.0);		
+			g_hdist_impressive_ladder  = CreateConVar("kz_dist_impressive_ladder", "155.0", "Minimum distance for ladder jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 100.0, true, 9999.0);
+			g_hdist_godlike_ladder   = CreateConVar("kz_dist_god_ladder", "165.0", "Minimum distance for ladder jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 100.0, true, 9999.0);		
 		}
 	}	
 		

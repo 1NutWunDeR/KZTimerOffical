@@ -1,11 +1,19 @@
 public OnWeaponSwitchPost(client, weapon) 
 {
-    if(IsValidEntity(weapon))
-    {
-        SetEntityRenderMode(weapon, RenderMode:RENDER_TRANSCOLOR);
-        SetEntityRenderColor(weapon, 255, 255, 255, g_TransPlayerModels);
-    } 
+	if(IsValidEntity(weapon))
+		SetEntityAlpha(weapon,g_TransPlayerModels);
 }	
+	
+stock SetEntityAlpha(index,alpha)
+{    
+    new String:class[32];
+    GetEntityNetClass(index, class, sizeof(class));
+    if(FindSendPropOffs(class,"m_nRenderFX")>-1)
+	{
+        SetEntityRenderMode(index,RENDER_TRANSCOLOR);
+        SetEntityRenderColor(index,_,_,_,alpha);
+    }  
+}
 
 //dhooks
 public MRESReturn:DHooks_OnTeleport(client, Handle:hParams)
@@ -825,11 +833,19 @@ public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:ang
 
 		//undo check
 		new Float:fLastUndo = GetEngineTime() - g_fLastUndo[client];
-		if (fLastUndo < 1.5 && g_bOnBhopPlattform[client])
+		if (fLastUndo < 1.0 && g_bOnBhopPlattform[client])
 		{
-			buttons &= ~IN_JUMP;
-			buttons &= ~IN_DUCK;		
-		}	
+			EmitSoundToClient(client,"buttons/button10.wav",client);
+			PrintToChat(client,"[%cKZ%c] %cUndo-TP not allowed on bhop blocks!",MOSSGREEN,WHITE,RED);
+			g_bOnBhopPlattform[client]=false;
+			DoTeleport(client,0);		
+			new Float:f3pos[3];
+			new Float:f3ang[3];
+			GetClientAbsAngles(client,f3ang);
+			GetClientAbsOrigin(client,f3pos);
+			g_fPlayerCordsUndoTp[client] = f3pos;
+			g_fPlayerAnglesUndoTp[client] =f3ang;			
+		}
 		
 		//other
 		SpeedCap(client);		

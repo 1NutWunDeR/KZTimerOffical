@@ -17,8 +17,7 @@
 #include <sourcebans>
 #include <mapchooser>
 
-#define VERSION "1.75"
-#define PLUGIN_VERSION 176
+#define VERSION "1.76"
 #define ADMIN_LEVEL ADMFLAG_UNBAN
 #define ADMIN_LEVEL2 ADMFLAG_ROOT
 #define MYSQL 0
@@ -969,7 +968,7 @@ public OnMapStart()
 	//get map tag
 	ExplodeString(g_szMapName, "_", g_szMapPrefix, 2, 32);
 	StrToLower(g_szMapName);
-
+	StrToLower(g_szMapPrefix[0]);
 	
 	//sql
 	db_GetMapRecord_CP();
@@ -995,7 +994,7 @@ public OnMapStart()
 			g_bAutoBhop=true;		
 			
 	//server infos
-	GetServerInfo();
+	CreateTimer(5.0, GetServerInfo);
 	
 	//Bhop block stuff
 	g_BhopDoorCount = 0;
@@ -1091,7 +1090,8 @@ public OnConfigsExecuted()
 	//get map tag
 	ExplodeString(g_szMapName, "_", g_szMapPrefix, 2, 32);
 	StrToLower(g_szMapName);		
-
+	StrToLower(g_szMapPrefix[0]);
+	
 	//AutoBhop?
 	if(StrEqual(g_szMapPrefix[0],"surf") || StrEqual(g_szMapPrefix[0],"bhop") || StrEqual(g_szMapPrefix[0],"mg"))
 		if (g_bAutoBhopConVar)
@@ -1111,7 +1111,7 @@ public OnAutoConfigsBuffered()
 	new lastPiece = ExplodeString(szMap, "/", mapPieces, sizeof(mapPieces), sizeof(mapPieces[])); 
 	Format(szMap, sizeof(szMap), "%s", mapPieces[lastPiece-1]); 
  	ExplodeString(szMap, "_", szPrefix, 2, 32);
-
+	StrToLower(szPrefix[0]);
 	//map tag kzpro?
 	if (StrEqual("kzpro", szPrefix[0]))
 		Format(szPrefix[0], 32, "kz"); 

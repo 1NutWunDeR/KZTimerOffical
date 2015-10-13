@@ -1,3 +1,73 @@
+// timer.sp
+public Action:GetServerInfo(Handle:timer)
+{
+	//get hostname
+	GetConVarString(FindConVar("hostname"),g_szServerName,sizeof(g_szServerName));
+	
+	//get host port 
+	new port = GetConVarInt( FindConVar("hostport"));
+	
+	decl String:code2[3];
+	decl String:Output[600];
+	decl String:szStatus[8][64];
+	decl String:szTmp[3][64];
+	decl String:NetIP[64];
+	decl String:PublicIP[64];
+	
+	//get server status
+	ServerCommandEx(Output, 600, "status");
+	ExplodeString(Output, "\n", szStatus, 8, 64);
+	NetIP = szStatus[2]; 		
+	
+	//explode string #1
+	ExplodeString(NetIP, ": ", szTmp, 3, 64);
+	NetIP = szTmp[1];
+	
+	//explode string #2
+	ExplodeString(NetIP, "  (", szTmp, 3, 64);
+	NetIP = szTmp[0];
+	PublicIP = szTmp[2];
+	ReplaceChar(")", "", PublicIP);
+	ReplaceChar(" ", "", PublicIP);		
+	if( StrContains( NetIP, "0.0.0.0", false ) != -1)
+		NetIP = PublicIP;
+	else
+	{
+		//remove port from the private ip
+		ExplodeString(NetIP, ":", szTmp, 3, 64);
+		NetIP = szTmp[0];
+	}
+	
+
+	//get country
+	GeoipCountry(PublicIP, g_szServerCountry, 100);
+	if(!strcmp(g_szServerCountry, NULL_STRING))
+		Format( g_szServerCountry, 100, "Unknown", g_szServerCountry );
+	else				
+		if( StrContains( g_szServerCountry, "United", false ) != -1 || 
+			StrContains( g_szServerCountry, "Republic", false ) != -1 || 
+			StrContains( g_szServerCountry, "Federation", false ) != -1 || 
+			StrContains( g_szServerCountry, "Island", false ) != -1 || 
+			StrContains( g_szServerCountry, "Netherlands", false ) != -1 || 
+			StrContains( g_szServerCountry, "Isle", false ) != -1 || 
+			StrContains( g_szServerCountry, "Bahamas", false ) != -1 || 
+			StrContains( g_szServerCountry, "Maldives", false ) != -1 || 
+			StrContains( g_szServerCountry, "Philippines", false ) != -1 || 
+			StrContains( g_szServerCountry, "Vatican", false ) != -1 )
+		{
+			Format( g_szServerCountry, 100, "The %s", g_szServerCountry );
+		}	
+	if(GeoipCode2(PublicIP, code2))
+		Format(g_szServerCountryCode, 16, "%s",code2);
+	else
+		Format(g_szServerCountryCode, 16, "??",code2);
+	
+	
+	//combine ip and port
+	Format(g_szServerIp, sizeof(g_szServerIp), "%s:%i",NetIP,port);	
+	return Plugin_Continue;
+}
+
 public Action:CheckTeleport(Handle:timer, any:client)
 {
 	if (!IsValidClient(client) || !IsPlayerAlive(client))
@@ -169,9 +239,6 @@ public Action:KZTimer1(Handle:timer)
 {
 	if (g_bRoundEnd)
 		return Plugin_Continue;
-		
-	if (g_bAllowCheckpoints && (StrEqual("kzpro", g_szMapPrefix[0])))
-		ServerCommand("kz_checkpoints 0");
 		
 	decl client;
 	for (client = 1; client <= MaxClients; client++)

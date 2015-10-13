@@ -659,7 +659,7 @@ public Action:Client_Undo(client, args)
 	{		
 		if(g_fPlayerCordsUndoTp[client][0] == 0.0 && g_fPlayerCordsUndoTp[client][1] == 0.0 && g_fPlayerCordsUndoTp[client][2] == 0.0)
 			return Plugin_Handled;
-		if (GetClientDistanceToGround(g_fPlayerCordsUndoTp[client]) < 15.0)
+		if (GetClientDistanceToGround(g_fPlayerCordsUndoTp[client]) < 66.0)
 		{
 			g_fLastUndo[client] = GetEngineTime();	
 			DoValidTeleport(client, g_fPlayerCordsUndoTp[client],g_fPlayerAnglesUndoTp[client], Float:{0.0,0.0,-100.0});
@@ -1225,12 +1225,6 @@ public ProfileSelectMenuHandler(Handle:menu, MenuAction:action, param1,param2)
 			}
 		}
 	}
-	else
-	if(action == MenuAction_Cancel)
-	{
-		if (IsValidClient(param1))
-			g_bMenuOpen[param1]=false;	
-	}
 	else if (action == MenuAction_End)
 	{	
 		if (IsValidClient(param1))
@@ -1786,9 +1780,14 @@ public DoCheckpoint(client)
 {
 	if (!g_bAllowCheckpoints || IsFakeClient(client) || !IsValidClient(client) || !IsPlayerAlive(client) || GetClientTeam(client) == 1 || g_bPause[client]) 
 		return;
-			
-	if (StrEqual("kzpro", g_szMapPrefix[0]) && g_bTimeractivated[client])	
-		return;			
+					
+	if (StrEqual("kzpro", g_szMapPrefix[0]) && g_bTimeractivated[client])		
+	{
+		EmitSoundToClient(client,"buttons/button10.wav",client);
+		PrintToChat(client, "[%cKZ%c] %cCheckpoint not supported while your timer is running (kzpro_ map)", MOSSGREEN,WHITE,RED);
+		return;
+	}
+		
 		
 	if (!g_bChallenge_Checkpoints[client] && g_bChallenge[client])
 	{
@@ -2570,6 +2569,8 @@ public ShowSrvSettings(client)
 	new Float: flStamJump = GetConVarFloat(hTmp);		
 	hTmp = FindConVar("sv_wateraccelerate");
 	new Float: flWaterA = GetConVarFloat(hTmp);
+	hTmp = FindConVar("sv_ladder_scale_speed");
+	new Float: flLadderSpeed = GetConVarFloat(hTmp);
 	if (hTmp != INVALID_HANDLE)
 		CloseHandle(hTmp);		
 	PrintToConsole(client, "sv_accelerate %.1f", flA);	
@@ -2577,6 +2578,7 @@ public ShowSrvSettings(client)
 	PrintToConsole(client, "sv_friction %.1f", flFriction);
 	PrintToConsole(client, "sv_gravity %.1f", flGravity);
 	PrintToConsole(client, "sv_enablebunnyhopping %i", iBhop);
+	PrintToConsole(client, "sv_ladder_scale_speed %.1f", flLadderSpeed);
 	PrintToConsole(client, "sv_maxspeed %.1f", flMaxSpeed);
 	PrintToConsole(client, "sv_maxvelocity %.1f", flMaxVel);
 	PrintToConsole(client, "sv_staminalandcost %.2f", flStamLand);

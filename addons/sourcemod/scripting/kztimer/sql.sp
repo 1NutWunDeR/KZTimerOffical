@@ -6028,7 +6028,7 @@ public sql_updatePlayerRankPointsCallback(Handle:owner, Handle:hndl, const Strin
 			decl String:szName[MAX_NAME_LENGTH];	
 			GetClientName(client, szName, MAX_NAME_LENGTH);	
 			new diff = g_pr_points[client] - g_pr_oldpoints[client];	
-			if (diff > 0)
+			if (diff > 0 && diff < 1001)
 			{
 				for (new i = 1; i <= MaxClients; i++)
 					if (IsValidClient(i))
