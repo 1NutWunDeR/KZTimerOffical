@@ -157,6 +157,7 @@ public SetServerConvars()
 	ConVar sv_disable_immunity_alpha = FindConVar("sv_disable_immunity_alpha");
 	ConVar mp_teammates_are_enemies = FindConVar("mp_teammates_are_enemies");
 	ConVar mp_death_drop_gun = FindConVar("mp_death_drop_gun");
+	ConVar sv_ladder_scale_speed = FindConVar("sv_ladder_scale_speed");
 	
 	if (!g_bAllowRoundEndCvar)
 	{	
@@ -180,7 +181,7 @@ public SetServerConvars()
 		SetConVarFloat(g_hBhopSpeedCap, 380.0);
 		SetConVarFloat(g_hWaterAccelerate, 10.0);
 		SetConVarInt(g_hCheats, 0);
-		SetConVarInt(g_hEnableBunnyhoping, 1);				
+		SetConVarInt(g_hEnableBunnyhoping, 1);		
 	}
 
 	if (g_bAutoRespawn)
@@ -214,6 +215,7 @@ public SetServerConvars()
 	SetConVarBool(sv_disable_immunity_alpha, true);
 	SetConVarBool(mp_teammates_are_enemies, true);
 	SetConVarBool(mp_death_drop_gun, true);
+	SetConVarFloat(sv_ladder_scale_speed, 1.0);
 }
 
 public DoValidTeleport(client, Float:origin[3],Float:angles[3],Float:vel[3])
