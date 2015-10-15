@@ -1970,167 +1970,170 @@ public Prestrafe(client, Float: ang, &buttons)
 
 	//decl.
 	new Float:flDefaultKnifeSpeed = 1.0;
-	new Float:flMaxKnifeSpeed = 1.107;	
 	new Float:flDefaultUspSpeed= 1.041667;
-	new Float:flMaxUspSpeed = 1.153;			
-	new bool: turning_right;
-	new bool: turning_left;	
-	decl MaxFrameCount;	
-	decl Float: IncSpeed, Float: DecSpeed;
-	new Float: speed = GetSpeed(client);
-	new bool: bForward;
-	
+
 	//get weapon
 	decl String:classname[64];
 	GetClientWeapon(client, classname, 64);
 
+	// Check if either prestrafing is disabled or if the user has anything else than a usp or a knife.
 	if (!g_bPreStrafe || (!(StrEqual(classname, "weapon_hkp2000") && !StrEqual(classname, "weapon_knife"))))
-	{				
+	{
+		// Lock the velocity of the user.
 		if (StrEqual(classname, "weapon_hkp2000"))
 			SetEntPropFloat(client, Prop_Send, "m_flVelocityModifier", flDefaultUspSpeed);
 		else
-			SetEntPropFloat(client, Prop_Send, "m_flVelocityModifier", flDefaultKnifeSpeed);		
-	}
-
-	
-	// get turning direction
-	if( ang < g_fLastAngles[client][1])
-		turning_right = true;
-	else 
-		if( ang > g_fLastAngles[client][1])
-			turning_left = true;	
-	
-	//get moving direction
-	if (GetClientMovingDirection(client,false) > 0.0)
-		bForward=true;
-			
-
-	new Float: flVelMd =	GetEntPropFloat(client, Prop_Send, "m_flVelocityModifier");
-	if (StrEqual(classname, "weapon_knife") && flVelMd > flMaxKnifeSpeed+0.007)
-		SetEntPropFloat(client, Prop_Send, "m_flVelocityModifier", flMaxKnifeSpeed-0.001);		
-			
-	//no mouse movement?
-	if (!turning_right && !turning_left)
-	{
-		decl Float: diff;
-		diff = GetEngineTime() - g_fVelocityModifierLastChange[client]
-		if (diff > 0.2)
-		{
-			if(StrEqual(classname, "weapon_hkp2000"))
-				g_PrestrafeVelocity[client] = flDefaultUspSpeed;
-			else
-				g_PrestrafeVelocity[client] = flDefaultKnifeSpeed;
-			g_fVelocityModifierLastChange[client] = GetEngineTime();
-			SetEntPropFloat(client, Prop_Send, "m_flVelocityModifier", g_PrestrafeVelocity[client]);
-		}
-		return;
-	}
-
-	if (((buttons & IN_MOVERIGHT) || (buttons & IN_MOVELEFT)) && speed > 249.0)
-	{  
-		//tickrate depending values
-		if (g_Server_Tickrate == 64)
-		{
-			MaxFrameCount = 45;
-			IncSpeed = 0.0015;
-			if ((g_PrestrafeVelocity[client] > 1.08 && StrEqual(classname, "weapon_hkp2000")) || (g_PrestrafeVelocity[client] > 1.04 && !StrEqual(classname, "weapon_hkp2000")))
-				IncSpeed = 0.001;
-			DecSpeed = 0.0045;
-		}
+			SetEntPropFloat(client, Prop_Send, "m_flVelocityModifier", flDefaultKnifeSpeed);
+	} else {
 		
-		if (g_Server_Tickrate == 102)
-		{
-			MaxFrameCount = 60;	
-			IncSpeed = 0.0011;
-			if ((g_PrestrafeVelocity[client] > 1.08 && StrEqual(classname, "weapon_hkp2000")) || (g_PrestrafeVelocity[client] > 1.04 && !StrEqual(classname, "weapon_hkp2000")))
-				IncSpeed = 0.001;			
-			DecSpeed = 0.0045;
-			
-		}
+		new Float:flMaxKnifeSpeed = 1.107;	
+		new Float:flMaxUspSpeed = 1.153;			
+		new bool: turning_right;
+		new bool: turning_left;	
+		decl MaxFrameCount;	
+		decl Float: IncSpeed, Float: DecSpeed;
+		new Float: speed = GetSpeed(client);
+		new bool: bForward;
 		
-		if (g_Server_Tickrate == 128)
+		// get turning direction
+		if( ang < g_fLastAngles[client][1])
+			turning_right = true;
+		else 
+			if( ang > g_fLastAngles[client][1])
+				turning_left = true;	
+		
+		//get moving direction
+		if (GetClientMovingDirection(client,false) > 0.0)
+			bForward=true;
+				
+	
+		new Float: flVelMd =	GetEntPropFloat(client, Prop_Send, "m_flVelocityModifier");
+		if (StrEqual(classname, "weapon_knife") && flVelMd > flMaxKnifeSpeed+0.007)
+			SetEntPropFloat(client, Prop_Send, "m_flVelocityModifier", flMaxKnifeSpeed-0.001);		
+				
+		//no mouse movement?
+		if (!turning_right && !turning_left)
 		{
-			MaxFrameCount = 75;	
-			IncSpeed = 0.0009;
-			if ((g_PrestrafeVelocity[client] > 1.08 && StrEqual(classname, "weapon_hkp2000")) || (g_PrestrafeVelocity[client] > 1.04 && !StrEqual(classname, "weapon_hkp2000")))
-				IncSpeed = 0.001;			
-			DecSpeed = 0.0045;
-		}
-		if (((buttons & IN_MOVERIGHT && turning_right || turning_left && !bForward)) || ((buttons & IN_MOVELEFT && turning_left || turning_right && !bForward)))
-		{		
-			g_PrestrafeFrameCounter[client]++;						
-			//Add speed if Prestrafe frames are less than max frame count	
-			
-			if (g_PrestrafeFrameCounter[client] < MaxFrameCount)
-			{	
-				//increase speed
-				g_PrestrafeVelocity[client]+= IncSpeed;
-				//usp
+			decl Float: diff;
+			diff = GetEngineTime() - g_fVelocityModifierLastChange[client]
+			if (diff > 0.2)
+			{
 				if(StrEqual(classname, "weapon_hkp2000"))
-				{		
-					if (g_PrestrafeVelocity[client] > flMaxUspSpeed)
-						g_PrestrafeVelocity[client]-=0.007;					
+					g_PrestrafeVelocity[client] = flDefaultUspSpeed;
+				else
+					g_PrestrafeVelocity[client] = flDefaultKnifeSpeed;
+				g_fVelocityModifierLastChange[client] = GetEngineTime();
+				SetEntPropFloat(client, Prop_Send, "m_flVelocityModifier", g_PrestrafeVelocity[client]);
+			}
+			return;
+		}
+	
+		if (((buttons & IN_MOVERIGHT) || (buttons & IN_MOVELEFT)) && speed > 249.0)
+		{  
+			//tickrate depending values
+			if (g_Server_Tickrate == 64)
+			{
+				MaxFrameCount = 45;
+				IncSpeed = 0.0015;
+				if ((g_PrestrafeVelocity[client] > 1.08 && StrEqual(classname, "weapon_hkp2000")) || (g_PrestrafeVelocity[client] > 1.04 && !StrEqual(classname, "weapon_hkp2000")))
+					IncSpeed = 0.001;
+				DecSpeed = 0.0045;
+			}
+			
+			if (g_Server_Tickrate == 102)
+			{
+				MaxFrameCount = 60;	
+				IncSpeed = 0.0011;
+				if ((g_PrestrafeVelocity[client] > 1.08 && StrEqual(classname, "weapon_hkp2000")) || (g_PrestrafeVelocity[client] > 1.04 && !StrEqual(classname, "weapon_hkp2000")))
+					IncSpeed = 0.001;			
+				DecSpeed = 0.0045;
+				
+			}
+			
+			if (g_Server_Tickrate == 128)
+			{
+				MaxFrameCount = 75;	
+				IncSpeed = 0.0009;
+				if ((g_PrestrafeVelocity[client] > 1.08 && StrEqual(classname, "weapon_hkp2000")) || (g_PrestrafeVelocity[client] > 1.04 && !StrEqual(classname, "weapon_hkp2000")))
+					IncSpeed = 0.001;			
+				DecSpeed = 0.0045;
+			}
+			if (((buttons & IN_MOVERIGHT && turning_right || turning_left && !bForward)) || ((buttons & IN_MOVELEFT && turning_left || turning_right && !bForward)))
+			{		
+				g_PrestrafeFrameCounter[client]++;						
+				//Add speed if Prestrafe frames are less than max frame count	
+				
+				if (g_PrestrafeFrameCounter[client] < MaxFrameCount)
+				{	
+					//increase speed
+					g_PrestrafeVelocity[client]+= IncSpeed;
+					//usp
+					if(StrEqual(classname, "weapon_hkp2000"))
+					{		
+						if (g_PrestrafeVelocity[client] > flMaxUspSpeed)
+							g_PrestrafeVelocity[client]-=0.007;					
+					}
+					else
+					{
+						if (g_PrestrafeVelocity[client] > flMaxKnifeSpeed)
+						{
+							if (g_PrestrafeVelocity[client] > flMaxKnifeSpeed+0.007)
+								g_PrestrafeVelocity[client] = flMaxKnifeSpeed-0.001;
+							else
+								g_PrestrafeVelocity[client]-=0.007;
+						}
+					}
+					g_PrestrafeVelocity[client]+= IncSpeed;
 				}
 				else
 				{
-					if (g_PrestrafeVelocity[client] > flMaxKnifeSpeed)
+					//decrease speed
+					g_PrestrafeVelocity[client]-= DecSpeed;
+					g_PrestrafeFrameCounter[client] = g_PrestrafeFrameCounter[client] - 2;
+					
+					//usp reset 250.0 speed
+					if(StrEqual(classname, "weapon_hkp2000"))
 					{
-						if (g_PrestrafeVelocity[client] > flMaxKnifeSpeed+0.007)
-							g_PrestrafeVelocity[client] = flMaxKnifeSpeed-0.001;
-						else
-							g_PrestrafeVelocity[client]-=0.007;
+						if (g_PrestrafeVelocity[client]< flDefaultUspSpeed)
+						{
+							g_PrestrafeFrameCounter[client] = 0;
+							g_PrestrafeVelocity[client]= flDefaultUspSpeed;
+						}
 					}
+					else	
+						//knife reset 250.0 speed
+						if (g_PrestrafeVelocity[client]< flDefaultKnifeSpeed)
+						{	
+							g_PrestrafeFrameCounter[client] = 0;
+							g_PrestrafeVelocity[client]= flDefaultKnifeSpeed;	
+						}			
 				}
-				g_PrestrafeVelocity[client]+= IncSpeed;
 			}
 			else
 			{
-				//decrease speed
-				g_PrestrafeVelocity[client]-= DecSpeed;
-				g_PrestrafeFrameCounter[client] = g_PrestrafeFrameCounter[client] - 2;
-				
-				//usp reset 250.0 speed
+				g_PrestrafeVelocity[client] -= 0.04;
 				if(StrEqual(classname, "weapon_hkp2000"))
 				{
 					if (g_PrestrafeVelocity[client]< flDefaultUspSpeed)
-					{
-						g_PrestrafeFrameCounter[client] = 0;
 						g_PrestrafeVelocity[client]= flDefaultUspSpeed;
-					}
 				}
-				else	
-					//knife reset 250.0 speed
-					if (g_PrestrafeVelocity[client]< flDefaultKnifeSpeed)
-					{	
-						g_PrestrafeFrameCounter[client] = 0;
-						g_PrestrafeVelocity[client]= flDefaultKnifeSpeed;	
-					}			
+				else						
+				if (g_PrestrafeVelocity[client]< flDefaultKnifeSpeed)
+					g_PrestrafeVelocity[client]= flDefaultKnifeSpeed;		
 			}
+			
+			//Set VelocityModifier	
+			SetEntPropFloat(client, Prop_Send, "m_flVelocityModifier", g_PrestrafeVelocity[client]);
+			g_fVelocityModifierLastChange[client] = GetEngineTime();		
 		}
 		else
 		{
-			g_PrestrafeVelocity[client] -= 0.04;
 			if(StrEqual(classname, "weapon_hkp2000"))
-			{
-				if (g_PrestrafeVelocity[client]< flDefaultUspSpeed)
-					g_PrestrafeVelocity[client]= flDefaultUspSpeed;
-			}
-			else						
-			if (g_PrestrafeVelocity[client]< flDefaultKnifeSpeed)
-				g_PrestrafeVelocity[client]= flDefaultKnifeSpeed;		
+				SetEntPropFloat(client, Prop_Send, "m_flVelocityModifier", flDefaultUspSpeed);
+			else
+				SetEntPropFloat(client, Prop_Send, "m_flVelocityModifier", flDefaultKnifeSpeed);
+			g_PrestrafeFrameCounter[client] = 0;
 		}
-		
-		//Set VelocityModifier	
-		SetEntPropFloat(client, Prop_Send, "m_flVelocityModifier", g_PrestrafeVelocity[client]);
-		g_fVelocityModifierLastChange[client] = GetEngineTime();		
-	}
-	else
-	{
-		if(StrEqual(classname, "weapon_hkp2000"))
-			SetEntPropFloat(client, Prop_Send, "m_flVelocityModifier", flDefaultUspSpeed);
-		else
-			SetEntPropFloat(client, Prop_Send, "m_flVelocityModifier", flDefaultKnifeSpeed);
-		g_PrestrafeFrameCounter[client] = 0;
 	}
 }
 
