@@ -31,6 +31,11 @@ else: mp_respawn_on_death_ct 0;mp_respawn_on_death_t 0
 Changelog
 =======
 <SPOILER>
+v1.77
+- fixed wrong max speed on prestrafing
+- fixed kz_prestrafe server convar
+- minor optimizations
+
 v1.76
 - enforced sv_ladder_scale_speed to 1.0
 - fixed a bug where players could get a pre-speed > 276 through weapon switching
