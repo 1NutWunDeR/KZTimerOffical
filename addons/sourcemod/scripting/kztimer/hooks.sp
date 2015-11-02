@@ -836,7 +836,7 @@ public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:ang
 		if (fLastUndo < 1.0 && g_bOnBhopPlattform[client])
 		{
 			EmitSoundToClient(client,"buttons/button10.wav",client);
-			PrintToChat(client,"[%cKZ%c] %cUndo-TP not allowed on bhop blocks!",MOSSGREEN,WHITE,RED);
+			PrintToChat(client,"[%cKZ%c] %cUndo-TP is not allowed on bhop blocks!",MOSSGREEN,WHITE,RED);
 			g_bOnBhopPlattform[client]=false;
 			DoTeleport(client,0);		
 			new Float:f3pos[3];

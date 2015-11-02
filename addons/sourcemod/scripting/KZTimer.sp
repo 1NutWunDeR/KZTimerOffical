@@ -17,7 +17,7 @@
 #include <sourcebans>
 #include <mapchooser>
 
-#define VERSION "1.76"
+#define VERSION "1.77"
 #define ADMIN_LEVEL ADMFLAG_UNBAN
 #define ADMIN_LEVEL2 ADMFLAG_ROOT
 #define MYSQL 0

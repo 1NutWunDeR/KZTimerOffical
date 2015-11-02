@@ -1778,7 +1778,7 @@ public Action:Client_bhop(client, args)
 
 public DoCheckpoint(client)
 {
-	if (!g_bAllowCheckpoints || IsFakeClient(client) || !IsValidClient(client) || !IsPlayerAlive(client) || GetClientTeam(client) == 1 || g_bPause[client]) 
+	if (!g_bAllowCheckpoints || !IsValidClient(client) || !IsPlayerAlive(client) || g_bPause[client]) 
 		return;
 					
 	if (StrEqual("kzpro", g_szMapPrefix[0]) && g_bTimeractivated[client])		
@@ -1838,7 +1838,7 @@ public DoCheckpoint(client)
 
 public DoTeleport(client,pos)
 {
-	if (!IsValidClient(client) || IsFakeClient(client) || !IsPlayerAlive(client) || GetClientTeam(client) == 1 || g_CurrentCp[client] == -1 || g_bPause[client]) 
+	if (!IsValidClient(client) || !IsPlayerAlive(client) || g_CurrentCp[client] == -1 || g_bPause[client]) 
 		return;
 		
 	if (!g_bAllowCheckpoints)

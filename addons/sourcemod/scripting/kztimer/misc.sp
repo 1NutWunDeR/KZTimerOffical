@@ -1970,9 +1970,9 @@ public Prestrafe(client, Float: ang, &buttons)
 
 	//decl.
 	new Float:flDefaultKnifeSpeed = 1.0;
-	new Float:flMaxKnifeSpeed = 1.107;	
+	new Float:flMaxKnifeSpeed = 1.104;	
 	new Float:flDefaultUspSpeed= 1.041667;
-	new Float:flMaxUspSpeed = 1.153;			
+	new Float:flMaxUspSpeed = 1.15;			
 	new bool: turning_right;
 	new bool: turning_left;	
 	decl MaxFrameCount;	
@@ -1984,15 +1984,14 @@ public Prestrafe(client, Float: ang, &buttons)
 	decl String:classname[64];
 	GetClientWeapon(client, classname, 64);
 
-	if (!g_bPreStrafe || (!(StrEqual(classname, "weapon_hkp2000") && !StrEqual(classname, "weapon_knife"))))
+	if (!g_bPreStrafe || (!StrEqual(classname, "weapon_hkp2000") && !StrEqual(classname, "weapon_knife")))
 	{				
 		if (StrEqual(classname, "weapon_hkp2000"))
 			SetEntPropFloat(client, Prop_Send, "m_flVelocityModifier", flDefaultUspSpeed);
 		else
-			SetEntPropFloat(client, Prop_Send, "m_flVelocityModifier", flDefaultKnifeSpeed);		
+			SetEntPropFloat(client, Prop_Send, "m_flVelocityModifier", flDefaultKnifeSpeed);	
+		return;
 	}
-
-	
 	// get turning direction
 	if( ang < g_fLastAngles[client][1])
 		turning_right = true;
@@ -2025,8 +2024,7 @@ public Prestrafe(client, Float: ang, &buttons)
 		}
 		return;
 	}
-
-	if (((buttons & IN_MOVERIGHT) || (buttons & IN_MOVELEFT)) && speed > 249.0)
+	if (((buttons & IN_MOVERIGHT) || (buttons & IN_MOVELEFT)) && speed > 248.9)
 	{  
 		//tickrate depending values
 		if (g_Server_Tickrate == 64)
@@ -2060,7 +2058,6 @@ public Prestrafe(client, Float: ang, &buttons)
 		{		
 			g_PrestrafeFrameCounter[client]++;						
 			//Add speed if Prestrafe frames are less than max frame count	
-			
 			if (g_PrestrafeFrameCounter[client] < MaxFrameCount)
 			{	
 				//increase speed
@@ -4068,205 +4065,205 @@ public bool TraceFilter_IgnorePlayer( int ent, int mask, any ignore_me )
 
 public RegServerConVars()
 {
-	CreateConVar("kztimer_version", VERSION, "kztimer Version.", FCVAR_DONTRECORD|FCVAR_PLUGIN|FCVAR_SPONLY|FCVAR_REPLICATED|FCVAR_NOTIFY);
+	CreateConVar("kztimer_version", VERSION, "kztimer Version.", FCVAR_DONTRECORD|FCVAR_SPONLY|FCVAR_REPLICATED|FCVAR_NOTIFY);
 
-	g_hDoubleDuckCvar = 	CreateConVar("kz_double_duck", "0", "on/off - Allows you to get up edges that are 32 units high or less without jumping (double duck is always enabled if your timer is disabled)", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_hDoubleDuckCvar = 	CreateConVar("kz_double_duck", "0", "on/off - Allows you to get up edges that are 32 units high or less without jumping (double duck is always enabled if your timer is disabled)", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_bDoubleDuckCvar     = GetConVarBool(g_hDoubleDuckCvar);
 	HookConVarChange(g_hDoubleDuckCvar, OnSettingChanged);
 	
-	g_hSlayPlayers = 	CreateConVar("kz_slay_on_endbutton_press", "0", "on/off - Slays other players when someone finishs the map. (helpful on mg_ course maps)", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_hSlayPlayers = 	CreateConVar("kz_slay_on_endbutton_press", "0", "on/off - Slays other players when someone finishs the map. (helpful on mg_ course maps)", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_bSlayPlayers     = GetConVarBool(g_hSlayPlayers);
 	HookConVarChange(g_hSlayPlayers, OnSettingChanged);	
 	
-	g_hAllowRoundEndCvar = CreateConVar("kz_round_end", "0", "on/off - Allows to end the current round", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_hAllowRoundEndCvar = CreateConVar("kz_round_end", "0", "on/off - Allows to end the current round", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_bAllowRoundEndCvar     = GetConVarBool(g_hAllowRoundEndCvar);
 	HookConVarChange(g_hAllowRoundEndCvar, OnSettingChanged);	
 	
-	g_hConnectMsg = CreateConVar("kz_connect_msg", "1", "on/off - Enables a player connect message with country and disconnect message in chat", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_hConnectMsg = CreateConVar("kz_connect_msg", "1", "on/off - Enables a player connect message with country and disconnect message in chat", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_bConnectMsg     = GetConVarBool(g_hConnectMsg);
 	HookConVarChange(g_hConnectMsg, OnSettingChanged);	
 
-	g_hMapEnd = CreateConVar("kz_map_end", "1", "on/off - Allows to end the current map when the timelimit has run out (mp_timelimit must be greater than 0)", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_hMapEnd = CreateConVar("kz_map_end", "1", "on/off - Allows to end the current map when the timelimit has run out (mp_timelimit must be greater than 0)", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_bMapEnd     = GetConVarBool(g_hMapEnd);
 	HookConVarChange(g_hMapEnd, OnSettingChanged);
 	
-	g_hTransPlayerModels = CreateConVar("kz_player_transparency", "80", "Modifies the transparency of players. 0 is invisible and 255 is visible", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 255.0);
+	g_hTransPlayerModels = CreateConVar("kz_player_transparency", "80", "Modifies the transparency of players. 0 is invisible and 255 is visible", FCVAR_NOTIFY, true, 0.0, true, 255.0);
 	g_TransPlayerModels = GetConVarInt(g_hTransPlayerModels);
 	HookConVarChange(g_hTransPlayerModels, OnSettingChanged);	
 	
-	g_hReplayBot = CreateConVar("kz_replay_bot", "1", "on/off - Bots mimic the local tp and pro record", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_hReplayBot = CreateConVar("kz_replay_bot", "1", "on/off - Bots mimic the local tp and pro record", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_bReplayBot     = GetConVarBool(g_hReplayBot);
 	HookConVarChange(g_hReplayBot, OnSettingChanged);	
 	
-	g_hPreStrafe = CreateConVar("kz_prestrafe", "1", "on/off - Prestrafe", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_hPreStrafe = CreateConVar("kz_prestrafe", "1", "on/off - Prestrafe", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_bPreStrafe     = GetConVarBool(g_hPreStrafe);
 	HookConVarChange(g_hPreStrafe, OnSettingChanged);	
 
-	g_hInfoBot	  = CreateConVar("kz_info_bot", "0", "on/off - provides information about nextmap and timeleft in his player name", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_hInfoBot	  = CreateConVar("kz_info_bot", "0", "on/off - provides information about nextmap and timeleft in his player name", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_bInfoBot     = GetConVarBool(g_hInfoBot);
 	HookConVarChange(g_hInfoBot, OnSettingChanged);		
 	
-	g_hNoClipS = CreateConVar("kz_noclip", "1", "on/off - Allows players to use noclip when they have finished the map", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_hNoClipS = CreateConVar("kz_noclip", "1", "on/off - Allows players to use noclip when they have finished the map", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_bNoClipS     = GetConVarBool(g_hNoClipS);
 	HookConVarChange(g_hNoClipS, OnSettingChanged);	
 
-	g_hVipClantag = 	CreateConVar("kz_vip_clantag", "1", "on/off - VIP clan tag (necessary flag: a)", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_hVipClantag = 	CreateConVar("kz_vip_clantag", "1", "on/off - VIP clan tag (necessary flag: a)", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_bVipClantag     = GetConVarBool(g_hVipClantag);
 	HookConVarChange(g_hVipClantag, OnSettingChanged);	
 	
-	g_hAdminClantag = 	CreateConVar("kz_admin_clantag", "1", "on/off - Admin clan tag (necessary flag: b - z)", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_hAdminClantag = 	CreateConVar("kz_admin_clantag", "1", "on/off - Admin clan tag (necessary flag: b - z)", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_bAdminClantag     = GetConVarBool(g_hAdminClantag);
 	HookConVarChange(g_hAdminClantag, OnSettingChanged);	
 	
-	g_hAutoTimer = CreateConVar("kz_auto_timer", "0", "on/off - Timer starts automatically when a player joins a team, dies or uses !start/!r", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_hAutoTimer = CreateConVar("kz_auto_timer", "0", "on/off - Timer starts automatically when a player joins a team, dies or uses !start/!r", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_bAutoTimer     = GetConVarBool(g_hAutoTimer);
 	HookConVarChange(g_hAutoTimer, OnSettingChanged);
 
-	g_hGoToServer = CreateConVar("kz_goto", "1", "on/off - Allows players to use the !goto command", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_hGoToServer = CreateConVar("kz_goto", "1", "on/off - Allows players to use the !goto command", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_bGoToServer     = GetConVarBool(g_hGoToServer);
 	HookConVarChange(g_hGoToServer, OnSettingChanged);	
 	
-	g_hcvargodmode = CreateConVar("kz_godmode", "1", "on/off - unlimited hp", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_hcvargodmode = CreateConVar("kz_godmode", "1", "on/off - unlimited hp", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_bgodmode     = GetConVarBool(g_hcvargodmode);
 	HookConVarChange(g_hcvargodmode, OnSettingChanged);
 
-	g_hPauseServerside    = CreateConVar("kz_pause", "1", "on/off - Allows players to use the !pause command", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_hPauseServerside    = CreateConVar("kz_pause", "1", "on/off - Allows players to use the !pause command", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_bPauseServerside    = GetConVarBool(g_hPauseServerside);
 	HookConVarChange(g_hPauseServerside, OnSettingChanged);
 
-	g_hSingleTouch    = CreateConVar("kz_bhop_single_touch", "0", "on/off - Disallows players to touch a single bhop block multiple times", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_hSingleTouch    = CreateConVar("kz_bhop_single_touch", "0", "on/off - Disallows players to touch a single bhop block multiple times", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_bSingleTouch    = GetConVarBool(g_hSingleTouch);
 	HookConVarChange(g_hSingleTouch, OnSettingChanged);
 	
-	g_hcvarRestore    = CreateConVar("kz_restore", "1", "on/off - Restoring of time and last position after reconnect", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_hcvarRestore    = CreateConVar("kz_restore", "1", "on/off - Restoring of time and last position after reconnect", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_bRestore        = GetConVarBool(g_hcvarRestore);
 	HookConVarChange(g_hcvarRestore, OnSettingChanged);
 
-	g_hAttackSpamProtection    = CreateConVar("kz_attack_spam_protection", "1", "on/off - max 40 shots; +5 new/extra shots per minute; 1 he/flash counts like 9 shots", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_hAttackSpamProtection    = CreateConVar("kz_attack_spam_protection", "1", "on/off - max 40 shots; +5 new/extra shots per minute; 1 he/flash counts like 9 shots", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_bAttackSpamProtection       = GetConVarBool(g_hAttackSpamProtection);
 	HookConVarChange(g_hAttackSpamProtection, OnSettingChanged);
 	
-	g_hAllowCheckpoints = CreateConVar("kz_checkpoints", "1", "on/off - Allows player to do checkpoints", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_hAllowCheckpoints = CreateConVar("kz_checkpoints", "1", "on/off - Allows player to do checkpoints", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_bAllowCheckpoints     = GetConVarBool(g_hAllowCheckpoints);
 	HookConVarChange(g_hAllowCheckpoints, OnSettingChanged);	
 	
-	g_hEnforcer = CreateConVar("kz_settings_enforcer", "1", "on/off - Kreedz settings enforcer", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_hEnforcer = CreateConVar("kz_settings_enforcer", "1", "on/off - Kreedz settings enforcer", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_bEnforcer     = GetConVarBool(g_hEnforcer);
 	HookConVarChange(g_hEnforcer, OnSettingChanged);
 	
-	g_hAutoRespawn = CreateConVar("kz_autorespawn", "1", "on/off - Auto respawn", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_hAutoRespawn = CreateConVar("kz_autorespawn", "1", "on/off - Auto respawn", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_bAutoRespawn     = GetConVarBool(g_hAutoRespawn);
 	HookConVarChange(g_hAutoRespawn, OnSettingChanged);	
 
-	g_hRadioCommands = CreateConVar("kz_use_radio", "0", "on/off - Allows players to use radio commands", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_hRadioCommands = CreateConVar("kz_use_radio", "0", "on/off - Allows players to use radio commands", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_bRadioCommands     = GetConVarBool(g_hRadioCommands);
 	HookConVarChange(g_hRadioCommands, OnSettingChanged);	
 
-	g_hTeam_Restriction 	= CreateConVar("kz_team_restriction", "0", "Team restriction (0 = both allowed, 1 = only ct allowed, 2 = only t allowed)", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 2.0);
+	g_hTeam_Restriction 	= CreateConVar("kz_team_restriction", "0", "Team restriction (0 = both allowed, 1 = only ct allowed, 2 = only t allowed)", FCVAR_NOTIFY, true, 0.0, true, 2.0);
 	g_Team_Restriction     = GetConVarInt(g_hTeam_Restriction);
 	HookConVarChange(g_hTeam_Restriction, OnSettingChanged);
 	
-	g_hAutohealing_Hp 	= CreateConVar("kz_autoheal", "50", "Sets HP amount for autohealing (requires kz_godmode 0)", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 100.0);
+	g_hAutohealing_Hp 	= CreateConVar("kz_autoheal", "50", "Sets HP amount for autohealing (requires kz_godmode 0)", FCVAR_NOTIFY, true, 0.0, true, 100.0);
 	g_Autohealing_Hp     = GetConVarInt(g_hAutohealing_Hp);
 	HookConVarChange(g_hAutohealing_Hp, OnSettingChanged);	
 	
-	g_hCleanWeapons 	= CreateConVar("kz_clean_weapons", "1", "on/off - Removes all weapons on the ground", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_hCleanWeapons 	= CreateConVar("kz_clean_weapons", "1", "on/off - Removes all weapons on the ground", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_bCleanWeapons     = GetConVarBool(g_hCleanWeapons);
 	HookConVarChange(g_hCleanWeapons, OnSettingChanged);
 
-	g_hJumpStats 	= CreateConVar("kz_jumpstats", "1", "on/off - Measuring of jump distances (longjump, weirdjump, bhop, dropbhop, multibhop, ladderjump)", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_hJumpStats 	= CreateConVar("kz_jumpstats", "1", "on/off - Measuring of jump distances (longjump, weirdjump, bhop, dropbhop, multibhop, ladderjump)", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_bJumpStats     = GetConVarBool(g_hJumpStats);
 	HookConVarChange(g_hJumpStats, OnSettingChanged);	
 	
-	g_hCountry 	= CreateConVar("kz_country_tag", "1", "on/off - Country clan tag", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_hCountry 	= CreateConVar("kz_country_tag", "1", "on/off - Country clan tag", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_bCountry     = GetConVarBool(g_hCountry);
 	HookConVarChange(g_hCountry, OnSettingChanged);
 	
-	g_hChallengePoints 	= CreateConVar("kz_challenge_points", "1", "on/off - Allows players to bet points on their challenges", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_hChallengePoints 	= CreateConVar("kz_challenge_points", "1", "on/off - Allows players to bet points on their challenges", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_bChallengePoints     = GetConVarBool(g_hChallengePoints);
 	HookConVarChange(g_hChallengePoints, OnSettingChanged);
 		
-	g_hAutoBhopConVar 	= CreateConVar("kz_auto_bhop", "0", "on/off - AutoBhop on bhop_ and surf_ maps (climb maps are not supported)", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_hAutoBhopConVar 	= CreateConVar("kz_auto_bhop", "0", "on/off - AutoBhop on bhop_ and surf_ maps (climb maps are not supported)", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_bAutoBhopConVar     = GetConVarBool(g_hAutoBhopConVar);
 	HookConVarChange(g_hAutoBhopConVar, OnSettingChanged);
 	
-	g_hDynamicTimelimit 	= CreateConVar("kz_dynamic_timelimit", "1", "on/off - Sets a suitable timelimit by calculating the average run time (This method requires kz_map_end 1, greater than 5 map times and a default timelimit in your server config for maps with less than 5 times", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_hDynamicTimelimit 	= CreateConVar("kz_dynamic_timelimit", "1", "on/off - Sets a suitable timelimit by calculating the average run time (This method requires kz_map_end 1, greater than 5 map times and a default timelimit in your server config for maps with less than 5 times", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_bDynamicTimelimit     = GetConVarBool(g_hDynamicTimelimit);
 	HookConVarChange(g_hDynamicTimelimit, OnSettingChanged);
 
-	g_hBhopSpeedCap   = CreateConVar("kz_prespeed_cap", "380.0", "Limits player's pre speed (kz_settings_enforcer must be disabled)", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 300.0, true, 5000.0);
+	g_hBhopSpeedCap   = CreateConVar("kz_prespeed_cap", "380.0", "Limits player's pre speed (kz_settings_enforcer must be disabled)", FCVAR_NOTIFY, true, 300.0, true, 5000.0);
 	g_fBhopSpeedCap    = GetConVarFloat(g_hBhopSpeedCap);
 	HookConVarChange(g_hBhopSpeedCap, OnSettingChanged);	
 
-	g_hMinSkillGroup   = CreateConVar("kz_min_skill_group", "1.0", "Minimum skill group to play on this server excluding vips and admins. Everyone below the chosen skill group gets kicked. (1=NEW,2=SCRUB,3=TRAINEE,4=CASUAL,5=REGULAR,6=SKILLED,7=EXPERT,8=SEMIPRO,9=PRO)", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 1.0, true, 9.0);
+	g_hMinSkillGroup   = CreateConVar("kz_min_skill_group", "1.0", "Minimum skill group to play on this server excluding vips and admins. Everyone below the chosen skill group gets kicked. (1=NEW,2=SCRUB,3=TRAINEE,4=CASUAL,5=REGULAR,6=SKILLED,7=EXPERT,8=SEMIPRO,9=PRO)", FCVAR_NOTIFY, true, 1.0, true, 9.0);
 	g_MinSkillGroup    = GetConVarInt(g_hMinSkillGroup);
 	HookConVarChange(g_hMinSkillGroup, OnSettingChanged);	
 	
-	g_hExtraPoints   = CreateConVar("kz_ranking_extra_points_improvements", "10.0", "Gives players x extra points for improving their time.", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 100.0);
+	g_hExtraPoints   = CreateConVar("kz_ranking_extra_points_improvements", "10.0", "Gives players x extra points for improving their time.", FCVAR_NOTIFY, true, 0.0, true, 100.0);
 	g_ExtraPoints    = GetConVarInt(g_hExtraPoints);
 	HookConVarChange(g_hExtraPoints, OnSettingChanged);	
 
-	g_hExtraPoints2   = CreateConVar("kz_ranking_extra_points_firsttime", "25.0", "Gives players x (tp time = x, pro time = 2 * x) extra points for finishing a map (tp and pro) for the first time.", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 100.0);
+	g_hExtraPoints2   = CreateConVar("kz_ranking_extra_points_firsttime", "25.0", "Gives players x (tp time = x, pro time = 2 * x) extra points for finishing a map (tp and pro) for the first time.", FCVAR_NOTIFY, true, 0.0, true, 100.0);
 	g_ExtraPoints2    = GetConVarInt(g_hExtraPoints2);
 	HookConVarChange(g_hExtraPoints2, OnSettingChanged);	
 
-	g_hSpecsAdvert   = CreateConVar("kz_speclist_advert_interval", "300.0", "Amount of seconds between spectator list advertisements in chat. This advert appears when there are more than 2 spectators.", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 60.0, true, 9999.0);
+	g_hSpecsAdvert   = CreateConVar("kz_speclist_advert_interval", "300.0", "Amount of seconds between spectator list advertisements in chat. This advert appears when there are more than 2 spectators.", FCVAR_NOTIFY, true, 60.0, true, 9999.0);
 	g_fSpecsAdvert    = GetConVarFloat(g_hSpecsAdvert);
 	HookConVarChange(g_hSpecsAdvert, OnSettingChanged);	
 	
-	g_hPointSystem    = CreateConVar("kz_point_system", "1", "on/off - Player point system", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_hPointSystem    = CreateConVar("kz_point_system", "1", "on/off - Player point system", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_bPointSystem    = GetConVarBool(g_hPointSystem);
 	HookConVarChange(g_hPointSystem, OnSettingChanged);
 	
-	g_hPlayerSkinChange 	= CreateConVar("kz_custom_models", "1", "on/off - Allows kztimer to change the models of players and bots", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_hPlayerSkinChange 	= CreateConVar("kz_custom_models", "1", "on/off - Allows kztimer to change the models of players and bots", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_bPlayerSkinChange     = GetConVarBool(g_hPlayerSkinChange);
 	HookConVarChange(g_hPlayerSkinChange, OnSettingChanged);
 
-	g_hReplayBotPlayerModel2   = CreateConVar("kz_replay_tpbot_skin", "models/player/tm_professional_var1.mdl", "Replay tp bot skin", FCVAR_PLUGIN|FCVAR_NOTIFY);
+	g_hReplayBotPlayerModel2   = CreateConVar("kz_replay_tpbot_skin", "models/player/tm_professional_var1.mdl", "Replay tp bot skin", FCVAR_NOTIFY);
 	GetConVarString(g_hReplayBotPlayerModel2,g_sReplayBotPlayerModel2,256);
 	HookConVarChange(g_hReplayBotPlayerModel2, OnSettingChanged);	
 	
-	g_hReplayBotArmModel2   = CreateConVar("kz_replay_tpbot_arm_skin", "models/weapons/t_arms_professional.mdl", "Replay tp bot arm skin", FCVAR_PLUGIN|FCVAR_NOTIFY);
+	g_hReplayBotArmModel2   = CreateConVar("kz_replay_tpbot_arm_skin", "models/weapons/t_arms_professional.mdl", "Replay tp bot arm skin", FCVAR_NOTIFY);
 	GetConVarString(g_hReplayBotArmModel2,g_sReplayBotArmModel2,256);
 	HookConVarChange(g_hReplayBotArmModel2, OnSettingChanged);	
 	
-	g_hReplayBotPlayerModel   = CreateConVar("kz_replay_probot_skin", "models/player/tm_professional_var1.mdl", "Replay pro bot skin", FCVAR_PLUGIN|FCVAR_NOTIFY);
+	g_hReplayBotPlayerModel   = CreateConVar("kz_replay_probot_skin", "models/player/tm_professional_var1.mdl", "Replay pro bot skin", FCVAR_NOTIFY);
 	GetConVarString(g_hReplayBotPlayerModel,g_sReplayBotPlayerModel,256);
 	HookConVarChange(g_hReplayBotPlayerModel, OnSettingChanged);	
 	
-	g_hReplayBotArmModel   = CreateConVar("kz_replay_probot_arm_skin", "models/weapons/t_arms_professional.mdl", "Replay pro bot arm skin", FCVAR_PLUGIN|FCVAR_NOTIFY);
+	g_hReplayBotArmModel   = CreateConVar("kz_replay_probot_arm_skin", "models/weapons/t_arms_professional.mdl", "Replay pro bot arm skin", FCVAR_NOTIFY);
 	GetConVarString(g_hReplayBotArmModel,g_sReplayBotArmModel,256);
 	HookConVarChange(g_hReplayBotArmModel, OnSettingChanged);	
 	
-	g_hPlayerModel   = CreateConVar("kz_player_skin", "models/player/ctm_sas_varianta.mdl", "Player skin", FCVAR_PLUGIN|FCVAR_NOTIFY);
+	g_hPlayerModel   = CreateConVar("kz_player_skin", "models/player/ctm_sas_varianta.mdl", "Player skin", FCVAR_NOTIFY);
 	GetConVarString(g_hPlayerModel,g_sPlayerModel,256);
 	HookConVarChange(g_hPlayerModel, OnSettingChanged);	
 	
-	g_hArmModel   = CreateConVar("kz_player_arm_skin", "models/weapons/ct_arms_sas.mdl", "Player arm skin", FCVAR_PLUGIN|FCVAR_NOTIFY);
+	g_hArmModel   = CreateConVar("kz_player_arm_skin", "models/weapons/ct_arms_sas.mdl", "Player arm skin", FCVAR_NOTIFY);
 	GetConVarString(g_hArmModel,g_sArmModel,256);
 	HookConVarChange(g_hArmModel, OnSettingChanged);
 	
-	g_hWelcomeMsg   = CreateConVar("kz_welcome_msg", " {yellow}>>{default} {grey}Welcome! This server is using {lime}KZTimer v1.76","Welcome message (supported color tags: {default}, {darkred}, {green}, {lightgreen}, {blue} {olive}, {lime}, {red}, {purple}, {grey}, {yellow}, {lightblue}, {steelblue}, {darkblue}, {pink}, {lightred})", FCVAR_PLUGIN|FCVAR_NOTIFY);
+	g_hWelcomeMsg   = CreateConVar("kz_welcome_msg", " {yellow}>>{default} {grey}Welcome! This server is using {lime}KZTimer v1.77","Welcome message (supported color tags: {default}, {darkred}, {green}, {lightgreen}, {blue} {olive}, {lime}, {red}, {purple}, {grey}, {yellow}, {lightblue}, {steelblue}, {darkblue}, {pink}, {lightred})", FCVAR_NOTIFY);
 	GetConVarString(g_hWelcomeMsg,g_sWelcomeMsg,512);
 	HookConVarChange(g_hWelcomeMsg, OnSettingChanged);
 
-	g_hReplayBotProColor   = CreateConVar("kz_replay_bot_pro_color", "52 91 248","The default pro replay bot color - Format: \"red green blue\" from 0 - 255.", FCVAR_PLUGIN|FCVAR_NOTIFY);
+	g_hReplayBotProColor   = CreateConVar("kz_replay_bot_pro_color", "52 91 248","The default pro replay bot color - Format: \"red green blue\" from 0 - 255.", FCVAR_NOTIFY);
 	HookConVarChange(g_hReplayBotProColor, OnSettingChanged);	
 	decl String:szProColor[256];
 	GetConVarString(g_hReplayBotProColor,szProColor,256);
 	GetRGBColor(0,szProColor);
 	
-	g_hReplayBotTpColor   = CreateConVar("kz_replay_bot_tp_color", "223 213 0","The default tp replay bot color - Format: \"red green blue\" from 0 - 255.", FCVAR_PLUGIN|FCVAR_NOTIFY);
+	g_hReplayBotTpColor   = CreateConVar("kz_replay_bot_tp_color", "223 213 0","The default tp replay bot color - Format: \"red green blue\" from 0 - 255.", FCVAR_NOTIFY);
 	HookConVarChange(g_hReplayBotTpColor, OnSettingChanged);	
 	decl String:szTpColor[256];
 	GetConVarString(g_hReplayBotTpColor,szTpColor,256);
 	GetRGBColor(1,szTpColor);
 	
-	g_hAutoBan 	= CreateConVar("kz_anticheat_auto_ban", "1", "on/off - auto-ban (bhop hack) including deletion of their records (anti-cheat log: sourcemod/logs)", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 0.0, true, 1.0);
+	g_hAutoBan 	= CreateConVar("kz_anticheat_auto_ban", "1", "on/off - auto-ban (bhop hack) including deletion of their records (anti-cheat log: sourcemod/logs)", FCVAR_NOTIFY, true, 0.0, true, 1.0);
 	g_bAutoBan     = GetConVarBool(g_hAutoBan);
 	HookConVarChange(g_hAutoBan, OnSettingChanged);	
 	
-	g_hBanDuration   = CreateConVar("kz_anticheat_ban_duration", "72.0", "Ban duration in hours", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 1.0, true, 999999.0);
+	g_hBanDuration   = CreateConVar("kz_anticheat_ban_duration", "72.0", "Ban duration in hours", FCVAR_NOTIFY, true, 1.0, true, 999999.0);
 
 	//settings enforcer
 	g_hFullAlltalk = FindConVar("sv_full_alltalk");
@@ -4297,101 +4294,101 @@ public RegServerConVars()
 	
 	if (g_Server_Tickrate == 64)
 	{
-		g_hMaxBhopPreSpeed   = CreateConVar("kz_max_prespeed_bhop_dropbhop", "325.0", "Max counted pre speed for bhop,dropbhop (no speed limiter)", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 300.0, true, 400.0);
-		g_hdist_good_countjump    	= CreateConVar("kz_dist_min_cj", "240.0", "Minimum distance for count jumps to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-		g_hdist_perfect_countjump   	= CreateConVar("kz_dist_perfect_cj", "240.0", "Minimum distance for count jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
-		g_hdist_impressive_countjump   	= CreateConVar("kz_dist_impressive_cj", "245.0", "Minimum distance for count jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
-		g_hdist_godlike_countjump    	= CreateConVar("kz_dist_god_cj", "250.0", "Minimum distance for count jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 245.0, true, 999.0);	
-		g_hdist_good_lj    	= CreateConVar("kz_dist_min_lj", "235.0", "Minimum distance for long jumps to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-		g_hdist_perfect_lj   	= CreateConVar("kz_dist_perfect_lj", "250.0", "Minimum distance for long jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
-		g_hdist_impressive_lj   	= CreateConVar("kz_dist_impressive_lj", "255.0", "Minimum distance for long jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
-		g_hdist_godlike_lj    	= CreateConVar("kz_dist_god_lj", "260.0", "Minimum distance for long jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 245.0, true, 999.0);	
-		g_hdist_good_weird  = CreateConVar("kz_dist_min_wj", "250.0", "Minimum distance for weird jumps to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-		g_hdist_perfect_weird  = CreateConVar("kz_dist_perfect_wj", "260.0", "Minimum distance for weird jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-		g_hdist_impressive_weird  = CreateConVar("kz_dist_impressive_wj", "265.0", "Minimum distance for weird jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-		g_hdist_godlike_weird   = CreateConVar("kz_dist_god_wj", "270.0", "Minimum distance for weird jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-		g_hdist_good_dropbhop  = CreateConVar("kz_dist_min_dropbhop", "240.0", "Minimum distance for drop bhops to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-		g_hdist_perfect_dropbhop  = CreateConVar("kz_dist_perfect_dropbhop", "285.0", "Minimum distance for drop bhops to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);	
-		g_hdist_impressive_dropbhop  = CreateConVar("kz_dist_impressive_dropbhop", "290.0", "Minimum distance for drop bhops to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-		g_hdist_godlike_dropbhop   = CreateConVar("kz_dist_god_dropbhop", "290.0", "Minimum distance for drop bhops to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-		g_hdist_good_bhop  = CreateConVar("kz_dist_min_bhop", "240.0", "Minimum distance for bhops to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-		g_hdist_perfect_bhop  = CreateConVar("kz_dist_perfect_bhop", "285.0", "Minimum distance for bhops to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-		g_hdist_impressive_bhop  = CreateConVar("kz_dist_impressive_bhop", "290.0", "Minimum distance for bhops to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-		g_hdist_godlike_bhop   = CreateConVar("kz_dist_god_bhop", "295.0", "Minimum distance for bhops to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-		g_hdist_good_multibhop  = CreateConVar("kz_dist_min_multibhop", "300.0", "Minimum distance for multi-bhops to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 9999.0);
-		g_hdist_perfect_multibhop  = CreateConVar("kz_dist_perfect_multibhop", "330.0", "Minimum distance for multi-bhops to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 9999.0);
-		g_hdist_impressive_multibhop  = CreateConVar("kz_dist_impressive_multibhop", "335.0", "Minimum distance for multi-bhops to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 9999.0);
-		g_hdist_godlike_multibhop   = CreateConVar("kz_dist_god_multibhop", "340.0", "Minimum distance for multi-bhops to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 9999.0);
-		g_hdist_good_ladder  = CreateConVar("kz_dist_min_ladder", "100.0", "Minimum distance for ladder jumps to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 70.0, true, 9999.0);
-		g_hdist_perfect_ladder  = CreateConVar("kz_dist_perfect_ladder", "150.0", "Minimum distance for ladder jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 100.0, true, 9999.0);
-		g_hdist_impressive_ladder  = CreateConVar("kz_dist_impressive_ladder", "155.0", "Minimum distance for ladder jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 100.0, true, 9999.0);
-		g_hdist_godlike_ladder   = CreateConVar("kz_dist_god_ladder", "160.0", "Minimum distance for ladder jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 100.0, true, 9999.0);
+		g_hMaxBhopPreSpeed   = CreateConVar("kz_max_prespeed_bhop_dropbhop", "325.0", "Max counted pre speed for bhop,dropbhop (no speed limiter)", FCVAR_NOTIFY, true, 300.0, true, 400.0);
+		g_hdist_good_countjump    	= CreateConVar("kz_dist_min_cj", "240.0", "Minimum distance for count jumps to be considered good [Client Message]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+		g_hdist_perfect_countjump   	= CreateConVar("kz_dist_perfect_cj", "240.0", "Minimum distance for count jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 220.0, true, 999.0);
+		g_hdist_impressive_countjump   	= CreateConVar("kz_dist_impressive_cj", "245.0", "Minimum distance for count jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 220.0, true, 999.0);
+		g_hdist_godlike_countjump    	= CreateConVar("kz_dist_god_cj", "250.0", "Minimum distance for count jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 245.0, true, 999.0);	
+		g_hdist_good_lj    	= CreateConVar("kz_dist_min_lj", "235.0", "Minimum distance for long jumps to be considered good [Client Message]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+		g_hdist_perfect_lj   	= CreateConVar("kz_dist_perfect_lj", "250.0", "Minimum distance for long jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 220.0, true, 999.0);
+		g_hdist_impressive_lj   	= CreateConVar("kz_dist_impressive_lj", "255.0", "Minimum distance for long jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 220.0, true, 999.0);
+		g_hdist_godlike_lj    	= CreateConVar("kz_dist_god_lj", "260.0", "Minimum distance for long jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 245.0, true, 999.0);	
+		g_hdist_good_weird  = CreateConVar("kz_dist_min_wj", "250.0", "Minimum distance for weird jumps to be considered good [Client Message]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+		g_hdist_perfect_weird  = CreateConVar("kz_dist_perfect_wj", "260.0", "Minimum distance for weird jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+		g_hdist_impressive_weird  = CreateConVar("kz_dist_impressive_wj", "265.0", "Minimum distance for weird jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+		g_hdist_godlike_weird   = CreateConVar("kz_dist_god_wj", "270.0", "Minimum distance for weird jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+		g_hdist_good_dropbhop  = CreateConVar("kz_dist_min_dropbhop", "240.0", "Minimum distance for drop bhops to be considered good [Client Message]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+		g_hdist_perfect_dropbhop  = CreateConVar("kz_dist_perfect_dropbhop", "285.0", "Minimum distance for drop bhops to be considered perfect [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 200.0, true, 999.0);	
+		g_hdist_impressive_dropbhop  = CreateConVar("kz_dist_impressive_dropbhop", "290.0", "Minimum distance for drop bhops to be considered impressive [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+		g_hdist_godlike_dropbhop   = CreateConVar("kz_dist_god_dropbhop", "290.0", "Minimum distance for drop bhops to be considered godlike [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+		g_hdist_good_bhop  = CreateConVar("kz_dist_min_bhop", "240.0", "Minimum distance for bhops to be considered good [Client Message]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+		g_hdist_perfect_bhop  = CreateConVar("kz_dist_perfect_bhop", "285.0", "Minimum distance for bhops to be considered perfect [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+		g_hdist_impressive_bhop  = CreateConVar("kz_dist_impressive_bhop", "290.0", "Minimum distance for bhops to be considered impressive [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+		g_hdist_godlike_bhop   = CreateConVar("kz_dist_god_bhop", "295.0", "Minimum distance for bhops to be considered godlike [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+		g_hdist_good_multibhop  = CreateConVar("kz_dist_min_multibhop", "300.0", "Minimum distance for multi-bhops to be considered good [Client Message]", FCVAR_NOTIFY, true, 200.0, true, 9999.0);
+		g_hdist_perfect_multibhop  = CreateConVar("kz_dist_perfect_multibhop", "330.0", "Minimum distance for multi-bhops to be considered perfect [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 200.0, true, 9999.0);
+		g_hdist_impressive_multibhop  = CreateConVar("kz_dist_impressive_multibhop", "335.0", "Minimum distance for multi-bhops to be considered impressive [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 200.0, true, 9999.0);
+		g_hdist_godlike_multibhop   = CreateConVar("kz_dist_god_multibhop", "340.0", "Minimum distance for multi-bhops to be considered godlike [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 200.0, true, 9999.0);
+		g_hdist_good_ladder  = CreateConVar("kz_dist_min_ladder", "100.0", "Minimum distance for ladder jumps to be considered good [Client Message]", FCVAR_NOTIFY, true, 70.0, true, 9999.0);
+		g_hdist_perfect_ladder  = CreateConVar("kz_dist_perfect_ladder", "150.0", "Minimum distance for ladder jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 100.0, true, 9999.0);
+		g_hdist_impressive_ladder  = CreateConVar("kz_dist_impressive_ladder", "155.0", "Minimum distance for ladder jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 100.0, true, 9999.0);
+		g_hdist_godlike_ladder   = CreateConVar("kz_dist_god_ladder", "160.0", "Minimum distance for ladder jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 100.0, true, 9999.0);
 	}
 	else
 	{
 		if (g_Server_Tickrate == 128)
 		{
-			g_hMaxBhopPreSpeed   = CreateConVar("kz_max_prespeed_bhop_dropbhop", "360.0", "Max counted pre speed for bhop,dropbhop (no speed limiter)", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 300.0, true, 400.0);
-			g_hdist_good_countjump    	= CreateConVar("kz_dist_min_cj", "240.0", "Minimum distance for count jumps to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-			g_hdist_perfect_countjump   	= CreateConVar("kz_dist_perfect_cj", "285.0", "Minimum distance for count jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
-			g_hdist_impressive_countjump   	= CreateConVar("kz_dist_impressive_cj", "290.0", "Minimum distance for count jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
-			g_hdist_godlike_countjump    	= CreateConVar("kz_dist_god_cj", "295.0", "Minimum distance for count jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 245.0, true, 999.0);	
-			g_hdist_good_lj    	= CreateConVar("kz_dist_min_lj", "240.0", "Minimum distance for long jumps to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-			g_hdist_perfect_lj   	= CreateConVar("kz_dist_perfect_lj", "265.0", "Minimum distance for long jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
-			g_hdist_impressive_lj   	= CreateConVar("kz_dist_impressive_lj", "270.0", "Minimum distance for long jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
-			g_hdist_godlike_lj    	= CreateConVar("kz_dist_god_lj", "275.0", "Minimum distance for long jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 245.0, true, 999.0);	
-			g_hdist_good_weird  = CreateConVar("kz_dist_min_wj", "250.0", "Minimum distance for weird jumps to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-			g_hdist_perfect_weird  = CreateConVar("kz_dist_perfect_wj", "280.0", "Minimum distance for weird jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-			g_hdist_impressive_weird  = CreateConVar("kz_dist_impressive_wj", "285.0", "Minimum distance for weird jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-			g_hdist_godlike_weird   = CreateConVar("kz_dist_god_wj", "290.0", "Minimum distance for weird jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-			g_hdist_good_dropbhop  = CreateConVar("kz_dist_min_dropbhop", "240.0", "Minimum distance for drop bhops to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-			g_hdist_perfect_dropbhop  = CreateConVar("kz_dist_perfect_dropbhop", "315.0", "Minimum distance for drop bhops to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);	
-			g_hdist_impressive_dropbhop  = CreateConVar("kz_dist_impressive_dropbhop", "320.0", "Minimum distance for drop bhops to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-			g_hdist_godlike_dropbhop   = CreateConVar("kz_dist_god_dropbhop", "325.0", "Minimum distance for drop bhops to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-			g_hdist_good_bhop  = CreateConVar("kz_dist_min_bhop", "240.0", "Minimum distance for bhops to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-			g_hdist_perfect_bhop  = CreateConVar("kz_dist_perfect_bhop", "320.0", "Minimum distance for bhops to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-			g_hdist_impressive_bhop  = CreateConVar("kz_dist_impressive_bhop", "325.0", "Minimum distance for bhops to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-			g_hdist_godlike_bhop   = CreateConVar("kz_dist_god_bhop", "330.0", "Minimum distance for bhops to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-			g_hdist_good_multibhop  = CreateConVar("kz_dist_min_multibhop", "300.0", "Minimum distance for multi-bhops to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 9999.0);
-			g_hdist_perfect_multibhop  = CreateConVar("kz_dist_perfect_multibhop", "340.0", "Minimum distance for multi-bhops to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 9999.0);
-			g_hdist_impressive_multibhop  = CreateConVar("kz_dist_impressive_multibhop", "345.0", "Minimum distance for multi-bhops to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 9999.0);
-			g_hdist_godlike_multibhop   = CreateConVar("kz_dist_god_multibhop", "350.0", "Minimum distance for multi-bhops to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 9999.0);
-			g_hdist_good_ladder  = CreateConVar("kz_dist_min_ladder", "100.0", "Minimum distance for ladder jumps to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 70.0, true, 9999.0);
-			g_hdist_perfect_ladder  = CreateConVar("kz_dist_perfect_ladder", "155.0", "Minimum distance for ladder jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 100.0, true, 9999.0);
-			g_hdist_impressive_ladder  = CreateConVar("kz_dist_impressive_ladder", "165.0", "Minimum distance for ladder jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 100.0, true, 9999.0);
-			g_hdist_godlike_ladder   = CreateConVar("kz_dist_god_ladder", "175.0", "Minimum distance for ladder jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 100.0, true, 9999.0);		
+			g_hMaxBhopPreSpeed   = CreateConVar("kz_max_prespeed_bhop_dropbhop", "360.0", "Max counted pre speed for bhop,dropbhop (no speed limiter)", FCVAR_NOTIFY, true, 300.0, true, 400.0);
+			g_hdist_good_countjump    	= CreateConVar("kz_dist_min_cj", "240.0", "Minimum distance for count jumps to be considered good [Client Message]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+			g_hdist_perfect_countjump   	= CreateConVar("kz_dist_perfect_cj", "285.0", "Minimum distance for count jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 220.0, true, 999.0);
+			g_hdist_impressive_countjump   	= CreateConVar("kz_dist_impressive_cj", "290.0", "Minimum distance for count jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 220.0, true, 999.0);
+			g_hdist_godlike_countjump    	= CreateConVar("kz_dist_god_cj", "295.0", "Minimum distance for count jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 245.0, true, 999.0);	
+			g_hdist_good_lj    	= CreateConVar("kz_dist_min_lj", "240.0", "Minimum distance for long jumps to be considered good [Client Message]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+			g_hdist_perfect_lj   	= CreateConVar("kz_dist_perfect_lj", "265.0", "Minimum distance for long jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 220.0, true, 999.0);
+			g_hdist_impressive_lj   	= CreateConVar("kz_dist_impressive_lj", "270.0", "Minimum distance for long jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 220.0, true, 999.0);
+			g_hdist_godlike_lj    	= CreateConVar("kz_dist_god_lj", "275.0", "Minimum distance for long jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 245.0, true, 999.0);	
+			g_hdist_good_weird  = CreateConVar("kz_dist_min_wj", "250.0", "Minimum distance for weird jumps to be considered good [Client Message]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+			g_hdist_perfect_weird  = CreateConVar("kz_dist_perfect_wj", "280.0", "Minimum distance for weird jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+			g_hdist_impressive_weird  = CreateConVar("kz_dist_impressive_wj", "285.0", "Minimum distance for weird jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+			g_hdist_godlike_weird   = CreateConVar("kz_dist_god_wj", "290.0", "Minimum distance for weird jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+			g_hdist_good_dropbhop  = CreateConVar("kz_dist_min_dropbhop", "240.0", "Minimum distance for drop bhops to be considered good [Client Message]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+			g_hdist_perfect_dropbhop  = CreateConVar("kz_dist_perfect_dropbhop", "315.0", "Minimum distance for drop bhops to be considered perfect [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 200.0, true, 999.0);	
+			g_hdist_impressive_dropbhop  = CreateConVar("kz_dist_impressive_dropbhop", "320.0", "Minimum distance for drop bhops to be considered impressive [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+			g_hdist_godlike_dropbhop   = CreateConVar("kz_dist_god_dropbhop", "325.0", "Minimum distance for drop bhops to be considered godlike [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+			g_hdist_good_bhop  = CreateConVar("kz_dist_min_bhop", "240.0", "Minimum distance for bhops to be considered good [Client Message]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+			g_hdist_perfect_bhop  = CreateConVar("kz_dist_perfect_bhop", "320.0", "Minimum distance for bhops to be considered perfect [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+			g_hdist_impressive_bhop  = CreateConVar("kz_dist_impressive_bhop", "325.0", "Minimum distance for bhops to be considered impressive [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+			g_hdist_godlike_bhop   = CreateConVar("kz_dist_god_bhop", "330.0", "Minimum distance for bhops to be considered godlike [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+			g_hdist_good_multibhop  = CreateConVar("kz_dist_min_multibhop", "300.0", "Minimum distance for multi-bhops to be considered good [Client Message]", FCVAR_NOTIFY, true, 200.0, true, 9999.0);
+			g_hdist_perfect_multibhop  = CreateConVar("kz_dist_perfect_multibhop", "340.0", "Minimum distance for multi-bhops to be considered perfect [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 200.0, true, 9999.0);
+			g_hdist_impressive_multibhop  = CreateConVar("kz_dist_impressive_multibhop", "345.0", "Minimum distance for multi-bhops to be considered impressive [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 200.0, true, 9999.0);
+			g_hdist_godlike_multibhop   = CreateConVar("kz_dist_god_multibhop", "350.0", "Minimum distance for multi-bhops to be considered godlike [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 200.0, true, 9999.0);
+			g_hdist_good_ladder  = CreateConVar("kz_dist_min_ladder", "100.0", "Minimum distance for ladder jumps to be considered good [Client Message]", FCVAR_NOTIFY, true, 70.0, true, 9999.0);
+			g_hdist_perfect_ladder  = CreateConVar("kz_dist_perfect_ladder", "155.0", "Minimum distance for ladder jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 100.0, true, 9999.0);
+			g_hdist_impressive_ladder  = CreateConVar("kz_dist_impressive_ladder", "165.0", "Minimum distance for ladder jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 100.0, true, 9999.0);
+			g_hdist_godlike_ladder   = CreateConVar("kz_dist_god_ladder", "175.0", "Minimum distance for ladder jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 100.0, true, 9999.0);		
 		}
 		else
 		{
-			g_hMaxBhopPreSpeed   = CreateConVar("kz_max_prespeed_bhop_dropbhop", "350.0", "Max counted pre speed for bhop,dropbhop (no speed limiter)", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 300.0, true, 400.0);
-			g_hdist_good_countjump    	= CreateConVar("kz_dist_min_cj", "230.0", "Minimum distance for count jumps to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-			g_hdist_perfect_countjump   	= CreateConVar("kz_dist_perfect_cj", "270.0", "Minimum distance for count jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
-			g_hdist_impressive_countjump   	= CreateConVar("kz_dist_impressive_cj", "275.0", "Minimum distance for count jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
-			g_hdist_godlike_countjump    	= CreateConVar("kz_dist_god_cj", "280.0", "Minimum distance for count jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 245.0, true, 999.0);	
-			g_hdist_good_lj    	= CreateConVar("kz_dist_min_lj", "240.0", "Minimum distance for long jumps to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-			g_hdist_perfect_lj   	= CreateConVar("kz_dist_perfect_lj", "260.0", "Minimum distance for long jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
-			g_hdist_impressive_lj   	= CreateConVar("kz_dist_impressive_lj", "265.0", "Minimum distance for long jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 220.0, true, 999.0);
-			g_hdist_godlike_lj    	= CreateConVar("kz_dist_god_lj", "270.0", "Minimum distance for long jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 245.0, true, 999.0);	
-			g_hdist_good_weird  = CreateConVar("kz_dist_min_wj", "250.0", "Minimum distance for weird jumps to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-			g_hdist_perfect_weird  = CreateConVar("kz_dist_perfect_wj", "270.0", "Minimum distance for weird jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-			g_hdist_impressive_weird  = CreateConVar("kz_dist_impressive_wj", "275.0", "Minimum distance for weird jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-			g_hdist_godlike_weird   = CreateConVar("kz_dist_god_wj", "280.0", "Minimum distance for weird jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-			g_hdist_good_dropbhop  = CreateConVar("kz_dist_min_dropbhop", "240.0", "Minimum distance for drop bhops to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-			g_hdist_perfect_dropbhop  = CreateConVar("kz_dist_perfect_dropbhop", "300.0", "Minimum distance for drop bhops to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);	
-			g_hdist_impressive_dropbhop  = CreateConVar("kz_dist_impressive_dropbhop", "305.0", "Minimum distance for drop bhops to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-			g_hdist_godlike_dropbhop   = CreateConVar("kz_dist_god_dropbhop", "310.0", "Minimum distance for drop bhops to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-			g_hdist_good_bhop  = CreateConVar("kz_dist_min_bhop", "240.0", "Minimum distance for bhops to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-			g_hdist_perfect_bhop  = CreateConVar("kz_dist_perfect_bhop", "305.0", "Minimum distance for bhops to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-			g_hdist_impressive_bhop  = CreateConVar("kz_dist_impressive_bhop", "310.0", "Minimum distance for bhops to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-			g_hdist_godlike_bhop   = CreateConVar("kz_dist_god_bhop", "315.0", "Minimum distance for bhops to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 999.0);
-			g_hdist_good_multibhop  = CreateConVar("kz_dist_min_multibhop", "300.0", "Minimum distance for multi-bhops to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 9999.0);
-			g_hdist_perfect_multibhop  = CreateConVar("kz_dist_perfect_multibhop", "330.0", "Minimum distance for multi-bhops to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 9999.0);
-			g_hdist_impressive_multibhop  = CreateConVar("kz_dist_impressive_multibhop", "335.0", "Minimum distance for multi-bhops to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 9999.0);
-			g_hdist_godlike_multibhop   = CreateConVar("kz_dist_god_multibhop", "340.0", "Minimum distance for multi-bhops to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 200.0, true, 9999.0);
-			g_hdist_good_ladder  = CreateConVar("kz_dist_min_ladder", "100.0", "Minimum distance for ladder jumps to be considered good [Client Message]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 70.0, true, 9999.0);
-			g_hdist_perfect_ladder  = CreateConVar("kz_dist_perfect_ladder", "150.0", "Minimum distance for ladder jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 100.0, true, 9999.0);
-			g_hdist_impressive_ladder  = CreateConVar("kz_dist_impressive_ladder", "155.0", "Minimum distance for ladder jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 100.0, true, 9999.0);
-			g_hdist_godlike_ladder   = CreateConVar("kz_dist_god_ladder", "165.0", "Minimum distance for ladder jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_PLUGIN|FCVAR_NOTIFY, true, 100.0, true, 9999.0);		
+			g_hMaxBhopPreSpeed   = CreateConVar("kz_max_prespeed_bhop_dropbhop", "350.0", "Max counted pre speed for bhop,dropbhop (no speed limiter)", FCVAR_NOTIFY, true, 300.0, true, 400.0);
+			g_hdist_good_countjump    	= CreateConVar("kz_dist_min_cj", "230.0", "Minimum distance for count jumps to be considered good [Client Message]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+			g_hdist_perfect_countjump   	= CreateConVar("kz_dist_perfect_cj", "270.0", "Minimum distance for count jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 220.0, true, 999.0);
+			g_hdist_impressive_countjump   	= CreateConVar("kz_dist_impressive_cj", "275.0", "Minimum distance for count jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 220.0, true, 999.0);
+			g_hdist_godlike_countjump    	= CreateConVar("kz_dist_god_cj", "280.0", "Minimum distance for count jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 245.0, true, 999.0);	
+			g_hdist_good_lj    	= CreateConVar("kz_dist_min_lj", "240.0", "Minimum distance for long jumps to be considered good [Client Message]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+			g_hdist_perfect_lj   	= CreateConVar("kz_dist_perfect_lj", "260.0", "Minimum distance for long jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 220.0, true, 999.0);
+			g_hdist_impressive_lj   	= CreateConVar("kz_dist_impressive_lj", "265.0", "Minimum distance for long jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 220.0, true, 999.0);
+			g_hdist_godlike_lj    	= CreateConVar("kz_dist_god_lj", "270.0", "Minimum distance for long jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 245.0, true, 999.0);	
+			g_hdist_good_weird  = CreateConVar("kz_dist_min_wj", "250.0", "Minimum distance for weird jumps to be considered good [Client Message]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+			g_hdist_perfect_weird  = CreateConVar("kz_dist_perfect_wj", "270.0", "Minimum distance for weird jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+			g_hdist_impressive_weird  = CreateConVar("kz_dist_impressive_wj", "275.0", "Minimum distance for weird jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+			g_hdist_godlike_weird   = CreateConVar("kz_dist_god_wj", "280.0", "Minimum distance for weird jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+			g_hdist_good_dropbhop  = CreateConVar("kz_dist_min_dropbhop", "240.0", "Minimum distance for drop bhops to be considered good [Client Message]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+			g_hdist_perfect_dropbhop  = CreateConVar("kz_dist_perfect_dropbhop", "300.0", "Minimum distance for drop bhops to be considered perfect [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 200.0, true, 999.0);	
+			g_hdist_impressive_dropbhop  = CreateConVar("kz_dist_impressive_dropbhop", "305.0", "Minimum distance for drop bhops to be considered impressive [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+			g_hdist_godlike_dropbhop   = CreateConVar("kz_dist_god_dropbhop", "310.0", "Minimum distance for drop bhops to be considered godlike [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+			g_hdist_good_bhop  = CreateConVar("kz_dist_min_bhop", "240.0", "Minimum distance for bhops to be considered good [Client Message]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+			g_hdist_perfect_bhop  = CreateConVar("kz_dist_perfect_bhop", "305.0", "Minimum distance for bhops to be considered perfect [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+			g_hdist_impressive_bhop  = CreateConVar("kz_dist_impressive_bhop", "310.0", "Minimum distance for bhops to be considered impressive [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+			g_hdist_godlike_bhop   = CreateConVar("kz_dist_god_bhop", "315.0", "Minimum distance for bhops to be considered godlike [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 200.0, true, 999.0);
+			g_hdist_good_multibhop  = CreateConVar("kz_dist_min_multibhop", "300.0", "Minimum distance for multi-bhops to be considered good [Client Message]", FCVAR_NOTIFY, true, 200.0, true, 9999.0);
+			g_hdist_perfect_multibhop  = CreateConVar("kz_dist_perfect_multibhop", "330.0", "Minimum distance for multi-bhops to be considered perfect [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 200.0, true, 9999.0);
+			g_hdist_impressive_multibhop  = CreateConVar("kz_dist_impressive_multibhop", "335.0", "Minimum distance for multi-bhops to be considered impressive [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 200.0, true, 9999.0);
+			g_hdist_godlike_multibhop   = CreateConVar("kz_dist_god_multibhop", "340.0", "Minimum distance for multi-bhops to be considered godlike [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 200.0, true, 9999.0);
+			g_hdist_good_ladder  = CreateConVar("kz_dist_min_ladder", "100.0", "Minimum distance for ladder jumps to be considered good [Client Message]", FCVAR_NOTIFY, true, 70.0, true, 9999.0);
+			g_hdist_perfect_ladder  = CreateConVar("kz_dist_perfect_ladder", "150.0", "Minimum distance for ladder jumps to be considered perfect [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 100.0, true, 9999.0);
+			g_hdist_impressive_ladder  = CreateConVar("kz_dist_impressive_ladder", "155.0", "Minimum distance for ladder jumps to be considered impressive [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 100.0, true, 9999.0);
+			g_hdist_godlike_ladder   = CreateConVar("kz_dist_god_ladder", "165.0", "Minimum distance for ladder jumps to be considered godlike [JumpStats Colorchat All]", FCVAR_NOTIFY, true, 100.0, true, 9999.0);		
 		}
 	}	
 		
@@ -4612,7 +4609,7 @@ public SetupHooksAndCommandListener()
 	AddCommandListener(Command_ext_Menu, "sm_revote");	
 	for(new g; g < sizeof(RadioCMDS); g++)
 		AddCommandListener(BlockRadio, RadioCMDS[g]);
-	AddNormalSoundHook(NormalSHook_callback);
+	AddNormalSoundHook(NormalSHook:NormalSHook_callback);
 	
 	/////////////////////////
 	//Dhooks OnTeleport
