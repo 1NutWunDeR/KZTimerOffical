@@ -31,6 +31,9 @@ else: mp_respawn_on_death_ct 0;mp_respawn_on_death_t 0
 Changelog
 =======
 <SPOILER>
+v1.78
+- fixed a minor jumpstats bug
+
 v1.77
 - fixed wrong max speed on prestrafing
 - fixed kz_prestrafe server convar
