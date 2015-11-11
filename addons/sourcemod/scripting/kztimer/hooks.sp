@@ -565,7 +565,7 @@ public Action:CS_OnTerminateRound(&Float:delay, &CSRoundEndReason:reason)
 public Action:Event_OnRoundEnd(Handle:event, const String:name[], bool:dontBroadcast)
 {
 	g_bRoundEnd=true;
-		
+			
 	//Unhook ent stuff
 	new ent = -1;
 	SDKUnhook(0,SDKHook_Touch,Touch_Wall);	
@@ -580,6 +580,12 @@ public Action:Event_OnRoundEnd(Handle:event, const String:name[], bool:dontBroad
 	ent = -1;
 	while((ent = FindEntityByClassname(ent, "trigger_push")) != -1)
 		SDKUnhook(ent,SDKHook_Touch,Push_Touch);
+	ent = -1;
+	while((ent = FindEntityByClassname(ent, "trigger_gravity")) != -1)
+		SDKUnhook(ent,SDKHook_Touch,Push_Touch);	
+	ent = -1;	
+	while((ent = FindEntityByClassname(ent, "func_rotating")) != -1)
+		SDKUnhook(ent,SDKHook_Touch,Push_Touch);	
 	return Plugin_Continue;
 }
 
@@ -600,7 +606,31 @@ public Action:Event_OnRoundStart(Handle:event, const String:name[], bool:dontBro
 	ent = -1;
 	while((ent = FindEntityByClassname(ent, "trigger_push")) != -1)
 		SDKHook(ent,SDKHook_Touch,Push_Touch);
-
+	ent = -1;	
+	while((ent = FindEntityByClassname(ent, "trigger_gravity")) != -1)
+		SDKHook(ent,SDKHook_Touch,Push_Touch);		
+	//diaable helicopter rotors to prevent abusing
+	ent = -1;
+	while((ent = FindEntityByClassname(ent, "func_rotating")) != -1)
+	{	
+		SDKHook(ent,SDKHook_Touch,Push_Touch);
+		decl String:iname[64];
+		GetEntPropString(ent, Prop_Data, "m_iName", iname, sizeof(iname));	
+		if (!StrEqual(iname,""))
+		{
+			for (new y; y < GetEntityCount(); y++)
+			{
+				decl String:classname[32];
+				if (IsValidEdict(y) && GetEntityClassname(y, classname, 32))
+				{
+					GetEntPropString(y, Prop_Data, "m_iName", iname, sizeof(iname));	
+					if (StrContains(iname,"rotor") != -1)
+						SetEntProp(ent, Prop_Send, "m_nSolidType", 2);
+				}
+			}		
+		}
+	}
+	
 	g_bRoundEnd=false;
 	db_selectMapButtons();
 	OnPluginPauseChange(false);
@@ -856,6 +886,7 @@ public Action:OnPlayerRunCmd(client, &buttons, &impulse, Float:vel[3], Float:ang
 		TeleportCheck(client, origin);
 		NoClipCheck(client);
 		WaterCheck(client);
+		SlopeBoostFix(client);
 		BoosterCheck(client);
 		LadderCheck(client,speed);
 		AttackProtection(client, buttons);

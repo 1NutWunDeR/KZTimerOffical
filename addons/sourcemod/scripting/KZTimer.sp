@@ -17,7 +17,7 @@
 #include <sourcebans>
 #include <mapchooser>
 
-#define VERSION "1.77"
+#define VERSION "1.78"
 #define ADMIN_LEVEL ADMFLAG_UNBAN
 #define ADMIN_LEVEL2 ADMFLAG_ROOT
 #define MYSQL 0
@@ -389,6 +389,8 @@ new Float:g_fLastSpeed[MAXPLAYERS+1];
 new Float:g_fJumpButtonLastTimeUsed[MAXPLAYERS+1];
 new Float:g_fCrouchButtonLastTimeUsed[MAXPLAYERS+1];
 new Float:g_fFailedLandingPos[MAXPLAYERS+1][3];
+new Float:g_vCurrent[MAXPLAYERS+1][3];
+new Float:g_vLast[MAXPLAYERS+1][3];
 new Float:g_fAirTime[MAXPLAYERS+1];
 new Float:g_fLastTimeDoubleDucked[MAXPLAYERS+1];
 new Float:g_fJumpOffTime[MAXPLAYERS+1];
@@ -491,6 +493,7 @@ new bool:g_bInfoPanel[MAXPLAYERS+1];
 new bool:g_bClimbersMenuSounds[MAXPLAYERS+1];
 new g_EnableQuakeSounds[MAXPLAYERS+1];
 new bool:g_bShowNames[MAXPLAYERS+1]; 
+new bool:g_bLastOnGround[MAXPLAYERS + 1];
 new bool:g_bSpecInfo[MAXPLAYERS+1];
 new bool:g_bStrafeSync[MAXPLAYERS+1];
 new bool:g_bStartWithUsp[MAXPLAYERS+1];
