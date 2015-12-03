@@ -837,9 +837,9 @@ public SpecPlayer(client,args)
 		new Handle:menu = CreateMenu(SpecMenuHandler);
 		
 		if(g_bSpectate[client])
-			SetMenuTitle(menu, "KZTimer - Spec menu (press 'm' to rejoin a team!)");	
+			SetMenuTitle(menu, "KZTimer - Spec Menu (press 'm' to rejoin a team!)");	
 		else
-			SetMenuTitle(menu, "KZTimer - Spec menu");	
+			SetMenuTitle(menu, "KZTimer - Spec Menu");	
 		new playerCount=0;
 		
 		//add replay bots
@@ -847,41 +847,86 @@ public SpecPlayer(client,args)
 		{
 			if (g_ProBot != -1 && IsValidClient(g_ProBot) && IsPlayerAlive(g_ProBot))
 			{
-				Format(szPlayerName2, 128, "Pro record replay (%s)",g_szReplayTime);
+				Format(szPlayerName2, 128, "Pro Record Replay (%s)",g_szReplayTime);
 				AddMenuItem(menu, "PRO RECORD REPLAY", szPlayerName2);
 				playerCount++;
 			}
 			if (g_TpBot != -1 && IsValidClient(g_TpBot) && IsPlayerAlive(g_TpBot))
 			{
-				Format(szPlayerName2, 128, "TP record replay (%s)",g_szReplayTimeTp);
+				Format(szPlayerName2, 128, "TP Record Replay (%s)",g_szReplayTimeTp);
 				AddMenuItem(menu, "TP RECORD REPLAY", szPlayerName2);
 				playerCount++;
 			}
 		}
 		
 		new count = 0;
+		new client1, client2;
 		//add players
 		for (new i = 1; i <= MaxClients; i++)
 		{
+			// 
 			if (IsValidClient(i) && IsPlayerAlive(i) && i != client && !IsFakeClient(i))
 			{
 				if (count==0)
 				{
+					new QuickestPlayerId;
+					new Float:fl_besttime = 999999999.0;
+					new maprank;
 					new bestrank = 99999999;
+					decl String:szTopName[16];
+					decl String:szTopMapName[16];
 					for (new x = 1; x <= MaxClients; x++)
 					{
-						if (IsValidClient(x) && IsPlayerAlive(x) && x != client && !IsFakeClient(x) && g_PlayerRank[x] > 0)
+						if (!IsValidClient(x) || !IsPlayerAlive(x) || x == client || IsFakeClient(x)) continue;			 						
+						//time
+						if (g_fPersonalRecord[x] < fl_besttime && g_fPersonalRecord[x] > 0.0)
+						{
+							fl_besttime = g_fPersonalRecord[x];
+							maprank = g_MapRankTp[x];
+							QuickestPlayerId = x;
+							GetClientName(x,szTopMapName,16);
+							client1 = x;
+						}
+						if (g_fPersonalRecordPro[x] < fl_besttime && g_fPersonalRecordPro[x] > 0.0)
+						{
+							fl_besttime = g_fPersonalRecordPro[x];
+							maprank=  g_MapRankPro[x];
+							QuickestPlayerId = x;
+							GetClientName(x,szTopMapName,16);
+							client1 = x;
+						}
+							
+						//rank
+						if (g_PlayerRank[x] > 0)
 							if (g_PlayerRank[x] <= bestrank)
-								bestrank = g_PlayerRank[x];					
+							{
+								bestrank = g_PlayerRank[x];	
+								GetClientName(x,szTopName,16);
+								client2 = x;
+							}
 					}
+					//add rank
 					decl String:szMenu[128];
-					Format (szMenu,128,"Highest ranked player (#%i)",bestrank);
-					AddMenuItem(menu, "brp123123xcxc", szMenu);
+					Format (szMenu,128,"%s [Top Ranked Player] - #%i",szTopName, bestrank);
+					AddMenuItem(menu, "best_playertop", szMenu);
+					
+					//add time
+					decl String:szTime[32];
+					decl String:szId[4];
+					FormatTimeFloat(client, fl_besttime, 3, szTime, sizeof(szTime));
+					Format (szId,4,"%i",QuickestPlayerId);
+					
+					if (fl_besttime < 999999999.0)
+					{
+						Format (szMenu,128,"%s [Top Ranked On Map] - #%i, %s",szTopMapName, maprank, szTime);
+						AddMenuItem(menu, szId, szMenu);
+					}				
 					AddMenuItem(menu, "", "",ITEMDRAW_SPACER);					
 				}
 				GetClientName(i, szPlayerName, MAX_NAME_LENGTH);	
 				Format(szPlayerName2, 128, "%s (%s)",szPlayerName, g_pr_rankname[i]);
-				AddMenuItem(menu, szPlayerName, szPlayerName2);
+				if (i != client1 && i != client2)
+					AddMenuItem(menu, szPlayerName, szPlayerName2);
 				playerCount++;		
 				count++;
 			}
@@ -939,53 +984,59 @@ public SpecMenuHandler(Handle:menu, MenuAction:action, param1,param2)
 		decl String:szPlayerName[MAX_NAME_LENGTH];
 		GetMenuItem(menu, param2, info, sizeof(info));
 	
-		if(StrEqual(info,"brp123123xcxc"))
+		new iInfo = StringToInt(info);
+		if (1 < iInfo < MAXPLAYERS)
 		{
-			new playerid;
-			new count = 0;
-			new bestrank = 99999999;
-			for (new i = 1; i <= MaxClients; i++)
-			{
-				if (IsValidClient(i) && IsPlayerAlive(i) && i != param1 && !IsFakeClient(i))
-				{
-					if (g_PlayerRank[i] <= bestrank)
-					{
-						bestrank = g_PlayerRank[i];
-						playerid = i;
-						count++;
-					}
-				}						
-			}
-			if (count==0)
-				PrintToChat(param1, "%t", "NoPlayerTop", MOSSGREEN,WHITE);
-			else
-			{
-				ChangeClientTeam(param1, 1);
-				g_SpecTarget2[param1] = playerid;
-				CreateTimer(0.1, SelectSpecTarget, param1, TIMER_FLAG_NO_MAPCHANGE);			
-			}
+			ChangeClientTeam(param1, 1);
+			g_SpecTarget2[param1] = iInfo;
+			CreateTimer(0.1, SelectSpecTarget, param1, TIMER_FLAG_NO_MAPCHANGE);
 		}
 		else
-		{		
-			for (new i = 1; i <= MaxClients; i++)
+			if(StrEqual(info,"best_playertop"))
 			{
-				if (IsValidClient(i) && IsPlayerAlive(i) && i != param1)
+				new playerid;
+				new count = 0;
+				new bestrank = 99999999;
+				for (new i = 1; i <= MaxClients; i++)
 				{
-					GetClientName(i, szPlayerName, MAX_NAME_LENGTH);	
-					if (i == g_TpBot)
-						Format(szPlayerName, MAX_NAME_LENGTH, "TP RECORD REPLAY"); 
-					else
-						if (i == g_ProBot)
-							Format(szPlayerName, MAX_NAME_LENGTH, "PRO RECORD REPLAY"); 			
-					if(StrEqual(info,szPlayerName))
+					if (IsValidClient(i) && IsPlayerAlive(i) && i != param1 && !IsFakeClient(i))
 					{
-						ChangeClientTeam(param1, 1);
-						g_SpecTarget2[param1] = i;
-						CreateTimer(0.1, SelectSpecTarget, param1, TIMER_FLAG_NO_MAPCHANGE);	
-					}
-				}			
+						if (g_PlayerRank[i] <= bestrank)
+						{
+							bestrank = g_PlayerRank[i];
+							playerid = i;
+							count++;
+						}
+					}						
+				}
+				if (count!=0)
+				{
+					ChangeClientTeam(param1, 1);
+					g_SpecTarget2[param1] = playerid;
+					CreateTimer(0.1, SelectSpecTarget, param1, TIMER_FLAG_NO_MAPCHANGE);			
+				}
 			}
-		}		
+			else
+			{		
+				for (new i = 1; i <= MaxClients; i++)
+				{
+					if (IsValidClient(i) && IsPlayerAlive(i) && i != param1)
+					{
+						GetClientName(i, szPlayerName, MAX_NAME_LENGTH);	
+						if (i == g_TpBot)
+							Format(szPlayerName, MAX_NAME_LENGTH, "TP RECORD REPLAY"); 
+						else
+							if (i == g_ProBot)
+								Format(szPlayerName, MAX_NAME_LENGTH, "PRO RECORD REPLAY"); 			
+						if(StrEqual(info,szPlayerName))
+						{
+							ChangeClientTeam(param1, 1);
+							g_SpecTarget2[param1] = i;
+							CreateTimer(0.1, SelectSpecTarget, param1, TIMER_FLAG_NO_MAPCHANGE);	
+						}
+					}			
+				}
+			}		
 	}
 	else
 	if(action == MenuAction_Cancel)
@@ -1019,7 +1070,7 @@ public CompareMenu(client,args)
 	{
 		Format(szPlayerName, MAX_NAME_LENGTH, "");
 		new Handle:menu = CreateMenu(CompareSelectMenuHandler);
-		SetMenuTitle(menu, "KZTimer - Compare menu");		
+		SetMenuTitle(menu, "KZTimer - Compare Menu");		
 		new playerCount=0;
 		for (new i = 1; i <= MaxClients; i++)
 		{
@@ -1134,7 +1185,7 @@ public ProfileMenu(client,args)
 	{
 		decl String:szPlayerName[MAX_NAME_LENGTH];	
 		new Handle:menu = CreateMenu(ProfileSelectMenuHandler);
-		SetMenuTitle(menu, "KZTimer - Profile menu");		
+		SetMenuTitle(menu, "KZTimer - Profile Menu");		
 		GetClientName(client, szPlayerName, MAX_NAME_LENGTH);	
 		AddMenuItem(menu, szPlayerName, szPlayerName);	
 		new playerCount=1;

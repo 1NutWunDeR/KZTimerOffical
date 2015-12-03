@@ -380,7 +380,7 @@ public Action:KZTimer2(Handle:timer)
 			BhopPatternCheck(i);	
 			
 			//check skill group
-			if (g_Skillgroup[i] != 0 && g_Skillgroup[i] < g_MinSkillGroup && !(GetUserFlagBits(i) & ADMFLAG_RESERVATION) && !(StrEqual(g_pr_rankname[i],"ADMIN")))
+			if (g_Skillgroup[i] != 0 && g_Skillgroup[i] < g_MinSkillGroup && !(GetUserFlagBits(i) & ADMFLAG_RESERVATION) && !(GetUserFlagBits(i) & ADMFLAG_GENERIC) && !(GetUserFlagBits(i) & ADMFLAG_ROOT))
 			{
 				CreateTimer(3.0, KickPlayerHighRankOnly, i, TIMER_FLAG_NO_MAPCHANGE);
 				g_bKickStatus[i]=true;

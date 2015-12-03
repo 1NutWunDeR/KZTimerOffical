@@ -864,7 +864,8 @@ public SetClientDefaults(client)
 	g_bJumpBeam[client]=false;
 	g_bViewModel[client]=true;
 	g_bAdvInfoPanel[client]=false;
-	g_ClientLang[client]= 0;
+	g_bReplayRoute[client]=false;	
+	g_ClientLang[client]= g_DefaultLanguage;
 }
 
 // - Get Runtime -
@@ -4338,10 +4339,14 @@ public RegServerConVars()
 	GetConVarString(g_hArmModel,g_sArmModel,256);
 	HookConVarChange(g_hArmModel, OnSettingChanged);
 	
-	g_hWelcomeMsg   = CreateConVar("kz_welcome_msg", " {yellow}>>{default} {grey}Welcome! This server is using {lime}KZTimer v1.78","Welcome message (supported color tags: {default}, {darkred}, {green}, {lightgreen}, {blue} {olive}, {lime}, {red}, {purple}, {grey}, {yellow}, {lightblue}, {steelblue}, {darkblue}, {pink}, {lightred})", FCVAR_NOTIFY);
+	g_hWelcomeMsg   = CreateConVar("kz_welcome_msg", " {yellow}>>{default} {grey}Welcome! This server is using {lime}KZTimer","Welcome message (supported color tags: {default}, {darkred}, {green}, {lightgreen}, {blue} {olive}, {lime}, {red}, {purple}, {grey}, {yellow}, {lightblue}, {steelblue}, {darkblue}, {pink}, {lightred})", FCVAR_NOTIFY);
 	GetConVarString(g_hWelcomeMsg,g_sWelcomeMsg,512);
 	HookConVarChange(g_hWelcomeMsg, OnSettingChanged);
 
+	g_hDefaultLanguage 	= CreateConVar("kz_default_language", "0", "default language of kztimer (0: english,  1: german, 2: swedish, 3: french, 4: russian, 5: simplified chinese)", FCVAR_NOTIFY, true, 0.0, true, 100.0);
+	g_DefaultLanguage     = GetConVarInt(g_hDefaultLanguage);
+	HookConVarChange(g_hDefaultLanguage, OnSettingChanged);
+	
 	g_hReplayBotProColor   = CreateConVar("kz_replay_bot_pro_color", "52 91 248","The default pro replay bot color - Format: \"red green blue\" from 0 - 255.", FCVAR_NOTIFY);
 	HookConVarChange(g_hReplayBotProColor, OnSettingChanged);	
 	decl String:szProColor[256];
@@ -4686,6 +4691,8 @@ public SetupHooksAndCommandListener()
 	HookEntityOutput("trigger_multiple", "OnStartTouch", Teleport_OnStartTouch);	
 	HookEntityOutput("trigger_teleport", "OnEndTouch", Teleport_OnEndTouch);	
 	HookEntityOutput("trigger_multiple", "OnEndTouch", Teleport_OnEndTouch);	
+	HookEntityOutput("trigger_gravity", "OnStartTouch", Trigger_GravityTouch);
+	HookEntityOutput("trigger_gravity", "OnEndTouch", Trigger_GravityTouch);
 	HookEntityOutput("func_button", "OnPressed", ButtonPress);
 	
 	///////////////////////

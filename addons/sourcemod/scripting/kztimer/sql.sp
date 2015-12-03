@@ -1,5 +1,5 @@
 //TABLE CHALLENGE
-new String:sql_createChallenges[] 				= "CREATE TABLE IF NOT EXISTS challenges (steamid VARCHAR(32), steamid2 VARCHAR(32), bet INT(12), cp_allowed INT(12), map VARCHAR(32), date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY(steamid,steamid2,date));";
+new String:sql_createChallenges[] 				= "CREATE TABLE IF NOT EXISTS challenges (steamid VARCHAR(32) NOT NULL, steamid2 VARCHAR(32) NOT NULL, bet INT(12) NOT NULL DEFAULT '-1', cp_allowed INT(12) NOT NULL DEFAULT '-1', map VARCHAR(32) NOT NULL, date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY(steamid,steamid2,date));";
 new String:sql_insertChallenges[] 				= "INSERT INTO challenges (steamid, steamid2, bet, map, cp_allowed) VALUES('%s', '%s','%i','%s','%i');";
 new String:sql_selectChallenges2[] 				= "SELECT steamid, steamid2, bet, cp_allowed, map, date FROM challenges where steamid = '%s' OR steamid2 ='%s' ORDER BY date DESC";
 new String:sql_selectChallenges[] 				= "SELECT steamid, steamid2, bet, cp_allowed, map FROM challenges where steamid = '%s' OR steamid2 ='%s'";
@@ -7,18 +7,18 @@ new String:sql_selectChallengesCompare[] 		= "SELECT steamid, steamid2, bet FROM
 new String:sql_deleteChallenges[] 				= "DELETE from challenges where steamid = '%s'";
 
 //TABLE LATEST 15 LOCAL RECORDS
-new String:sql_createLatestRecords[] 			= "CREATE TABLE IF NOT EXISTS LatestRecords (steamid VARCHAR(32), name VARCHAR(32), runtime FLOAT NOT NULL DEFAULT '-1.0', teleports INT(12) DEFAULT '-1', map VARCHAR(32), date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY(steamid,map,date));";
+new String:sql_createLatestRecords[] 			= "CREATE TABLE IF NOT EXISTS LatestRecords (steamid VARCHAR(32) NOT NULL, name VARCHAR(32) NOT NULL, runtime FLOAT NOT NULL DEFAULT '-1.0', teleports INT(12) NOT NULL DEFAULT '-1', map VARCHAR(32) NOT NULL, date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY(steamid,map,date));";
 new String:sql_insertLatestRecords[] 			= "INSERT INTO LatestRecords (steamid, name, runtime, teleports, map) VALUES('%s','%s','%f','%i','%s');";
 new String:sql_selectLatestRecords[] 			= "SELECT name, runtime, teleports, map, date FROM LatestRecords ORDER BY date DESC LIMIT 50";
 
 //TABLE PLAYEROPTIONS
-new String:sql_createPlayerOptions[] 			= "CREATE TABLE IF NOT EXISTS playeroptions2 (steamid VARCHAR(32), colorchat INT(12) DEFAULT '1', speedmeter INT(12) DEFAULT '0', climbersmenu_sounds INT(12) DEFAULT '1', quake_sounds INT(12) DEFAULT '1', autobhop INT(12) DEFAULT '0', shownames INT(12) DEFAULT '1', goto INT(12) DEFAULT '1', strafesync INT(12) DEFAULT '0', showtime INT(12) DEFAULT '1', hideplayers INT(12) DEFAULT '0', showspecs INT(12) DEFAULT '1', cpmessage INT(12) DEFAULT '0', adv_menu INT(12) DEFAULT '0', knife VARCHAR(32) DEFAULT 'weapon_knife', jumppenalty INT(12) DEFAULT '0', new1 INT(12) DEFAULT '0', new2 INT(12) DEFAULT '0', new3 INT(12) DEFAULT '0', PRIMARY KEY(steamid));";
+new String:sql_createPlayerOptions[] 			= "CREATE TABLE IF NOT EXISTS playeroptions2 (steamid VARCHAR(32) NOT NULL, colorchat INT(12) NOT NULL DEFAULT '1' , speedmeter INT(12) NOT NULL DEFAULT '0' , climbersmenu_sounds INT(12) NOT NULL DEFAULT '1' , quake_sounds INT(12) NOT NULL DEFAULT '1' , autobhop INT(12) NOT NULL DEFAULT '0' , shownames INT(12) NOT NULL DEFAULT '1' , goto INT(12) NOT NULL DEFAULT '1' , strafesync INT(12) NOT NULL DEFAULT '0' , showtime INT(12) NOT NULL DEFAULT '1' , hideplayers INT(12) NOT NULL DEFAULT '0' , showspecs INT(12) NOT NULL DEFAULT '1' , cpmessage INT(12) NOT NULL DEFAULT '0' , adv_menu INT(12) NOT NULL DEFAULT '0' , knife VARCHAR(32) NOT NULL DEFAULT 'weapon_knife', jumppenalty INT(12) NOT NULL DEFAULT '0' , new1 INT(12) NOT NULL DEFAULT '0' , new2 INT(12) NOT NULL DEFAULT '0' , new3 INT(12) NOT NULL DEFAULT '0' , PRIMARY KEY(steamid));";
 new String:sql_insertPlayerOptions[] 			= "INSERT INTO playeroptions2 (steamid, colorchat, speedmeter, climbersmenu_sounds, quake_sounds, autobhop, shownames, goto, strafesync, showtime, hideplayers, showspecs, cpmessage, adv_menu, knife, jumppenalty, new1, new2, new3, ViewModel, AdvInfoPanel, ReplayRoute,Language) VALUES('%s', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%s', '%i', '%i', '%i', '%i', '%i', '%i', '%i','%i');";
 new String:sql_selectPlayerOptions[] 			= "SELECT colorchat, speedmeter, climbersmenu_sounds, quake_sounds, autobhop, shownames, goto, strafesync, showtime, hideplayers, showspecs, cpmessage, adv_menu, knife, jumppenalty, new1, new2, new3, ViewModel,  AdvInfoPanel, ReplayRoute,Language FROM playeroptions2 where steamid = '%s'";
 new String:sql_updatePlayerOptions[]			= "UPDATE playeroptions2 SET colorchat ='%i', speedmeter ='%i', climbersmenu_sounds ='%i', quake_sounds ='%i', autobhop ='%i', shownames ='%i', goto ='%i', strafesync ='%i', showtime ='%i', hideplayers ='%i', showspecs ='%i', cpmessage ='%i', adv_menu ='%i', knife ='%s', jumppenalty ='%i', new1 = '%i', new2 = '%i', new3 = '%i', ViewModel = '%i', AdvInfoPanel ='%i', ReplayRoute ='%i', Language ='%i' where steamid = '%s'";
 
 //TABLE PLAYERRANK
-new String:sql_createPlayerRank[]				= "CREATE TABLE IF NOT EXISTS playerrank (steamid VARCHAR(32), name VARCHAR(32), country VARCHAR(32), points INT(12)  DEFAULT '0', winratio INT(12)  DEFAULT '0', pointsratio INT(12)  DEFAULT '0',finishedmaps INT(12) DEFAULT '0', multiplier INT(12) DEFAULT '0', finishedmapstp INT(12) DEFAULT '0', finishedmapspro INT(12) DEFAULT '0', PRIMARY KEY(steamid));";
+new String:sql_createPlayerRank[]				= "CREATE TABLE IF NOT EXISTS playerrank (steamid VARCHAR(32) NOT NULL, name VARCHAR(32) NOT NULL, country VARCHAR(32) NOT NULL, points INT(12) NOT NULL DEFAULT '0', winratio INT(12) NOT NULL DEFAULT '0', pointsratio INT(12) NOT NULL DEFAULT '0',finishedmaps INT(12) NOT NULL DEFAULT '0', multiplier INT(12) NOT NULL DEFAULT '0', finishedmapstp INT(12) NOT NULL DEFAULT '0', finishedmapspro INT(12) NOT NULL DEFAULT '0', PRIMARY KEY(steamid));";
 new String:sql_insertPlayerRank[] 				= "INSERT INTO playerrank (steamid, name, country) VALUES('%s', '%s', '%s');";
 new String:sql_updatePlayerRankPoints[]			= "UPDATE playerrank SET name ='%s', points ='%i', finishedmapstp ='%i', finishedmapspro='%i',winratio = '%i',pointsratio = '%i' where steamid='%s'";
 new String:sql_updatePlayerRankPoints2[]		= "UPDATE playerrank SET name ='%s', points ='%i', finishedmapstp ='%i', finishedmapspro='%i',winratio = '%i',pointsratio = '%i', country ='%s' where steamid='%s'";
@@ -38,7 +38,7 @@ new String:sql_CountRankedPlayers[] 			= "SELECT COUNT(steamid) FROM playerrank"
 new String:sql_CountRankedPlayers2[] 			= "SELECT COUNT(steamid) FROM playerrank where points > 0";
 
 //TABLE PLAYERTIMES
-new String:sql_createPlayertimes[] 				= "CREATE TABLE IF NOT EXISTS playertimes (steamid VARCHAR(32), mapname VARCHAR(32), name VARCHAR(32), teleports INT(12) DEFAULT '-1', runtime FLOAT NOT NULL DEFAULT '-1.0', runtimepro FLOAT NOT NULL DEFAULT '-1.0',teleports_pro INT(12) DEFAULT '0', PRIMARY KEY(steamid,mapname));";
+new String:sql_createPlayertimes[] 				= "CREATE TABLE IF NOT EXISTS playertimes (steamid VARCHAR(32) NOT NULL, mapname VARCHAR(32) NOT NULL, name VARCHAR(32) NOT NULL, teleports INT(12) NOT NULL DEFAULT '-1', runtime FLOAT NOT NULL DEFAULT '-1.0', runtimepro FLOAT NOT NULL DEFAULT '-1.0',teleports_pro INT(12) NOT NULL DEFAULT '0', PRIMARY KEY(steamid,mapname));";
 new String:sql_insertPlayer[] 					= "INSERT INTO playertimes (steamid, mapname, name) VALUES('%s', '%s', '%s');";
 new String:sql_insertPlayerTp[] 					= "INSERT INTO playertimes (steamid, mapname, name,runtime, teleports) VALUES('%s', '%s', '%s', '%f', '%i');";
 new String:sql_insertPlayerPro[] 				= "INSERT INTO playertimes (steamid, mapname, name,runtimepro) VALUES('%s', '%s', '%s', '%f');";
@@ -68,14 +68,14 @@ new String:sql_selectTpRecordCount[] 			= "SELECT y.steamid, COUNT(*) AS rekorde
 new String:sql_selectProRecordCount[] 			= "SELECT y.steamid, COUNT(*) AS rekorde FROM (SELECT s.steamid FROM playertimes s INNER JOIN (SELECT mapname, MIN(runtimepro) AS runtimepro FROM playertimes where runtimepro > -1.0  GROUP BY mapname) x ON s.mapname = x.mapname AND s.runtimepro = x.runtimepro) y where y.steamid = '%s' GROUP BY y.steamid ORDER BY rekorde DESC , y.steamid;";
 
 //TABLE PLAYERTMP
-new String:sql_createPlayertmp[] 				= "CREATE TABLE IF NOT EXISTS playertmp (steamid VARCHAR(32), mapname VARCHAR(32), cords1 FLOAT NOT NULL DEFAULT '-1.0', cords2 FLOAT NOT NULL DEFAULT '-1.0', cords3 FLOAT NOT NULL DEFAULT '-1.0', angle1 FLOAT NOT NULL DEFAULT '-1.0',angle2 FLOAT NOT NULL DEFAULT '-1.0',angle3 FLOAT NOT NULL DEFAULT '-1.0', EncTickrate INT(12) DEFAULT '-1.0', teleports INT(12) DEFAULT '-1.0', checkpoints INT(12) DEFAULT '-1.0', runtimeTmp FLOAT NOT NULL DEFAULT '-1.0', PRIMARY KEY(steamid,mapname));";
+new String:sql_createPlayertmp[] 				= "CREATE TABLE IF NOT EXISTS playertmp (steamid VARCHAR(32) NOT NULL, mapname VARCHAR(32) NOT NULL, cords1 FLOAT NOT NULL DEFAULT '-1.0', cords2 FLOAT NOT NULL DEFAULT '-1.0', cords3 FLOAT NOT NULL DEFAULT '-1.0', angle1 FLOAT NOT NULL DEFAULT '-1.0',angle2 FLOAT NOT NULL DEFAULT '-1.0',angle3 FLOAT NOT NULL DEFAULT '-1.0', EncTickrate INT(12) NOT NULL DEFAULT '-1.0', teleports INT(12) NOT NULL DEFAULT '-1.0', checkpoints INT(12) NOT NULL DEFAULT '0', runtimeTmp FLOAT NOT NULL DEFAULT '-1.0', PRIMARY KEY(steamid,mapname));";
 new String:sql_insertPlayerTmp[]  				= "INSERT INTO playertmp (cords1, cords2, cords3, angle1,angle2,angle3, teleports,checkpoints,runtimeTmp,steamid,mapname,EncTickrate) VALUES ('%f','%f','%f','%f','%f','%f','%i','%i','%f','%s', '%s', '%i');";
 new String:sql_updatePlayerTmp[] 				= "UPDATE playertmp SET cords1 = '%f', cords2 = '%f', cords3 = '%f', angle1 = '%f', angle2 = '%f', angle3 = '%f', teleports = '%i', checkpoints = '%i', runtimeTmp = '%f', mapname ='%s', EncTickrate='%i' where steamid = '%s';";
 new String:sql_deletePlayerTmp[] 				= "DELETE FROM playertmp where steamid = '%s';";
 new String:sql_selectPlayerTmp[] 				= "SELECT cords1,cords2,cords3, angle1, angle2, angle3, teleports, checkpoints, runtimeTmp, EncTickrate FROM playertmp WHERE steamid = '%s' AND mapname = '%s';";
 
 //TABLE JUMMPSTATS
-new String:sql_createPlayerjumpstats[] 			= "CREATE TABLE IF NOT EXISTS playerjumpstats3 (steamid VARCHAR(32), name VARCHAR(32), multibhoprecord FLOAT NOT NULL DEFAULT '-1.0',  multibhoppre FLOAT NOT NULL DEFAULT '-1.0', multibhopmax FLOAT NOT NULL DEFAULT '-1.0', multibhopstrafes INT(12),multibhopcount INT(12),multibhopsync INT(12), multibhopheight FLOAT NOT NULL DEFAULT '-1.0', bhoprecord FLOAT NOT NULL DEFAULT '-1.0',  bhoppre FLOAT NOT NULL DEFAULT '-1.0', bhopmax FLOAT NOT NULL DEFAULT '-1.0', bhopstrafes INT(12),bhopsync INT(12), bhopheight FLOAT NOT NULL DEFAULT '-1.0', ljrecord FLOAT NOT NULL DEFAULT '-1.0', ljpre FLOAT NOT NULL DEFAULT '-1.0', ljmax FLOAT NOT NULL DEFAULT '-1.0', ljstrafes INT(12),ljsync INT(12), ljheight FLOAT NOT NULL DEFAULT '-1.0', ljblockdist INT(12) NOT NULL DEFAULT '-1',ljblockrecord FLOAT NOT NULL DEFAULT '-1.0', ljblockpre FLOAT NOT NULL DEFAULT '-1.0', ljblockmax FLOAT NOT NULL DEFAULT '-1.0', ljblockstrafes INT(12),ljblocksync INT(12), ljblockheight FLOAT NOT NULL DEFAULT '-1.0', dropbhoprecord FLOAT NOT NULL DEFAULT '-1.0',  dropbhoppre FLOAT NOT NULL DEFAULT '-1.0', dropbhopmax FLOAT NOT NULL DEFAULT '-1.0', dropbhopstrafes INT(12),dropbhopsync INT(12), dropbhopheight FLOAT NOT NULL DEFAULT '-1.0', wjrecord FLOAT NOT NULL DEFAULT '-1.0', wjpre FLOAT NOT NULL DEFAULT '-1.0', wjmax FLOAT NOT NULL DEFAULT '-1.0', wjstrafes INT(12),wjsync INT(12), wjheight FLOAT NOT NULL DEFAULT '-1.0', standupbhoprecord FLOAT NOT NULL DEFAULT '-1.0',  standupbhoppre FLOAT NOT NULL DEFAULT '-1.0', standupbhopmax FLOAT NOT NULL DEFAULT '-1.0', standupbhopstrafes INT(12),standupbhopcount INT(12),standupbhopsync INT(12), standupbhopheight FLOAT NOT NULL DEFAULT '-1.0', dropstandupbhoprecord FLOAT NOT NULL DEFAULT '-1.0',  dropstandupbhoppre FLOAT NOT NULL DEFAULT '-1.0', dropstandupbhopmax FLOAT NOT NULL DEFAULT '-1.0', dropstandupbhopstrafes INT(12), dropstandupbhopcount INT(12), dropstandupbhopsync INT(12), dropstandupbhopheight FLOAT NOT NULL DEFAULT '-1.0', ladderjumprecord FLOAT NOT NULL DEFAULT '-1.0',  ladderjumppre FLOAT NOT NULL DEFAULT '-1.0', ladderjumpmax FLOAT NOT NULL DEFAULT '-1.0', ladderjumpstrafes INT(12), ladderjumpcount INT(12), ladderjumpsync INT(12), ladderjumpheight FLOAT NOT NULL DEFAULT '-1.0', ladderbhoprecord FLOAT NOT NULL DEFAULT '-1.0',  ladderbhoppre FLOAT NOT NULL DEFAULT '-1.0', ladderbhopmax FLOAT NOT NULL DEFAULT '-1.0', ladderbhopstrafes INT(12), ladderbhopcount INT(12), ladderbhopsync INT(12), ladderbhopheight FLOAT NOT NULL DEFAULT '-1.0',  PRIMARY KEY(steamid));";
+new String:sql_createPlayerjumpstats[] 			= "CREATE TABLE IF NOT EXISTS playerjumpstats3 (steamid VARCHAR(32) NOT NULL, name VARCHAR(32) NOT NULL, multibhoprecord FLOAT NOT NULL DEFAULT '-1.0',  multibhoppre FLOAT NOT NULL DEFAULT '-1.0', multibhopmax FLOAT NOT NULL DEFAULT '-1.0', multibhopstrafes INT(12) NOT NULL DEFAULT '-1',multibhopcount INT(12) NOT NULL DEFAULT '-1',multibhopsync INT(12) NOT NULL DEFAULT '-1', multibhopheight FLOAT NOT NULL DEFAULT '-1.0', bhoprecord FLOAT NOT NULL DEFAULT '-1.0',  bhoppre FLOAT NOT NULL DEFAULT '-1.0', bhopmax FLOAT NOT NULL DEFAULT '-1.0', bhopstrafes INT(12) NOT NULL DEFAULT '-1',bhopsync INT(12) NOT NULL DEFAULT '-1', bhopheight FLOAT NOT NULL DEFAULT '-1.0', ljrecord FLOAT NOT NULL DEFAULT '-1.0', ljpre FLOAT NOT NULL DEFAULT '-1.0', ljmax FLOAT NOT NULL DEFAULT '-1.0', ljstrafes INT(12) NOT NULL DEFAULT '-1',ljsync INT(12) NOT NULL DEFAULT '-1', ljheight FLOAT NOT NULL DEFAULT '-1.0', ljblockdist INT(12) NOT NULL DEFAULT '-1',ljblockrecord FLOAT NOT NULL DEFAULT '-1.0', ljblockpre FLOAT NOT NULL DEFAULT '-1.0',  ljblockmax FLOAT NOT NULL DEFAULT '-1.0', ljblockstrafes INT(12) NOT NULL DEFAULT '-1',ljblocksync INT(12) NOT NULL DEFAULT '-1', ljblockheight FLOAT NOT NULL DEFAULT '-1.0', dropbhoprecord FLOAT NOT NULL DEFAULT '-1.0',  dropbhoppre FLOAT NOT NULL DEFAULT '-1.0',  dropbhopmax FLOAT NOT NULL DEFAULT '-1.0', dropbhopstrafes INT(12) NOT NULL DEFAULT '-1',dropbhopsync INT(12) NOT NULL DEFAULT '-1', dropbhopheight FLOAT NOT NULL DEFAULT '-1.0', wjrecord FLOAT NOT NULL DEFAULT '-1.0', wjpre FLOAT NOT NULL DEFAULT '-1.0',  wjmax FLOAT NOT NULL DEFAULT '-1.0', wjstrafes INT(12) NOT NULL DEFAULT '-1',wjsync INT(12) NOT NULL DEFAULT '-1', wjheight FLOAT NOT NULL DEFAULT '-1.0', ladderjumprecord FLOAT NOT NULL DEFAULT '-1.0',  ladderjumppre FLOAT NOT NULL DEFAULT '-1.0',  ladderjumpmax FLOAT NOT NULL DEFAULT '-1.0', ladderjumpstrafes INT(12) NOT NULL DEFAULT '-1', ladderjumpsync INT(12) NOT NULL DEFAULT '-1', ladderjumpheight FLOAT NOT NULL DEFAULT '-1.0',   PRIMARY KEY(steamid));";
 new String:sql_insertPlayerJumpBhop[] 			= "INSERT INTO playerjumpstats3 (steamid, name, bhoprecord, bhoppre, bhopmax, bhopstrafes, bhopsync, bhopheight) VALUES('%s', '%s', '%f', '%f', '%f', '%i', '%i', '%f');";
 new String:sql_insertPlayerJumpLj[] 			= "INSERT INTO playerjumpstats3 (steamid, name, ljrecord, ljpre, ljmax, ljstrafes, ljsync, ljheight) VALUES('%s', '%s', '%f', '%f', '%f', '%i', '%i', '%f');";
 new String:sql_insertPlayerJumpLjBlock[] 		= "INSERT INTO playerjumpstats3 (steamid, name, ljblockdist, ljblockrecord, ljblockpre, ljblockmax, ljblockstrafes, ljblocksync, ljblockheight) VALUES('%s', '%s', '%i', '%f', '%f', '%f', '%i', '%i', '%f');";
@@ -127,9 +127,8 @@ new String:sql_selectPlayerJumpTopCountJump[] 			= "SELECT db1.name, db2.cjrecor
 new String:sql_selectPlayerJumpCountJump[] 			= "SELECT steamid, name, cjrecord FROM playerjumpstats3 WHERE steamid = '%s';";
 new String:sql_selectPlayerRankCountJump[] 			= "SELECT name FROM playerjumpstats3 WHERE cjrecord >= (SELECT cjrecord FROM playerjumpstats3 WHERE steamid = '%s' AND cjrecord > -1.0) AND cjrecord  > -1.0 ORDER BY cjrecord;";
 
-
 // TABLE MAP BUTTONS
-new String:sql_createMapButtons[] 				= "CREATE TABLE IF NOT EXISTS MapButtons (mapname VARCHAR(32), cords1Start FLOAT NOT NULL DEFAULT '-1.0', cords2Start FLOAT NOT NULL DEFAULT '-1.0', cords3Start FLOAT NOT NULL DEFAULT '-1.0', cords1End FLOAT NOT NULL DEFAULT '-1.0', cords2End FLOAT NOT NULL DEFAULT '-1.0', cords3End FLOAT NOT NULL DEFAULT '-1.0', ang_start FLOAT NOT NULL DEFAULT '-1.0', ang_end FLOAT NOT NULL DEFAULT '-1.0', PRIMARY KEY(mapname));";
+new String:sql_createMapButtons[] 				= "CREATE TABLE IF NOT EXISTS MapButtons (mapname VARCHAR(32) NOT NULL, cords1Start FLOAT NOT NULL DEFAULT '-1.0', cords2Start FLOAT NOT NULL DEFAULT '-1.0', cords3Start FLOAT NOT NULL DEFAULT '-1.0', cords1End FLOAT NOT NULL DEFAULT '-1.0', cords2End FLOAT NOT NULL DEFAULT '-1.0', cords3End FLOAT NOT NULL DEFAULT '-1.0', ang_start FLOAT NOT NULL DEFAULT '-1.0', ang_end FLOAT NOT NULL DEFAULT '-1.0', PRIMARY KEY(mapname));";
 new String:sql_deleteMapButtons[] 				= "DELETE FROM MapButtons where mapname= '%s';";
 new String:sql_insertMapButtons[] 				= "INSERT INTO MapButtons (mapname, cords1Start, cords2Start,cords3Start,cords1End,cords2End,cords3End,ang_start,ang_end) VALUES('%s', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%f');";
 new String:sql_selectMapButtons[] 				= "SELECT cords1Start,cords2Start,cords3Start,cords1End,cords2End,cords3End,ang_start,ang_end FROM MapButtons WHERE mapname = '%s';";
@@ -663,7 +662,7 @@ public SQL_ViewJumpStatsCallback2(Handle:owner, Handle:hndl, const String:error[
 		new bool:ljtrue;
 		
 		
-		if (bhoprecord >0.0 || ljrecord > 0.0 || multibhoprecord > 0.0 || wjrecord > 0.0 || dropbhoprecord > 0.0 || ljblockdist > 0.0 || ladderjumprecord > 0.0)
+		if (bhoprecord >0.0 || ljrecord > 0.0 || multibhoprecord > 0.0 || wjrecord > 0.0 || dropbhoprecord > 0.0 || ljblockdist > 0.0 || ladderjumprecord > 0.0 || cjrecord > 0.0)
 		{										 
 			Format(szVr, 255, "Jumpstats: %s\nType               Distance  Strafes  Pre        Max      Height  Sync", szName);
 			new Handle:menu = CreateMenu(JumpStatsMenuHandler);
@@ -5172,11 +5171,11 @@ public db_viewPlayerOptionsCallback(Handle:owner, Handle:hndl, const String:erro
 		g_org_ClientLang[client] = g_ClientLang[client];
 	}
 	else
-	{
+	{		
 		decl String:szQuery[512];      
 		if (!IsValidClient(client))
 			return;
-		Format(szQuery, 512, sql_insertPlayerOptions, g_szSteamID[client], 1,0,1,1,1,1,1,0,1,0,1,0,1,"weapon_knife",0,0,0,0,1,0,0,0)
+		Format(szQuery, 512, sql_insertPlayerOptions, g_szSteamID[client], 1,0,1,1,1,1,1,0,1,0,1,0,1,"weapon_knife",0,0,0,0,1,0,0,g_DefaultLanguage)
 		SQL_TQuery(g_hDb, SQL_InsertCheckCallback, szQuery,DBPrio_Low);			
 		g_org_ColorChat[client] = 1;
 		g_borg_InfoPanel[client] = false;
@@ -5197,7 +5196,7 @@ public db_viewPlayerOptionsCallback(Handle:owner, Handle:hndl, const String:erro
 		g_borg_ViewModel[client] = true;
 		g_borg_AdvInfoPanel[client]=false;
 		g_borg_ReplayRoute[client]=false;
-		g_org_ClientLang[client] = 0;
+		g_org_ClientLang[client] = g_DefaultLanguage;
 	}
 }
 

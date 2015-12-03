@@ -15,6 +15,13 @@ stock SetEntityAlpha(index,alpha)
     }  
 }
 
+public Trigger_GravityTouch(const String:output[], bhop_block, client, Float:delay)
+{
+	if (!IsValidClient(client))
+		return;
+	ResetJump(client);
+}
+
 //dhooks
 public MRESReturn:DHooks_OnTeleport(client, Handle:hParams)
 {
@@ -645,10 +652,8 @@ public Hook_PostThink(client)
 
 public Action:Push_Touch(ent,client)
 {
-	if(IsValidClient(client) && g_js_bPlayerJumped[client])
-	{
+	if(IsValidClient(client))
 		ResetJump(client);
-	}
 	return Plugin_Continue;
 }
 

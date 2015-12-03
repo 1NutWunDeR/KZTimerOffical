@@ -17,7 +17,7 @@
 #include <sourcebans>
 #include <mapchooser>
 
-#define VERSION "1.78"
+#define VERSION "1.79"
 #define ADMIN_LEVEL ADMFLAG_UNBAN
 #define ADMIN_LEVEL2 ADMFLAG_ROOT
 #define MYSQL 0
@@ -31,6 +31,7 @@
 #define RED 0x07
 #define GRAY 0x08
 #define YELLOW 0x09
+#define ORANGE 0x10
 #define DARKGREY 0x0A
 #define BLUE 0x0B
 #define DARKBLUE 0x0C
@@ -297,6 +298,8 @@ new Handle:g_hTransPlayerModels = INVALID_HANDLE;
 new g_TransPlayerModels;
 new Handle:g_hAutohealing_Hp = INVALID_HANDLE;
 new g_Autohealing_Hp;
+new Handle:g_hDefaultLanguage = INVALID_HANDLE;
+new g_DefaultLanguage;
 new Handle:g_hTeam_Restriction = INVALID_HANDLE;
 new g_Team_Restriction;
 new Handle:g_hExtraPoints = INVALID_HANDLE;
@@ -905,6 +908,8 @@ public OnPluginEnd()
 	UnhookEntityOutput("trigger_multiple", "OnStartTouch", Teleport_OnStartTouch);	
 	UnhookEntityOutput("trigger_teleport", "OnEndTouch", Teleport_OnEndTouch);	
 	UnhookEntityOutput("trigger_multiple", "OnEndTouch", Teleport_OnEndTouch);	
+	UnhookEntityOutput("trigger_gravity", "OnStartTouch", Trigger_GravityTouch);
+	UnhookEntityOutput("trigger_gravity", "OnEndTouch", Trigger_GravityTouch);	
 	UnhookEntityOutput("func_button", "OnPressed", ButtonPress);
 
 	//set server convars back to default
@@ -1408,6 +1413,8 @@ public OnSettingChanged(Handle:convar, const String:oldValue[], const String:new
 		else
 			g_bDynamicTimelimit = false;
 	}	
+	if(convar == g_hDefaultLanguage)
+		g_DefaultLanguage = StringToInt(newValue[0]);	
 	if(convar == g_hAutohealing_Hp)
 		g_Autohealing_Hp = StringToInt(newValue[0]);	
 	if(convar == g_hTeam_Restriction)
