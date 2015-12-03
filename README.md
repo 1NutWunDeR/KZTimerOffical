@@ -39,8 +39,9 @@ v1.79
 - fixed jumpstats bug with low gravity zones (entity name: "trigger_gravity")
 - minor bug fixes
 - updated files: KZTimerGlobal.smx (sourcemod/plugins) and all language files (sourcemod/translations)
+
 NOTE: Please delete your cfg/sourcemod/KZTimerGlobal.cfg and restart your server! KZTimer will automatically create a new config file, which will be up2date!
-Please show your appreciation for the work on kztimer and [b]support future development[/b] by [url=https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7REZX9RD6G6QL]donating[/url]
+
 
 v1.78
 - fixed a minor jumpstats bug
