@@ -31,6 +31,9 @@ else: mp_respawn_on_death_ct 0;mp_respawn_on_death_t 0
 Changelog
 =======
 <SPOILER>
+v1.8 (requires sourcemod 1.7 build 5279 or higher)
+- fixed info bot and replay bots 
+- fixed a minor jumpstats bug on kz_conrun_mq 
 
 v1.79
 - added "Top Ranked On Map" shortcut to the spectator menu
@@ -38,7 +41,6 @@ v1.79
 - added personal best (PB) notifier to all jumpstats messages
 - fixed jumpstats bug with low gravity zones (entity name: "trigger_gravity")
 - minor bug fixes
-- updated files: KZTimerGlobal.smx (sourcemod/plugins) and all language files (sourcemod/translations)
 
 NOTE: Please delete your cfg/sourcemod/KZTimerGlobal.cfg and restart your server! KZTimer will automatically create a new config file, which will be up2date!
 
