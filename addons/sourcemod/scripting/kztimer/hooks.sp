@@ -1,3 +1,25 @@
+public Action:SayText2(UserMsg:msg_id, Handle:bf, players[], playersNum, bool:reliable, bool:init)
+{
+	if(!reliable) return Plugin_Continue;
+	new String:buffer[25];
+	if(GetUserMessageType() == UM_Protobuf)
+	{
+		PbReadString(bf, "msg_name", buffer, sizeof(buffer));
+		if(StrEqual(buffer, "#Cstrike_Name_Change"))
+			return Plugin_Handled;
+	}
+	else
+	{
+		BfReadChar(bf);
+		BfReadChar(bf);
+		BfReadString(bf, buffer, sizeof(buffer));
+
+		if(StrEqual(buffer, "#Cstrike_Name_Change"))
+			return Plugin_Handled;
+	}
+	return Plugin_Continue;
+}
+
 public OnWeaponSwitchPost(client, weapon) 
 {
 	if(IsValidEntity(weapon))

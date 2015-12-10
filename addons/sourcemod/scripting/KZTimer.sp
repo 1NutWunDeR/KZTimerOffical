@@ -5,7 +5,6 @@
 #include <cstrike>
 #include <button>
 #include <entity>
-#include <setname>
 #include <smlib>
 #include <KZTimer>
 #include <geoip>
@@ -17,7 +16,7 @@
 #include <sourcebans>
 #include <mapchooser>
 
-#define VERSION "1.79"
+#define VERSION "1.8"
 #define ADMIN_LEVEL ADMFLAG_UNBAN
 #define ADMIN_LEVEL2 ADMFLAG_ROOT
 #define MYSQL 0

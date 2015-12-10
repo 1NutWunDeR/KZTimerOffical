@@ -428,6 +428,13 @@ public Prethink (client, bool:ladderjump)
 	g_js_fMax_Height[client] = -99999.0;				
 	g_fMovingDirection[client] = 0.0;			
 	GetGroundOrigin(client, g_js_fJump_JumpOff_Pos[client]);	
+
+	//*workaround: some grounds are not detected by getgroundorigin
+	new Float:fPosDiffArray[3];
+	GetClientAbsOrigin(client, fPosDiffArray);
+	new Float:fPosDiff =  FloatAbs(fPosDiffArray[2]- g_js_fJump_JumpOff_Pos[client][2]);
+	if (fPosDiff > 10.0)
+		g_js_fJump_JumpOff_Pos[client] = fPosDiffArray;
 	
 	//dropped?
 	if (g_js_fJump_JumpOff_PosLastHeight[client] != -1.012345)

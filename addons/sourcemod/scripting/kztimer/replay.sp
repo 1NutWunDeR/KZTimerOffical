@@ -205,7 +205,10 @@ public LoadReplays()
 
 public PlayRecord(client, type)
 {
-	decl String:buffer[256];
+	if (!IsValidClient(client))
+		return;
+		
+	char buffer[256];
 	decl String:sPath[256]; 
 	if (type==0)
 		Format(sPath, sizeof(sPath), "%s%s.rec",KZ_REPLAY_PATH,g_szMapName);
@@ -226,7 +229,7 @@ public PlayRecord(client, type)
 		Format(g_szReplayNameTp, sizeof(g_szReplayNameTp), "%s", iFileHeader[_:FH_Playername]);	
 		Format(buffer, sizeof(buffer), "%s (%s)", g_szReplayNameTp,g_szReplayTimeTp);	
 		CS_SetClientClanTag(client, "TP REPLAY");
-		CS_SetClientName(client, buffer);
+		SetClientName(client, buffer);
 	}
 	else
 	{					
@@ -234,7 +237,7 @@ public PlayRecord(client, type)
 		Format(g_szReplayName, sizeof(g_szReplayName), "%s", iFileHeader[_:FH_Playername]);		
 		Format(buffer, sizeof(buffer), "%s (%s)", g_szReplayName,g_szReplayTime);	
 		CS_SetClientClanTag(client, "PRO REPLAY");
-		CS_SetClientName(client, buffer);
+		SetClientName(client, buffer);
 	}
 	g_hBotMimicsRecord[client] = iFileHeader[_:FH_frames];
 	g_BotMimicTick[client] = 0;

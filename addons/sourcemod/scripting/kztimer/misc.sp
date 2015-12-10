@@ -749,7 +749,7 @@ public FixPlayerName(client)
 	{
 		SetClientInfo(client, "name", szName);
 		SetEntPropString(client, Prop_Data, "m_szNetname", szName);
-		CS_SetClientName(client, szName);
+		SetClientName(client, szName);
 	}
 }
 
@@ -3798,6 +3798,7 @@ public LoadInfoBot()
 		SetEntProp(g_InfoBot, Prop_Send, "m_iPrimaryAddon", 0);
 		SetEntProp(g_InfoBot, Prop_Send, "m_iSecondaryAddon", 0); 		
 		SetEntProp(g_InfoBot, Prop_Send, "m_iObserverMode", 1);
+		SetEntProp(g_InfoBot, Prop_Send, "m_lifeState",2);	
 		SetInfoBotName(g_InfoBot);	
 	}
 	else
@@ -3853,9 +3854,9 @@ public SetInfoBotName(ent)
 		Format(szBuffer, sizeof(szBuffer), "%s (%s)",sNextMap, szTime);
 	else
 		Format(szBuffer, sizeof(szBuffer), "Pending Vote (no time limit)");
-	CS_SetClientName(g_InfoBot, szBuffer);
+	SetClientName(g_InfoBot, szBuffer);
 	Client_SetScore(g_InfoBot,9999);
-	CS_SetClientClanTag(g_InfoBot, "NEXTMAP");
+	CS_SetClientClanTag(g_InfoBot, "INFO");
 }
 
 public CenterHudDead(client)
@@ -4687,6 +4688,7 @@ public SetupHooksAndCommandListener()
 	HookEvent("jointeam_failed", Event_JoinTeamFailed, EventHookMode_Pre);
 	HookEvent("player_disconnect", Event_PlayerDisconnect, EventHookMode_Pre); 
 	HookEvent("round_freeze_end", OnNewRound, EventHookMode_Pre);	
+	HookUserMessage(GetUserMessageId("SayText2"), SayText2, true);
 	HookEntityOutput("trigger_teleport", "OnStartTouch", Teleport_OnStartTouch);	
 	HookEntityOutput("trigger_multiple", "OnStartTouch", Teleport_OnStartTouch);	
 	HookEntityOutput("trigger_teleport", "OnEndTouch", Teleport_OnEndTouch);	
