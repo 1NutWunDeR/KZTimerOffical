@@ -31,7 +31,11 @@ else: mp_respawn_on_death_ct 0;mp_respawn_on_death_t 0
 Changelog
 =======
 <SPOILER>
-v1.8 (requires sourcemod 1.7 build 5279 or higher)
+v1.81
+- fixed checkpoint exploit which allowed players to do checkpoints mid-air 
+- added mappers access to vip servers
+
+v1.80 (requires sourcemod 1.7 build 5279 or higher)
 - fixed info bot and replay bots 
 - fixed a minor jumpstats bug on kz_conrun_mq 
 
