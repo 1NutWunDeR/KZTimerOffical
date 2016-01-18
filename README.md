@@ -31,6 +31,9 @@ else: mp_respawn_on_death_ct 0;mp_respawn_on_death_t 0
 Changelog
 =======
 <SPOILER>
+v1.82
+- fixed a glitch which did not allow you to do checkpoints on valid grounds
+
 v1.81
 - fixed checkpoint exploit which allowed players to do checkpoints mid-air 
 - added mappers access to vip servers
