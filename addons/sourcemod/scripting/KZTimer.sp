@@ -5,6 +5,7 @@
 #include <cstrike>
 #include <button>
 #include <entity>
+#include <setname>
 #include <smlib>
 #include <KZTimer>
 #include <geoip>
@@ -16,7 +17,7 @@
 #include <sourcebans>
 #include <mapchooser>
 
-#define VERSION "1.8"
+#define VERSION "1.82"
 #define ADMIN_LEVEL ADMFLAG_UNBAN
 #define ADMIN_LEVEL2 ADMFLAG_ROOT
 #define MYSQL 0
@@ -470,6 +471,7 @@ new bool:g_bInvalidUndoGround[MAXPLAYERS+1];
 new bool:g_bTouchedBooster[MAXPLAYERS+1]; 
 new bool:g_bProfileRecalc[MAX_PR_PLAYERS];
 new bool:g_bProfileSelected[MAXPLAYERS+1]; 
+new bool:g_bClientGroundFlag[MAXPLAYERS+1]; 
 new bool:g_bSelectProfile[MAXPLAYERS+1]; 
 new bool:g_bClimbersMenuwasOpen[MAXPLAYERS+1]; 
 new bool:g_js_bDropJump[MAXPLAYERS+1];    

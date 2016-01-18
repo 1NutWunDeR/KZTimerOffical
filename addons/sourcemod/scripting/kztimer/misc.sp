@@ -10,6 +10,15 @@ public Float:GetClientDistanceToGround(Float:fOrigin[3])
 	return 0.0;
 }
 
+stock Float:GetGroundDiff(client, Float:pos[3])
+{
+	decl Float:fOrigin[3], Float:result[3];
+	GetClientAbsOrigin(client, fOrigin);
+	TraceClientGroundOrigin(client, result, 100.0);
+	result[2] = FloatAbs(fOrigin[2]- result[2])
+	return result[2];
+}
+
 public SetReplayRoute()
 {
 	//valid handles?
@@ -764,6 +773,7 @@ public SetClientDefaults(client)
 	g_bNewReplay[client] = false;
 	g_bFirstButtonTouch[client]=true;
 	g_bTimeractivated[client] = false;	
+	g_bClientGroundFlag[client]=false;
 	g_bKickStatus[client] = false;
 	g_bSpectate[client] = false;	
 	g_bFirstTeamJoin[client] = true;		
@@ -830,6 +840,7 @@ public SetClientDefaults(client)
 	g_PlayerRank[client] = 99999;
 	Format(g_szPlayerPanelText[client], 512, "");
 	Format(g_pr_rankname[client], 32, "");
+	Format(g_pr_chat_coloredrank[client], 32, "");
 	Format(g_js_szLastJumpDistance[client], 256, "<font color='#948d8d'>0.0 units</font>");
 	for( new i = 0; i < CPLIMIT; i++ )
 		g_fPlayerCords[client][i] = Float:{0.0,0.0,0.0};

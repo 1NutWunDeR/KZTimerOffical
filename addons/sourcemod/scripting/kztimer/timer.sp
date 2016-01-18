@@ -1,4 +1,19 @@
 // timer.sp
+public Action:SetClientGroundFlagTimer(Handle:timer, any:client)
+{
+	if (!IsValidClient(client) || !IsPlayerAlive(client))
+		return;	
+	new Float: origin[3];
+	new Float: diff = GetGroundDiff(client, origin);	
+	new flags = GetEntityFlags(client);
+	if (diff < 0.5)
+		SetEntityFlags(client, flags&FL_ONGROUND);	
+	else
+		SetEntityFlags(client, flags&~FL_ONGROUND);	
+	g_bClientGroundFlag[client]=true;
+}	
+
+
 public Action:GetServerInfo(Handle:timer)
 {
 	//get hostname
@@ -379,13 +394,26 @@ public Action:KZTimer2(Handle:timer)
 			//anticheat
 			BhopPatternCheck(i);	
 			
+			//is mapper?
+			new bool:mapper;
+			for (new x = 0; x < 100; x++)
+			{
+				if ((StrContains(g_szMapmakers[x],"STEAM",true) != -1))
+				{
+					if (StrEqual(g_szMapmakers[x],g_szSteamID[i]))
+					{			
+						mapper=true;		
+						break;
+					}		
+				}
+			}			
+			
 			//check skill group
-			if (g_Skillgroup[i] != 0 && g_Skillgroup[i] < g_MinSkillGroup && !(GetUserFlagBits(i) & ADMFLAG_RESERVATION) && !(GetUserFlagBits(i) & ADMFLAG_GENERIC) && !(GetUserFlagBits(i) & ADMFLAG_ROOT))
+			if (g_Skillgroup[i] != 0 && g_Skillgroup[i] < g_MinSkillGroup && !(GetUserFlagBits(i) & ADMFLAG_RESERVATION) && !(GetUserFlagBits(i) & ADMFLAG_GENERIC) && !(GetUserFlagBits(i) & ADMFLAG_ROOT) && !mapper)
 			{
 				CreateTimer(3.0, KickPlayerHighRankOnly, i, TIMER_FLAG_NO_MAPCHANGE);
 				g_bKickStatus[i]=true;
-			}
-			
+			}		
 		}
 
 		if(g_hRecording[i] != INVALID_HANDLE && g_fCurrentRunTime[i] > 3600.0)

@@ -278,6 +278,9 @@ PlayerSpawn(client)
 	g_fLastSpeed[client] = GetSpeed(client);
 	GetClientAbsOrigin(client, g_fSpawnPosition[client]);
 	g_fLastPosition[client] = g_fSpawnPosition[client];
+	
+	g_bClientGroundFlag[client]=false;
+	CreateTimer(0.1, SetClientGroundFlagTimer, client,TIMER_FLAG_NO_MAPCHANGE);
 }
 
 

@@ -1829,7 +1829,7 @@ public Action:Client_bhop(client, args)
 
 public DoCheckpoint(client)
 {
-	if (!g_bAllowCheckpoints || !IsValidClient(client) || !IsPlayerAlive(client) || g_bPause[client]) 
+	if (!g_bAllowCheckpoints || !IsValidClient(client) || !IsPlayerAlive(client) || g_bPause[client] || !g_bClientGroundFlag[client]) 
 		return;
 					
 	if (StrEqual("kzpro", g_szMapPrefix[0]) && g_bTimeractivated[client])		
@@ -1845,9 +1845,8 @@ public DoCheckpoint(client)
 		PrintToChat(client, "%t", "NoCpsDuringChallenge", RED,WHITE);
 		return;
 	}
-
 	
-	//if player on ground
+	//on ground?
 	if (GetEntityFlags(client)&FL_ONGROUND)
 	{
 		if (CPLIMIT == g_CounterCp[client]) 
