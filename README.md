@@ -36,17 +36,21 @@ Changelog
 <SPOILER>
 v1.82b Hotfix
 - fixed bhop triggers
+- updated files: KZTimerGlobal.smx
 
 v1.82
 - fixed a glitch which did not allow you to do checkpoints on valid grounds
+- updated files: KZTimerGlobal.smx
 
 v1.81
 - fixed checkpoint exploit which allowed players to do checkpoints mid-air 
 - added mappers access to vip servers
+- updated files: KZTimerGlobal.smx
 
 v1.80 (requires sourcemod 1.7 build 5279 or higher)
 - fixed info bot and replay bots 
 - fixed a minor jumpstats bug on kz_conrun_mq 
+- updated files: KZTimerGlobal.smx
 
 v1.79
 - added "Top Ranked On Map" shortcut to the spectator menu
