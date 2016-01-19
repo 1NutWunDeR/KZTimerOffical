@@ -22,7 +22,6 @@ https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7REZX9RD6G6
 (Fix for sm vote commands: https://forums.alliedmods.net/showpost.php?p=2265536&postcount=487)
 This example works for all plugins which need an internal fix.
 - Datatable warnings are harmless as long as server logging is disabled! (Cleaner extension removes these warnings)
-- kz_bhop_single_touch issue: This function does not work on a few maps because the mapmaker has grouped bhop blocks (trigger_teleport) to 1 entity (e.g. bhop_areaportal_v1). KZTimer can't detect a difference between those blocks and teleports you back to the start of the affected block section as soon as you hit the second bhop plattform of this "bhop block group". You have to contact the mapmaker or just disable kz_bhop_single_touch on these maps
 
 **About KZTimer**
 - SQLite & MySQL support
