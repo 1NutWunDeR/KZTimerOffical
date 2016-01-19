@@ -1,1 +1,1 @@
-Enable this add-on only if the replay bots on your server don't move.
+Enable this plugin only if the replay bots on your server don't move.
