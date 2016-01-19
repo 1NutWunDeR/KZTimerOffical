@@ -2,7 +2,7 @@ Latest version: 1.82b Global
 
 Installation:
 
-1. Extract everything from the csgo folder of the package to your servers csgo folder
+1. Extract everything tto your servers csgo folder
 2. Edit the file addons/sourcemod/configs/databases.cfg
 - Add in a value called "kztimer", which holds your databases information
 - Both SQLite and MySQL are supported
