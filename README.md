@@ -2,7 +2,6 @@
 
 **Please show your appreciation for the work on KZTimer and support future development by [donating!](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7REZX9RD6G6QL)**
 
-**About KZTimer**
 - Latest version: 1.82b Global (SM-Compiler 1.7.3)
 - KZTimer Steam Group: http://steamcommunity.com/groups/KZTIMER 
 - KZTimer Global Stats: http://www.kzstats.com/
