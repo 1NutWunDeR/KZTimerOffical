@@ -1,7 +1,7 @@
 Alliedmodders: https://forums.alliedmods.net/showthread.php?t=223274    
 KZTimer steam group: http://steamcommunity.com/groups/KZTIMER        
 
-Please show your appreciation for the work on KZTimer (Global) and [b]support future development[/b] by donating:
+Please show your appreciation for the work on KZTimer (Global) and [b]support future development by donating:
 https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7REZX9RD6G6QL
 
 **Please read the following information carefully before you start asking stupid questions:**
