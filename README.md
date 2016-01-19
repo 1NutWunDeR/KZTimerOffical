@@ -1,4 +1,5 @@
 Latest version: 1.82b Global
+KZTimer steam group: http://steamcommunity.com/groups/KZTIMER 
 
 Installation:
 
