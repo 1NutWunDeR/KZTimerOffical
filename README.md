@@ -3,15 +3,15 @@
 **Please show your appreciation for the work on KZTimer and support future development by [donating!](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7REZX9RD6G6QL)**
 
 - Latest version: 1.82b Global (SM-Compiler 1.7.3)
-- KZTimer Steam Group: http://steamcommunity.com/groups/KZTIMER 
-- KZTimer Global Stats: http://www.kzstats.com/
-- KZ-Climb Community: http://www.kz-climb.com/index.php?forums/
 - SQLite & MySQL support
 - Sourcebans support
 - Workshop maps support
 - Console command to enable/disable KZTimer: rcon sm plugins load/unload KZTimerGlobal
 - Multi-Language support (english, chinese, french, german, russian and swedish)
 - KZTimer is in the final version (only bugs will be fixed from now on!)
+- KZTimer Steam Group: http://steamcommunity.com/groups/KZTIMER 
+- KZTimer Global Stats: http://www.kzstats.com/
+- KZ-Climb Community: http://www.kz-climb.com/index.php?forums/
 
 **Please read the following information carefully before you start asking stupid questions:**
 - KZTimer Client/Admin Commands: http://pastebin.com/H5ULxsdJ
