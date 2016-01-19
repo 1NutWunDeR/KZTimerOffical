@@ -1,6 +1,6 @@
+KZTimer is a powerful timer plugin including ranking system, replay bots, jumpstats, strafestats, failstats, anticheat-system, mysql&sqlite access, custom models, prestrafe, prespeed cap, double-duck, autobhop, client options and more.
 
-
-- Latest version: 1.82b Global
+- Latest version: 1.82b Global (SM-Compiler 1.7.3)
 - KZTimer Steam Group: http://steamcommunity.com/groups/KZTIMER 
 - KZTimer Global Stats: http://www.kzstats.com/
 
@@ -18,6 +18,7 @@
 **Please read the following information carefully before you start asking stupid questions:**
 - Download includes DHooks2 extension (https://forums.alliedmods.net/showthread.php?t=180114), Cleaner extension (https://forums.alliedmods.net/showthread.php?t=195008)  and latest GeoIP database (http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/)
 - Ranking system is based on your mapcycle.txt file (keep it always up to date)
+- KZTimer commands: http://pastebin.com/H5ULxsdJ
 - A very large sqlite database might cause server lags (i prefer a mysql database)
 - KZTimer interferes with menus of other plugins. You are able to add exceptions in addons\sourcemod\configs\kztimer\exceptions_list.txt for sourcemod commands which create menus (e.g. sm_knife)
 (Fix for sm vote commands: https://forums.alliedmods.net/showpost.php?p=2265536&postcount=487. This example works for all plugins which need an internal fix.)
