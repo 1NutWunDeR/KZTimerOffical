@@ -1,6 +1,20 @@
 Latest version: 1.82b Global
 
-      
+Installation:
+
+1. Extract everything from the csgo folder of the package to your servers csgo folder
+2. Edit the file addons/sourcemod/configs/databases.cfg
+- Add in a value called "cksurf", which holds your databases information
+- Both SQLite and MySQL are supported
+- Example with using SQLite:
+"kztimer"
+{
+"driver"	"sqlite"
+"host"	"localhost"
+"database"	"kztimer-sqlite"
+"user"	"root"
+"pass"	""
+}
 
 Please show your appreciation for the work on KZTimer (Global) and support future development by donating:
 https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7REZX9RD6G6QL
