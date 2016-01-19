@@ -1,5 +1,5 @@
 Alliedmodders: https://forums.alliedmods.net/showthread.php?t=223274    
-KZTimer steam group: http://steamcommunity.com/groups/KZTIMER (provides KZTimer Global Version download-link, update/kreedz news, videos and more)                                                                      
+KZTimer steam group: http://steamcommunity.com/groups/KZTIMER        
 
 **Please read the following information carefully before you start asking stupid questions:**
 - Download includes DHooks2 extension (https://forums.alliedmods.net/showthread.php?t=180114), Cleaner extension (https://forums.alliedmods.net/showthread.php?t=195008)  and latest GeoIP database (http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/)
@@ -31,6 +31,9 @@ else: mp_respawn_on_death_ct 0;mp_respawn_on_death_t 0
 Changelog
 =======
 <SPOILER>
+v1.82b Hotfix
+- fixed map triggers
+
 v1.82
 - fixed a glitch which did not allow you to do checkpoints on valid grounds
 
