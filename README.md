@@ -43,7 +43,7 @@ Changelog
 =======
 <SPOILER>
 v1.82b Hotfix
-- fixed map triggers
+- fixed bhop triggers
 
 v1.82
 - fixed a glitch which did not allow you to do checkpoints on valid grounds
