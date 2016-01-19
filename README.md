@@ -1,4 +1,4 @@
-**KZTimer Global** is a powerful timer plugin including ranking system, global ranking system, replay bots, jumpstats, strafestats, failstats, anticheat-system, mysql&sqlite access, custom models, prestrafe, prespeed cap, double-duck, autobhop, client options and more.
+**KZTimer Global** is a powerful climb timer plugin including ranking system, global ranking system, replay bots, jumpstats, strafestats, failstats, anticheat-system, mysql&sqlite access, custom models, prestrafe, prespeed cap, double-duck, autobhop, client options and more.
 
 **Please show your appreciation for the work on KZTimer and support future development by [donating!](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7REZX9RD6G6QL)**
 
