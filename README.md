@@ -3,7 +3,8 @@
 - Latest version: 1.82b Global
 - KZTimer Steam Group: http://steamcommunity.com/groups/KZTIMER 
 - KZTimer Global Stats: http://www.kzstats.com/
-- Please show your appreciation for the work on KZTimer (Global) and support future development by [donating!](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7REZX9RD6G6QL)
+
+**Please show your appreciation for the work on KZTimer (Global) and support future development by [donating!](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7REZX9RD6G6QL)**
 
 **Installation**
 
