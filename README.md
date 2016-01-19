@@ -1,35 +1,33 @@
 KZTimer is a powerful timer plugin including ranking system, replay bots, jumpstats, strafestats, failstats, anticheat-system, mysql&sqlite access, custom models, prestrafe, prespeed cap, double-duck, autobhop, client options and more.
 
+**Please show your appreciation for the work on KZTimer (Global) and support future development by [donating!](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7REZX9RD6G6QL)**
+
+**About KZTimer**
 - Latest version: 1.82b Global (SM-Compiler 1.7.3)
 - KZTimer Steam Group: http://steamcommunity.com/groups/KZTIMER 
 - KZTimer Global Stats: http://www.kzstats.com/
-
-**Please show your appreciation for the work on KZTimer (Global) and support future development by [donating!](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7REZX9RD6G6QL)**
-
-**Installation**
-
-0. KZTimer requires sourcemod and metamod!
-1. Extract everything to your servers csgo folder
-2. Edit the file addons/sourcemod/configs/databases.cfg
-- Add in a value called "kztimer", which holds your databases information
-- Both SQLite and MySQL are supported
-- Example with using SQLite: https://www.dropbox.com/s/dzk4mt3jze0ek78/databasecfg.jpg
-
-**Please read the following information carefully before you start asking stupid questions:**
-- Download includes DHooks2 extension (https://forums.alliedmods.net/showthread.php?t=180114), Cleaner extension (https://forums.alliedmods.net/showthread.php?t=195008)  and latest GeoIP database (http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/)
-- Ranking system is based on your mapcycle.txt file (keep it always up to date)
-- KZTimer commands: http://pastebin.com/H5ULxsdJ
-- A very large sqlite database might cause server lags (i prefer a mysql database)
-- KZTimer interferes with menus of other plugins. You are able to add exceptions in addons\sourcemod\configs\kztimer\exceptions_list.txt for sourcemod commands which create menus (e.g. sm_knife)
-(Fix for sm vote commands: https://forums.alliedmods.net/showpost.php?p=2265536&postcount=487. This example works for all plugins which need an internal fix.)
-
-**About KZTimer**
 - SQLite & MySQL support
 - Sourcebans support
 - Workshop maps support
 - Console command to enable/disable KZTimer: rcon sm plugins load/unload KZTimer
 - Multi-Language support (english, chinese, french, german, russian and swedish)
 - KZTimer is in the final version (only bugs will be fixed from now on!)
+
+**Please read the following information carefully before you start asking stupid questions:**
+- KZTimer Client/Admin Commands: http://pastebin.com/H5ULxsdJ
+- Ranking system is based on your mapcycle.txt file (keep it always up to date)
+- A very large sqlite database might cause server lags (i prefer a mysql database)
+- KZTimer interferes with menus of other plugins. You are able to add exceptions in addons\sourcemod\configs\kztimer\exceptions_list.txt for sourcemod commands which create menus (e.g. sm_knife)
+(Fix for sm vote commands: https://forums.alliedmods.net/showpost.php?p=2265536&postcount=487. This example works for all plugins which need an internal fix.)
+- Download includes DHooks2 extension (https://forums.alliedmods.net/showthread.php?t=180114), Cleaner extension (https://forums.alliedmods.net/showthread.php?t=195008)  and latest GeoIP database (http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/)
+
+**Installation**
+0. KZTimer requires sourcemod and metamod!
+1. Extract everything to your servers csgo folder
+2. Edit the file addons/sourcemod/configs/databases.cfg
+- Add in a value called "kztimer", which holds your databases information
+- Both SQLite and MySQL are supported
+- Example with using SQLite: https://www.dropbox.com/s/dzk4mt3jze0ek78/databasecfg.jpg
 
 Changelog
 =======
