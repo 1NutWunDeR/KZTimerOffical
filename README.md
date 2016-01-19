@@ -22,16 +22,7 @@ https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7REZX9RD6G6
 (Fix for sm vote commands: https://forums.alliedmods.net/showpost.php?p=2265536&postcount=487)
 This example works for all plugins which need an internal fix.
 - Datatable warnings are harmless as long as server logging is disabled! (Cleaner extension removes these warnings)
-- Do you have trouble with huge red error boxes your server? (KZ Maps)  That's probably because mapmakers forgot to add one or more model files to their map package/archive. The following plugin will fix it for the known cases:
-https://www.dropbox.com/s/vtlbefh38dppseq/KZErrorBoxFixer.zip
-- Supported jumpstats types: Longjump, Block Longjump (inc. fail stats), Ladderjump, Weirdjump, Bunnyhop, Drop Bunnyhop, Multi Bunnyhop
-- Do you want start and stop zones instead of buttons? Here's a quick tutorial by jonitaikaponi: https://forums.alliedmods.net/showpost.php?p=2255636&postcount=456
 - kz_bhop_single_touch issue: This function does not work on a few maps because the mapmaker has grouped bhop blocks (trigger_teleport) to 1 entity (e.g. bhop_areaportal_v1). KZTimer can't detect a difference between those blocks and teleports you back to the start of the affected block section as soon as you hit the second bhop plattform of this "bhop block group". You have to contact the mapmaker or just disable kz_bhop_single_touch on these maps
-- those server cvars are hard coded (execuded on map start. they will be reseted if you unload kztimer):
-sv_infinite_ammo 2;mp_endmatch_votenextmap 0;mp_do_warmup_period 0;mp_warmuptime 0;mp_match_can_clinch 0;mp_match_end_changelevel 1;mp_match_restart_delay 10;mp_endmatch_votenextleveltime 10;mp_endmatch_votenextmap 0;mp_halftime 0;bot_zombie 1;mp_do_warmup_period 0;mp_maxrounds 1;mp_ignore_round_win_conditions 0, 
-if kz_autorespawn is enabled: mp_respawn_on_death_ct 1;mp_respawn_on_death_t 1;mp_respawnwavetime_ct 3.0;mp_respawnwavetime_t 3.0
-else: mp_respawn_on_death_ct 0;mp_respawn_on_death_t 0 
-
 
 **About KZTimer**
 - SQLite & MySQL support
