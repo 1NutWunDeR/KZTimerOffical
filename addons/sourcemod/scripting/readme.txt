@@ -1,2 +1,0 @@
-The code of kztimer global is private. The kztimer code of the none-global version is available at: https://github.com/1NutWunDeR/KZTimer
-Both versions are almost identical except the global record system. Feel free to write plugins with the use of the kztimer native methods. (include/kztimer.inc)
