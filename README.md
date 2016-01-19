@@ -30,6 +30,9 @@
 - 6. Example with using SQLite: https://www.dropbox.com/s/dzk4mt3jze0ek78/databasecfg.jpg 
 - 7. Done.
 
+**Credits to**
+DieterM75 (cP mod), Zephyrus (Cleaner), Peace-Maker (Botmimic2), exvel/bara(csgo fix) (color.inc), GoD-Tony (setname methods), Dr!fter/Powerlord (Dhooks), Inami/ThatOneGuy (Macrodox), DaFox (Measure Plugin), berni & Chanz (smlib), psychonic and tsunami (sdkhooks)
+
 **KZTimer Global Changelog**
 =======
 <SPOILER>
