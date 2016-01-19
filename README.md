@@ -5,6 +5,7 @@ KZTimer Steam Group: http://steamcommunity.com/groups/KZTIMER
 KZTimer Global Stats: http://www.kzstats.com/
 
 Installation:
+KZTimer requires sourcemod and metamod!
 
 1. Extract everything to your servers csgo folder
 2. Edit the file addons/sourcemod/configs/databases.cfg
