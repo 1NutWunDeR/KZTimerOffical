@@ -9,7 +9,7 @@
 - SQLite & MySQL support
 - Sourcebans support
 - Workshop maps support
-- Console command to enable/disable KZTimer: rcon sm plugins load/unload KZTimer
+- Console command to enable/disable KZTimer: rcon sm plugins load/unload KZTimerGlobal
 - Multi-Language support (english, chinese, french, german, russian and swedish)
 - KZTimer is in the final version (only bugs will be fixed from now on!)
 
