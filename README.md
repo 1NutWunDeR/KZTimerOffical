@@ -6,6 +6,7 @@
 - Latest version: 1.82b Global (SM-Compiler 1.7.3)
 - KZTimer Steam Group: http://steamcommunity.com/groups/KZTIMER 
 - KZTimer Global Stats: http://www.kzstats.com/
+- KZ-Climb Community: http://www.kz-climb.com/index.php?forums/
 - SQLite & MySQL support
 - Sourcebans support
 - Workshop maps support
