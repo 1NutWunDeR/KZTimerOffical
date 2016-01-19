@@ -1,23 +1,18 @@
-Latest version: 1.82b Global
-
-KZTimer Steam Group: http://steamcommunity.com/groups/KZTIMER 
-
-KZTimer Global Stats: http://www.kzstats.com/
 
 
+- Latest version: 1.82b Global
+- KZTimer Steam Group: http://steamcommunity.com/groups/KZTIMER 
+- KZTimer Global Stats: http://www.kzstats.com/
+- Please show your appreciation for the work on KZTimer (Global) and support future development by [donating!](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7REZX9RD6G6QL)
 
-Installation:
+**Installation**
 
 0. KZTimer requires sourcemod and metamod!
 1. Extract everything to your servers csgo folder
 2. Edit the file addons/sourcemod/configs/databases.cfg
 - Add in a value called "kztimer", which holds your databases information
 - Both SQLite and MySQL are supported
-- Example with using SQLite: https://www.dropbox.com/s/dzk4mt3jze0ek78/databasecfg.jpg?dl=0
-
-
-Please show your appreciation for the work on KZTimer (Global) and support future development by donating:
-https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7REZX9RD6G6QL
+- Example with using SQLite: https://www.dropbox.com/s/dzk4mt3jze0ek78/databasecfg.jpg
 
 **Please read the following information carefully before you start asking stupid questions:**
 - Download includes DHooks2 extension (https://forums.alliedmods.net/showthread.php?t=180114), Cleaner extension (https://forums.alliedmods.net/showthread.php?t=195008)  and latest GeoIP database (http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/)
