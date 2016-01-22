@@ -28,7 +28,8 @@
 - 4. Add in a value called "kztimer", which holds your databases information 
 - 5. Both SQLite and MySQL are supported 
 - 6. Example with using SQLite: https://www.dropbox.com/s/dzk4mt3jze0ek78/databasecfg.jpg 
-- 7. Done.
+- 7. Make sure that you have added all maps to your mapcycle.txt You don't get any experience points from a map which is not in this list
+- 8. Done.
 
 **Credits to**
 DieterM75 (cP mod), Zephyrus (Cleaner), Peace-Maker (Botmimic2), exvel/bara(csgo fix) (color.inc), GoD-Tony (setname methods), Dr!fter/Powerlord (Dhooks), Inami/ThatOneGuy (Macrodox), DaFox (Measure Plugin), berni & Chanz (smlib), psychonic and tsunami (sdkhooks)
