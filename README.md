@@ -19,7 +19,7 @@
 - Make sure that you have added all maps to your mapcycle.txt. You don't get any experience points from a map which is not in this list. Keep it always up to date!
 - A very large sqlite database might cause server lags (i prefer a mysql database)
 - KZTimer interferes with menus of other plugins. You are able to add exceptions in addons\sourcemod\configs\kztimer\exceptions_list.txt for sourcemod commands which create menus (e.g. sm_knife)
-(Fix for sm vote commands: https://forums.alliedmods.net/showpost.php?p=2265536&postcount=487. This example works for all plugins which need an internal fix.)
+(Example for menus which requires an internal fix: https://forums.alliedmods.net/showpost.php?p=2265536&postcount=487)
 - Download includes DHooks2 extension (https://forums.alliedmods.net/showthread.php?t=180114), Cleaner extension (https://forums.alliedmods.net/showthread.php?t=195008)  and latest GeoIP database (http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/)
 
 **Installation**
