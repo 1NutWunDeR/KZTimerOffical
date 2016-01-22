@@ -15,6 +15,7 @@
 
 **Please read the following information carefully before you start asking stupid questions:**
 - KZTimer Client/Admin Commands: http://pastebin.com/H5ULxsdJ
+- Detailed explanation how the ranking system of kztimer works: http://kuala-lumpur-court-8417.pancakeapps.com/ranking_index2.html
 - Make sure that you have added all maps to your mapcycle.txt. You don't get any experience points from a map which is not in this list. Keep it always up to date!
 - A very large sqlite database might cause server lags (i prefer a mysql database)
 - KZTimer interferes with menus of other plugins. You are able to add exceptions in addons\sourcemod\configs\kztimer\exceptions_list.txt for sourcemod commands which create menus (e.g. sm_knife)
