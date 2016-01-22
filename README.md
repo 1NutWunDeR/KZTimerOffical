@@ -15,7 +15,7 @@
 
 **Please read the following information carefully before you start asking stupid questions:**
 - KZTimer Client/Admin Commands: http://pastebin.com/H5ULxsdJ
-- Make sure that you have added all maps to your mapcycle.txt You don't get any experience points from a map which is not in this list. Keep it always up to date!
+- Make sure that you have added all maps to your mapcycle.txt. You don't get any experience points from a map which is not in this list. Keep it always up to date!
 - A very large sqlite database might cause server lags (i prefer a mysql database)
 - KZTimer interferes with menus of other plugins. You are able to add exceptions in addons\sourcemod\configs\kztimer\exceptions_list.txt for sourcemod commands which create menus (e.g. sm_knife)
 (Fix for sm vote commands: https://forums.alliedmods.net/showpost.php?p=2265536&postcount=487. This example works for all plugins which need an internal fix.)
@@ -28,7 +28,7 @@
 - 4. Add in a value called "kztimer", which holds your databases information 
 - 5. Both SQLite and MySQL are supported 
 - 6. Example with using SQLite: https://www.dropbox.com/s/dzk4mt3jze0ek78/databasecfg.jpg 
-- 7. Make sure that you have added all maps to your mapcycle.txt You don't get any experience points from a map which is not in this list
+- 7. Make sure that you have added all maps to your mapcycle.txt. You don't get any experience points from a map which is not in this list
 - 8. Done.
 
 **Credits to**
