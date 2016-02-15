@@ -3087,8 +3087,10 @@ public sql_selectRecordCallback(Handle:owner, Handle:hndl, const String:error[],
 	else
 	{
 		CloseHandle(pack);
-		decl String:szName[MAX_NAME_LENGTH];
-		GetClientName(client, szName, MAX_NAME_LENGTH);
+		decl String:szUName[MAX_NAME_LENGTH];
+		GetClientName(client, szUName, MAX_NAME_LENGTH);
+		decl String:szName[MAX_NAME_LENGTH*2+1];
+		SQL_QuoteString(g_hDb, szUName, szName, MAX_NAME_LENGTH*2+1);
 		if	(g_Tp_Final[client]>0)
 		{						
 			Format(szQuery, 512, sql_insertPlayerTp, g_szSteamID[client], mapname, szName, g_fFinalTime[client], g_Tp_Final[client]);
@@ -5879,7 +5881,6 @@ public sql_selectPlayerRankCallback2(Handle:owner, Handle:hndl, const String:err
 public db_updatePoints(client)
 {
 	decl String:szQuery[512];
-	decl String:szName[MAX_NAME_LENGTH];	
 	decl String:szSteamId[32];	
 	if (client>MAXPLAYERS && g_pr_RankingRecalc_InProgress || client>MAXPLAYERS && g_bProfileRecalc[client])
 	{
@@ -5890,7 +5891,10 @@ public db_updatePoints(client)
 	{
 		if (IsValidClient(client))
 		{
-			GetClientName(client, szName, MAX_NAME_LENGTH);	
+			decl String:szUName[MAX_NAME_LENGTH];
+			GetClientName(client, szUName, MAX_NAME_LENGTH);
+			decl String:szName[MAX_NAME_LENGTH*2+1];
+			SQL_QuoteString(g_hDb, szUName, szName, MAX_NAME_LENGTH*2+1);
 			GetClientAuthId(client, AuthId_Steam2, szSteamId, sizeof(szSteamId), true);	
 			Format(szQuery, 512, sql_updatePlayerRankPoints2, szName, g_pr_points[client], g_pr_finishedmaps_tp[client],g_pr_finishedmaps_pro[client],g_Challenge_WinRatio[client],g_Challenge_PointsRatio[client],g_szCountry[client], szSteamId); 
 			SQL_TQuery(g_hDb, sql_updatePlayerRankPointsCallback, szQuery, client, DBPrio_Low);
@@ -6466,4 +6470,4 @@ public db_selectTop100PlayersCallback(Handle:owner, Handle:hndl, const String:er
 	{
 		PrintToChat(client, "%t", "NoPlayerTop", MOSSGREEN,WHITE);
 	}
-}
+}}
