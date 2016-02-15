@@ -2186,7 +2186,7 @@ public SlopeBoostFix(client)
 			TR_GetPlaneNormal(INVALID_HANDLE, vPlane);
 			
 			// Make sure it's not flat ground and not a surf ramp (1.0 = flat ground, < 0.7 = surf ramp)
-			if(0.7 <= vPlane[2] < 1.0)
+			if(0.7 <= vPlane[2] && vPlane[2] < 1.0)
 			{
 				/*
 				Copy the ClipVelocity function from sdk2013 
