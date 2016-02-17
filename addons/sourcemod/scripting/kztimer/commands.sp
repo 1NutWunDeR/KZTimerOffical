@@ -357,10 +357,12 @@ public Action:Client_Accept(client, args)
 				g_bChallenge_Abort[i]=false;
 				g_Challenge_Bet[client] = g_Challenge_Bet[i];
 				g_bChallenge_Checkpoints[client] = g_bChallenge_Checkpoints[i];
-				DoValidTeleport(client, g_fSpawnPosition[i],NULL_VECTOR, Float:{0.0,0.0,-100.0});
-				DoValidTeleport(i, g_fSpawnPosition[i],NULL_VECTOR, Float:{0.0,0.0,-100.0});
-				SetEntityMoveType(i, MOVETYPE_NONE);
-				SetEntityMoveType(client, MOVETYPE_NONE);
+				
+				g_fTeleportValidationTime[client] = GetEngineTime();
+				CS_RespawnPlayer(client);	 
+				SetEntityMoveType(client, MOVETYPE_NONE);	
+				CreateTimer(0.5, SetChallengeSpawnPoint, i,TIMER_FLAG_NO_MAPCHANGE);
+				
 				g_CountdownTime[i] = 10;
 				g_CountdownTime[client] = 10;
 				CreateTimer(1.0, Timer_Countdown, i, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
@@ -473,7 +475,7 @@ InstantSwitch(client, weapon, timer = 0)
 		return;
 
 	new Float:GameTime = GetGameTime();
-	if (!timer) 
+	if (!timer && IsValidClient(client)) 
 	{
 		SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);
 		SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GameTime);
@@ -1374,13 +1376,8 @@ public Action:Client_Start(client, args)
 		DoValidTeleport(client, g_fPlayerCordsRestart[client],g_fPlayerAnglesRestart[client],Float:{0.0,0.0,-100.0});
 	else //else spawn at spawnpoint
 	{	
-		if (g_fSpawnpointOrigin[0] != -999999.9)
-			DoValidTeleport(client, g_fSpawnpointOrigin,g_fSpawnpointAngle,Float:{0.0,0.0,-100.0});	
-		else
-		{
-			g_fTeleportValidationTime[client] = GetEngineTime() + 2.0;
-			CS_RespawnPlayer(client);
-		}
+		g_fTeleportValidationTime[client] = GetEngineTime() + 2.0;
+		CS_RespawnPlayer(client);		
 	}	
 	if (g_bAutoTimer)
 		CL_OnStartTimerPress(client);
@@ -2648,7 +2645,8 @@ public SetClientLang(client)
 		case 2: g_ClientLang[client] = 3;
 		case 3: g_ClientLang[client] = 4;
 		case 4: g_ClientLang[client] = 5;
-		case 5: g_ClientLang[client] = 0;
+		case 5: g_ClientLang[client] = 6;
+		case 6: g_ClientLang[client] = 0;
 	}
 	SetClientLangByID(client,g_ClientLang[client])
 }
@@ -2677,6 +2675,7 @@ public OptionMenu(client)
 		case 3: Format(buffer, sizeof(buffer), "%T", "options_lang_fr", client); 
 		case 4: Format(buffer, sizeof(buffer), "%T", "options_lang_ru", client);
 		case 5: Format(buffer, sizeof(buffer), "%T", "options_lang_cn", client);
+		case 6: Format(buffer, sizeof(buffer), "%T", "options_lang_pt", client);
 	}
 	AddMenuItem(optionmenu, "", buffer);
 	

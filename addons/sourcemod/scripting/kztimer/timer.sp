@@ -1,4 +1,25 @@
 // timer.sp
+public Action:SetChallengeSpawnPoint(Handle:timer, any:client)
+{
+	if (!IsValidClient(client) || !IsPlayerAlive(client))
+		return;		
+	decl String:szSteamId[32];
+	GetClientAuthId(client, AuthId_Steam2, szSteamId, sizeof(szSteamId), true);
+	
+	for (new i = 1; i <= MaxClients; i++)
+	{
+		if (IsValidClient(i) && IsPlayerAlive(i) && i != client)
+		{
+			if(StrEqual(szSteamId,g_szChallenge_OpponentID[i]))
+			{
+				new Float:pos[3];
+				GetClientAbsOrigin(i,pos);
+				DoValidTeleport(client, pos,NULL_VECTOR,Float:{0.0,0.0,-100.0});	
+				SetEntityMoveType(client, MOVETYPE_NONE);
+			}
+		}
+	}
+}	
 
 public Action:SetClientGroundFlagTimer(Handle:timer, any:client)
 {
@@ -409,12 +430,18 @@ public Action:KZTimer2(Handle:timer)
 			}		
 		}
 
-		if(g_hRecording[i] != INVALID_HANDLE && g_fCurrentRunTime[i] > 3600.0)
+		if(g_hRecording[i] != INVALID_HANDLE) 
 		{
-			StopRecording(i);
-			g_hRecording[i] = INVALID_HANDLE;
-		}	
-		
+			new Float:FastestTime;
+			if (g_fRecordTimePro < g_fRecordTime)
+				FastestTime = g_fRecordTimePro;
+			else
+				FastestTime = g_fRecordTime;
+				
+			if (g_fCurrentRunTime[i] > 3600.0 || (g_fCurrentRunTime[i] > g_fRecordTimePro && g_OverallTp[i] == 0 && g_fCurrentRunTime[i] > FastestTime) || (g_fCurrentRunTime[i] > g_fRecordTime && g_OverallTp[i] != 0))
+				StopRecording(i);
+				
+		}
 		if (!IsFakeClient(i) && !g_bKickStatus[i])
 			QueryClientConVar(i, "fps_max", ConVarQueryFinished:FPSCheck, i);
 

@@ -190,7 +190,9 @@ public SetServerConvars()
 		SetConVarFloat(g_hBhopSpeedCap, 380.0);
 		SetConVarFloat(g_hWaterAccelerate, 10.0);
 		SetConVarInt(g_hCheats, 0);
+		SetConVarInt(g_hDropKnifeEnable, 0);
 		SetConVarInt(g_hEnableBunnyhoping, 1);		
+		SetConVarFloat(g_hsv_ladder_scale_speed, 1.0);
 	}
 
 	if (g_bAutoRespawn)
@@ -265,6 +267,7 @@ public LadderCheck(client,Float:speed)
 
 public CheckSpawnPoints() 
 {
+	new Float:fSpawnpointAngle[3], Float:fSpawnpointOrigin[3];
 	if(StrEqual(g_szMapPrefix[0],"kz") || StrEqual(g_szMapPrefix[0],"xc")  || StrEqual(g_szMapPrefix[0],"kzpro") || StrEqual(g_szMapPrefix[0],"bkz") || StrEqual(g_szMapPrefix[0],"surf")  || StrEqual(g_szMapPrefix[0],"bhop"))
 	{
 		new ent, ct, t, spawnpoint;
@@ -275,8 +278,8 @@ public CheckSpawnPoints()
 		{		
 			if (t==0)
 			{
-				GetEntPropVector(ent, Prop_Data, "m_angRotation", g_fSpawnpointAngle); 
-				GetEntPropVector(ent, Prop_Send, "m_vecOrigin", g_fSpawnpointOrigin);				
+				GetEntPropVector(ent, Prop_Data, "m_angRotation", fSpawnpointAngle); 
+				GetEntPropVector(ent, Prop_Data, "m_vecOrigin", fSpawnpointOrigin);				
 			}
 			t++;
 		}	
@@ -284,8 +287,8 @@ public CheckSpawnPoints()
 		{	
 			if (ct==0 && t==0)
 			{
-				GetEntPropVector(ent, Prop_Data, "m_angRotation", g_fSpawnpointAngle); 
-				GetEntPropVector(ent, Prop_Send, "m_vecOrigin", g_fSpawnpointOrigin);				
+				GetEntPropVector(ent, Prop_Data, "m_angRotation", fSpawnpointAngle); 
+				GetEntPropVector(ent, Prop_Data, "m_vecOrigin", fSpawnpointOrigin);				
 			}
 			ct++;
 		}	
@@ -300,7 +303,7 @@ public CheckSpawnPoints()
 					if (IsValidEntity(spawnpoint) && DispatchSpawn(spawnpoint))
 					{
 						ActivateEntity(spawnpoint);
-						TeleportEntity(spawnpoint, g_fSpawnpointOrigin, g_fSpawnpointAngle, NULL_VECTOR);
+						TeleportEntity(spawnpoint, fSpawnpointOrigin, fSpawnpointAngle, NULL_VECTOR);
 						t++;
 					}
 				}		
@@ -314,7 +317,7 @@ public CheckSpawnPoints()
 					if (IsValidEntity(spawnpoint) && DispatchSpawn(spawnpoint))
 					{
 						ActivateEntity(spawnpoint);
-						TeleportEntity(spawnpoint, g_fSpawnpointOrigin, g_fSpawnpointAngle, NULL_VECTOR);
+						TeleportEntity(spawnpoint, fSpawnpointOrigin, fSpawnpointAngle, NULL_VECTOR);
 						ct++;
 					}
 				}			
@@ -847,7 +850,7 @@ public SetClientDefaults(client)
 	for( new i = 0; i < 100; i++ )
 	{
 		g_js_Strafe_Good_Sync[client][i] = 0.0;
-		g_js_Strafe_Frames[client][i] = 0.0;
+		g_js_Strafe_Frames[client][i] = 0;
 	}
 	new x = 0;
 	while (x < 30)
@@ -1210,6 +1213,15 @@ public MapFinishedMsgs(client, type)
 		
 		if (rank==99999 && IsValidClient(client))
 			PrintToChat(client, "[%cKZ%c] %cFailed to save your data correctly! Please contact an admin.",MOSSGREEN,WHITE,DARKRED,RED,DARKRED); 	
+		else
+		{ 
+			Call_StartForward(g_hFWD_TimerStoppedValid);
+			Call_PushCell(client);
+			Call_PushCell(g_Tp_Final[client]);
+			Call_PushCell(rank);
+			Call_PushFloat(g_fFinalTime[client]);
+			Call_Finish();		
+		}	
 			
 		//noclip MsgMsg
 		if (IsValidClient(client) && g_bMapFinished[client] == false && !StrEqual(g_pr_rankname[client],g_szSkillGroups[8]) && !(GetUserFlagBits(client) & ADMFLAG_RESERVATION) && !(GetUserFlagBits(client) & ADMFLAG_ROOT) && !(GetUserFlagBits(client) & ADMFLAG_GENERIC) && g_bNoClipS)
@@ -2566,21 +2578,21 @@ public CalcJumpSync(client, Float: speed, Float: ang, &buttons)
 			if( ang > g_fLastAngles[client][1])
 				turning_left = true;	
 		
-		//strafestats cccc
+		//strafestats 
 		if(turning_left || turning_right)
 		{
 			if( !g_js_Strafing_AW[client] && ((buttons & IN_FORWARD) || (buttons & IN_MOVELEFT)) && !(buttons & IN_MOVERIGHT) && !(buttons & IN_BACK) )
 			{			
 				g_js_Strafing_AW[client] = true;
 				g_js_Strafing_SD[client] = false;					
-				g_js_StrafeCount[client]++; 					
-				new count = g_js_StrafeCount[client]-1;
-				if (count < 100)
-				{			
-					g_js_Strafe_Good_Sync[client][g_js_StrafeCount[client]-1] = 0.0;
-					g_js_Strafe_Frames[client][g_js_StrafeCount[client]-1] = 0.0;		
-					g_js_Strafe_Max_Speed[client][g_js_StrafeCount[client] - 1] = speed;	
-					g_js_Strafe_Air_Time[client][g_js_StrafeCount[client] - 1] = GetEngineTime();	
+				g_js_StrafeCount[client]++; 				
+				new count = g_js_StrafeCount[client];
+				if (count < 25)
+				{					
+					g_js_Strafe_Good_Sync[client][g_js_StrafeCount[client]] = 0.0;
+					g_js_Strafe_Frames[client][g_js_StrafeCount[client]] = 0;		
+					g_js_Strafe_Max_Speed[client][g_js_StrafeCount[client]] = speed;	
+					g_js_Strafe_Air_Time[client][g_js_StrafeCount[client]] = GetEngineTime();	
 				}
 				
 			}
@@ -2589,39 +2601,39 @@ public CalcJumpSync(client, Float: speed, Float: ang, &buttons)
 				g_js_Strafing_AW[client] = false;
 				g_js_Strafing_SD[client] = true;
 				g_js_StrafeCount[client]++; 
-				new count = g_js_StrafeCount[client]-1;
-				if (count < 100)
+				if (g_js_StrafeCount[client] < 25)
 				{	
-					g_js_Strafe_Good_Sync[client][g_js_StrafeCount[client]-1] = 0.0;
-					g_js_Strafe_Frames[client][g_js_StrafeCount[client]-1] = 0.0;		
-					g_js_Strafe_Max_Speed[client][g_js_StrafeCount[client] - 1] = speed;	
-					g_js_Strafe_Air_Time[client][g_js_StrafeCount[client] - 1] = GetEngineTime();						
+					g_js_Strafe_Good_Sync[client][g_js_StrafeCount[client]] = 0.0;
+					g_js_Strafe_Frames[client][g_js_StrafeCount[client]] = 0;		
+					g_js_Strafe_Max_Speed[client][g_js_StrafeCount[client]] = speed;	
+					g_js_Strafe_Air_Time[client][g_js_StrafeCount[client]] = GetEngineTime();		
 				}
-			}				
-		}									
+			}
+		}	
+		
 		//sync
-		if( g_fLastSpeed[client] < speed )
+		if( g_fLastSpeed[client] < speed)
 		{
 			g_js_Good_Sync_Frames[client]++;		
-			if( 0 < g_js_StrafeCount[client] <= 100 )
+			if( 0 <= g_js_StrafeCount[client] < 25)
 			{
-				g_js_Strafe_Good_Sync[client][g_js_StrafeCount[client] - 1]++;
-				g_js_Strafe_Gained[client][g_js_StrafeCount[client] - 1] += (speed - g_fLastSpeed[client]);
+				g_js_Strafe_Good_Sync[client][g_js_StrafeCount[client]]++;
+				g_js_Strafe_Gained[client][g_js_StrafeCount[client]] += (speed - g_fLastSpeed[client]);
 			}
 		}	
 		else 
 			if( g_fLastSpeed[client] > speed )
 			{
-				if( 0 < g_js_StrafeCount[client] <= 100 )
-					g_js_Strafe_Lost[client][g_js_StrafeCount[client] - 1] += (g_fLastSpeed[client] - speed);
+				if( 0 <= g_js_StrafeCount[client] < 25)
+					g_js_Strafe_Lost[client][g_js_StrafeCount[client]] += (g_fLastSpeed[client] - speed);
 			}
 
 		//strafe frames
-		if( 0 < g_js_StrafeCount[client] <= 100 )
+		if( 0 <= g_js_StrafeCount[client] < 25)
 		{
-			g_js_Strafe_Frames[client][g_js_StrafeCount[client] - 1]++;
-			if( g_js_Strafe_Max_Speed[client][g_js_StrafeCount[client] - 1] < speed )
-				g_js_Strafe_Max_Speed[client][g_js_StrafeCount[client] - 1] = speed;
+			g_js_Strafe_Frames[client][g_js_StrafeCount[client]]++;
+			if( g_js_Strafe_Max_Speed[client][g_js_StrafeCount[client]] < speed )
+				g_js_Strafe_Max_Speed[client][g_js_StrafeCount[client]] = speed;
 		}
 		//total frames
 		g_js_Sync_Frames[client]++;
@@ -2944,7 +2956,8 @@ public SpecListMenuAlive(client)
 	else
 		Format(g_szPlayerPanelText[client], 512, "");	
 }
-	
+
+
 //MACRODOX BHOP PROTECTION
 //https://forums.alliedmods.net/showthread.php?p=1678026
 public PerformStats(client, target,bool:console_only)
@@ -4355,9 +4368,9 @@ public RegServerConVars()
 	GetConVarString(g_hWelcomeMsg,g_sWelcomeMsg,512);
 	HookConVarChange(g_hWelcomeMsg, OnSettingChanged);
 
-	g_hDefaultLanguage 	= CreateConVar("kz_default_language", "0", "default language of kztimer (0: english,  1: german, 2: swedish, 3: french, 4: russian, 5: simplified chinese)", FCVAR_NOTIFY, true, 0.0, true, 100.0);
+	g_hDefaultLanguage 	= CreateConVar("kz_default_language", "0", "default language of kztimer (0: english,  1: german, 2: swedish, 3: french, 4: russian, 5: simplified chinese, 6: portuguese brazilian)", FCVAR_NOTIFY, true, 0.0, true, 100.0);
 	g_DefaultLanguage     = GetConVarInt(g_hDefaultLanguage);
-	HookConVarChange(g_hDefaultLanguage, OnSettingChanged);
+	HookConVarChange(g_hDefaultLanguage, OnSettingChanged);	
 	
 	g_hReplayBotProColor   = CreateConVar("kz_replay_bot_pro_color", "52 91 248","The default pro replay bot color - Format: \"red green blue\" from 0 - 255.", FCVAR_NOTIFY);
 	HookConVarChange(g_hReplayBotProColor, OnSettingChanged);	
@@ -4389,7 +4402,9 @@ public RegServerConVars()
 	g_hAccelerate = FindConVar("sv_accelerate");
 	g_hMaxVelocity = FindConVar("sv_maxvelocity");
 	g_hCheats = FindConVar("sv_cheats");
+	g_hDropKnifeEnable = FindConVar("sv_cheats");
 	g_hEnableBunnyhoping = FindConVar("sv_enablebunnyhopping");
+	g_hsv_ladder_scale_speed = FindConVar("sv_ladder_scale_speed");
 	g_hMaxRounds = FindConVar("mp_maxrounds");
 	HookConVarChange(g_hStaminaLandCost, OnSettingChanged);
 	HookConVarChange(g_hStaminaJumpCost, OnSettingChanged);
@@ -4401,7 +4416,9 @@ public RegServerConVars()
 	HookConVarChange(g_hAccelerate, OnSettingChanged);
 	HookConVarChange(g_hMaxVelocity, OnSettingChanged);
 	HookConVarChange(g_hCheats, OnSettingChanged);
+	HookConVarChange(g_hDropKnifeEnable, OnSettingChanged);
 	HookConVarChange(g_hEnableBunnyhoping, OnSettingChanged);
+	HookConVarChange(g_hsv_ladder_scale_speed, OnSettingChanged);
 	HookConVarChange(g_hMaxRounds, OnSettingChanged);
 	
 	if (g_Server_Tickrate == 64)
@@ -4837,4 +4854,29 @@ public SetupExceptions(bool:addcommands)
 	}
 	if (fileHandle != INVALID_HANDLE)
 		CloseHandle(fileHandle);
+}
+
+public ProcessParticleManifest(const String:path[])
+{
+	new Handle:hFile = OpenFile(path, "r", true, NULL_STRING);
+
+	new Handle:hKeyValue = CreateKeyValues("particles_manifest");
+	FileToKeyValues(hKeyValue, path);
+
+	if (!KvJumpToKey(hKeyValue, "file", false))
+	{
+		CloseHandle(hKeyValue);
+		CloseHandle(hFile);
+		return;
+	}	
+	decl String:buffer[256];
+	do
+	{
+		KvGetString(hKeyValue, NULL_STRING, buffer, sizeof(buffer), NULL_STRING);
+		PrecacheGeneric(buffer, true);
+	} 
+	while (KvGotoNextKey(hKeyValue, false));
+ 
+	CloseHandle(hKeyValue);
+	CloseHandle(hFile);
 }

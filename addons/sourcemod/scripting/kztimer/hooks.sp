@@ -660,7 +660,8 @@ public Action:Event_OnRoundStart(Handle:event, const String:name[], bool:dontBro
 				{
 					GetEntPropString(y, Prop_Data, "m_iName", iname, sizeof(iname));	
 					if (StrContains(iname,"rotor") != -1)
-						SetEntProp(ent, Prop_Send, "m_nSolidType", 2);
+						if (IsValidEntity(ent))
+								SetEntProp(ent, Prop_Send, "m_nSolidType", 2);
 				}
 			}		
 		}

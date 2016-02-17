@@ -5,7 +5,6 @@
 #include <cstrike>
 #include <button>
 #include <entity>
-#include <setname>
 #include <smlib>
 #include <KZTimer>
 #include <geoip>
@@ -17,7 +16,7 @@
 #include <sourcebans>
 #include <mapchooser>
 
-#define VERSION "1.82b"
+#define VERSION "1.83"
 #define ADMIN_LEVEL ADMFLAG_UNBAN
 #define ADMIN_LEVEL2 ADMFLAG_ROOT
 #define MYSQL 0
@@ -61,6 +60,8 @@
 #define ORIGIN_SNAPSHOT_INTERVAL 150
 #define FILE_HEADER_LENGTH 74
 #define SOURCEBANS_AVAILABLE()	(GetFeatureStatus(FeatureType_Native, "SBBanPlayer") == FeatureStatus_Available)
+#define MANIFEST_FOLDER         "maps/"
+#define MANIFEST_EXTENSION      "_particles.txt"
 #pragma dynamic 131072 
 
 enum RouteInfo 
@@ -122,6 +123,9 @@ new bool:g_global_SelfBuiltButtons;
 // kztimer decl.
 new g_DbType;
 new g_ReplayRecordTps;
+new Handle:g_hFWD_TimerStart;
+new Handle:g_hFWD_TimerStopped;
+new Handle:g_hFWD_TimerStoppedValid;
 new Handle:g_hReplayRouteArrayTmp = INVALID_HANDLE;
 new Handle:g_hReplayRouteArray = INVALID_HANDLE;
 new Handle:g_hFullAlltalk = INVALID_HANDLE;
@@ -135,8 +139,10 @@ new Handle:g_hFriction = INVALID_HANDLE;
 new Handle:g_hAccelerate = INVALID_HANDLE;
 new Handle:g_hMaxVelocity = INVALID_HANDLE;
 new Handle:g_hCheats = INVALID_HANDLE;
+new Handle:g_hDropKnifeEnable = INVALID_HANDLE;
 new Handle:g_hMaxRounds = INVALID_HANDLE;
 new Handle:g_hEnableBunnyhoping = INVALID_HANDLE;
+new Handle:g_hsv_ladder_scale_speed = INVALID_HANDLE;
 new Handle:g_hTeleport = INVALID_HANDLE;
 new Handle:g_hMainMenu = INVALID_HANDLE;
 new Handle:g_hSDK_Touch = INVALID_HANDLE;
@@ -358,8 +364,6 @@ new Float:g_fStartCommandUsed_LastTime[MAXPLAYERS+1];
 new Float:g_fProfileMenuLastQuery[MAXPLAYERS+1];
 new Float:g_favg_protime;
 new Float:g_favg_tptime;
-new Float:g_fSpawnpointOrigin[3];
-new Float:g_fSpawnpointAngle[3];
 new Float:g_fTeleportValidationTime[MAXPLAYERS+1];
 new Float:g_js_fJump_JumpOff_Pos[MAXPLAYERS+1][3];
 new Float:g_js_fJump_Landing_Pos[MAXPLAYERS+1][3];
@@ -377,7 +381,7 @@ new Float:g_js_Good_Sync_Frames[MAXPLAYERS+1];
 new Float:g_js_Sync_Frames[MAXPLAYERS+1];
 new Float:g_js_Strafe_Air_Time[MAXPLAYERS+1][100];
 new Float:g_js_Strafe_Good_Sync[MAXPLAYERS+1][100];
-new Float:g_js_Strafe_Frames[MAXPLAYERS+1][100];
+new g_js_Strafe_Frames[MAXPLAYERS+1][100];
 new Float:g_js_Strafe_Gained[MAXPLAYERS+1][100];
 new Float:g_js_Strafe_Max_Speed[MAXPLAYERS+1][100];
 new Float:g_js_Strafe_Lost[MAXPLAYERS+1][100];
@@ -711,7 +715,7 @@ new String:PERFECT_FULL_SOUND_PATH[128];
 new String:PERFECT_RELATIVE_SOUND_PATH[128];
 new String:IMPRESSIVE_FULL_SOUND_PATH[128];
 new String:IMPRESSIVE_RELATIVE_SOUND_PATH[128];
-new String:g_szLanguages[][128] = {"English", "German", "Swedish", "French", "Russian", "SChinese"};
+new String:g_szLanguages[][128] = {"English", "German", "Swedish", "French", "Russian", "SChinese", "Brazilian"};
 new String:RadioCMDS[][] = {"coverme", "takepoint", "holdpos", "regroup", "followme", "takingfire", "go", "fallback", "sticktog",
 	"getinpos", "stormfront", "report", "roger", "enemyspot", "needbackup", "sectorclear", "inposition", "reportingin",
 	"getout", "negative","enemydown","cheer","thanks","nice","compliment"};
@@ -745,6 +749,9 @@ public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 	CreateNative("KZTimer_GetAvgTimePro", Native_GetAvgTimePro);
 	CreateNative("KZTimer_GetSkillGroup", Native_GetSkillGroup);
 	g_bLateLoaded = late;
+	g_hFWD_TimerStart = CreateGlobalForward("KZTimer_TimerStarted", ET_Event, Param_Cell);
+	g_hFWD_TimerStopped = CreateGlobalForward("KZTimer_TimerStopped", ET_Event, Param_Cell, Param_Cell, Param_Float, Param_Cell);
+	g_hFWD_TimerStoppedValid = CreateGlobalForward("KZTimer_TimerStoppedValid", ET_Event, Param_Cell, Param_Cell, Param_Cell, Param_Float);
 	return APLRes_Success;
 }
 
@@ -955,8 +962,6 @@ public OnMapStart()
 	g_fRecordTimePro=9999999.0;
 	g_fStartButtonPos = Float:{-999999.9,-999999.9,-999999.9};
 	g_fEndButtonPos = Float:{-999999.9,-999999.9,-999999.9};
-	g_fSpawnpointOrigin = Float:{-999999.9,-999999.9,-999999.9};
-	g_fSpawnpointAngle = Float:{-999999.9,-999999.9,-999999.9};
 	g_MapTimesCountPro = 0;
 	g_MapTimesCountTp = 0;
 	g_ProBot = -1;
@@ -1021,6 +1026,11 @@ public OnMapStart()
 	
 	for (new i = 1; i <= MaxClients; i++)
 		g_Skillgroup[i] = 0;		
+		
+	decl String:sManifestFullPath[PLATFORM_MAX_PATH];
+	FormatEx(sManifestFullPath, sizeof(sManifestFullPath), "%s%s%s", MANIFEST_FOLDER, g_szMapName, MANIFEST_EXTENSION);
+	if (FileExists(sManifestFullPath, true, NULL_STRING))
+		ProcessParticleManifest(sManifestFullPath);
 }
 
 public OnMapEnd()
@@ -1593,7 +1603,9 @@ public OnSettingChanged(Handle:convar, const String:oldValue[], const String:new
 			SetConVarFloat(g_hBhopSpeedCap, 380.0);
 			SetConVarFloat(g_hWaterAccelerate, 10.0);
 			SetConVarInt(g_hCheats, 0);
-			SetConVarInt(g_hEnableBunnyhoping, 1);		
+			SetConVarInt(g_hDropKnifeEnable, 0);
+			SetConVarInt(g_hEnableBunnyhoping, 1);	
+			SetConVarFloat(g_hsv_ladder_scale_speed, 1.0);
 		}
 		else
 			g_bEnforcer = false;
@@ -1973,6 +1985,12 @@ public OnSettingChanged(Handle:convar, const String:oldValue[], const String:new
 		if (g_bEnforcer && iTmp != 0)
 			SetConVarInt(g_hCheats, 0);			
 	}
+	if(convar == g_hDropKnifeEnable)
+	{			
+		new iTmp = StringToInt(newValue[0]);
+		if (g_bEnforcer && iTmp != 0)
+			SetConVarInt(g_hDropKnifeEnable, 0);			
+	}
 	if(convar == g_hMaxRounds)
 	{			
 		if (!g_bAllowRoundEndCvar)
@@ -1983,6 +2001,12 @@ public OnSettingChanged(Handle:convar, const String:oldValue[], const String:new
 		new iTmp = StringToInt(newValue[0]);
 		if (g_bEnforcer && iTmp != 1)
 			SetConVarInt(g_hEnableBunnyhoping, 1);	
+	}
+	if(convar == g_hsv_ladder_scale_speed)
+	{
+		new Float:flTmp = StringToFloat(newValue[0]);
+		if (g_bEnforcer && flTmp != 1.0)
+			SetConVarFloat(g_hsv_ladder_scale_speed, 1.0);	
 	}
 }
 

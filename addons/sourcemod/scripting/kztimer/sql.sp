@@ -2579,18 +2579,18 @@ public SQL_ViewRankedPlayerCallback5(Handle:owner, Handle:hndl, const String:err
 		if (g_bPointSystem)
 			Format(szRanking, 255,"Rank: %s/%i (Overall: %i)\nPoints: %ip (%s)\nNext skill group in: %ip%s\n", szRank,g_pr_RankedPlayers, g_pr_AllPlayers,points,szSkillGroup,RankDifference,szNextRank);
 		if (g_bAllowCheckpoints || StrEqual(g_szMapPrefix[0],"kzpro"))
-			Format(g_pr_szrank[client], 512, "%sPro times: %i/%i (records: %i)\nTP times: %i/%i (records: %i)\nPlayed challenges: %i\n╘W/L Ratio: %s\n╘W/L Points ratio: %s\n ",szRanking,finishedmapspro,g_pr_MapCount,prorecords,finishedmapstp,g_pr_MapCountTp,tprecords,challenges,szChallengesWinRatio,szChallengesPoints);                    
+			Format(g_pr_szrank[client], 512, "%sPro times: %i/%i (records: %i)\nTP times: %i/%i (records: %i)\nPlayed challenges: %i\n▪ W/L Ratio: %s\n▪ W/L Points ratio: %s\n ",szRanking,finishedmapspro,g_pr_MapCount,prorecords,finishedmapstp,g_pr_MapCountTp,tprecords,challenges,szChallengesWinRatio,szChallengesPoints);                    
 		else
-			Format(g_pr_szrank[client], 512, "Rank: %s/%i (%i)\nPoints: %ip (%s)\nNext skill group in: %ip%s\nMaps completed: %i/%i (records: %i)\nPlayed challenges: %i\n╘W/L Ratio: %s\n╘W/L Points ratio: %s\n ", szRank,g_pr_RankedPlayers, g_pr_AllPlayers,points,szSkillGroup,RankDifference,szNextRank,finishedmapspro,g_pr_MapCount,prorecords,challenges,szChallengesWinRatio,szChallengesPoints);                    	
+			Format(g_pr_szrank[client], 512, "Rank: %s/%i (%i)\nPoints: %ip (%s)\nNext skill group in: %ip%s\nMaps completed: %i/%i (records: %i)\nPlayed challenges: %i\n▪ W/L Ratio: %s\n▪ W/L Points ratio: %s\n ", szRank,g_pr_RankedPlayers, g_pr_AllPlayers,points,szSkillGroup,RankDifference,szNextRank,finishedmapspro,g_pr_MapCount,prorecords,challenges,szChallengesWinRatio,szChallengesPoints);                    	
 	}
 	else
 	{
 		if (g_bPointSystem)
 			Format(szRanking, 255,"Rank: %s/%i (Overall: %i)\nPoints: %ip (%s)\n", szRank,g_pr_RankedPlayers, g_pr_AllPlayers,points,szSkillGroup);
 		if (g_bAllowCheckpoints || StrEqual(g_szMapPrefix[0],"kzpro"))
-			Format(g_pr_szrank[client], 512, "%sPro times: %i/%i (records: %i)\nTP times: %i/%i (records: %i)\nPlayed challenges: %i\n╘ W/L Ratio: %s\n╘ W/L points ratio: %s\n ", szRanking,finishedmapspro,g_pr_MapCount,prorecords,finishedmapstp,g_pr_MapCountTp,tprecords,challenges,szChallengesWinRatio,szChallengesPoints);                    
+			Format(g_pr_szrank[client], 512, "%sPro times: %i/%i (records: %i)\nTP times: %i/%i (records: %i)\nPlayed challenges: %i\n▪ W/L Ratio: %s\n▪ W/L points ratio: %s\n ", szRanking,finishedmapspro,g_pr_MapCount,prorecords,finishedmapstp,g_pr_MapCountTp,tprecords,challenges,szChallengesWinRatio,szChallengesPoints);                    
 		else
-			Format(g_pr_szrank[client], 512, "Rank: %s/%i (%i)\nPoints: %ip (%s)\nMaps completed: %i/%i (records: %i)\nPlayed challenges: %i\n╘ W/L Ratio: %s\n╘ W/L points ratio: %s\n ", szRank,g_pr_RankedPlayers, g_pr_AllPlayers,points,szSkillGroup,finishedmapspro,g_pr_MapCount,prorecords,challenges,szChallengesWinRatio,szChallengesPoints);                    
+			Format(g_pr_szrank[client], 512, "Rank: %s/%i (%i)\nPoints: %ip (%s)\nMaps completed: %i/%i (records: %i)\nPlayed challenges: %i\n▪ W/L Ratio: %s\n▪ W/L points ratio: %s\n ", szRank,g_pr_RankedPlayers, g_pr_AllPlayers,points,szSkillGroup,finishedmapspro,g_pr_MapCount,prorecords,challenges,szChallengesWinRatio,szChallengesPoints);                    
 		
 	}
 	new String:szID[32][2];
@@ -3086,11 +3086,11 @@ public sql_selectRecordCallback(Handle:owner, Handle:hndl, const String:error[],
 	}
 	else
 	{
-		CloseHandle(pack);
-		decl String:szUName[MAX_NAME_LENGTH];
-		GetClientName(client, szUName, MAX_NAME_LENGTH);
-		decl String:szName[MAX_NAME_LENGTH*2+1];
-		SQL_QuoteString(g_hDb, szUName, szName, MAX_NAME_LENGTH*2+1);
+ 		CloseHandle(pack);
+ 		decl String:szUName[MAX_NAME_LENGTH];
+ 		GetClientName(client, szUName, MAX_NAME_LENGTH);
+ 		decl String:szName[MAX_NAME_LENGTH*2+1];
+ 		SQL_QuoteString(g_hDb, szUName, szName, MAX_NAME_LENGTH*2+1);
 		if	(g_Tp_Final[client]>0)
 		{						
 			Format(szQuery, 512, sql_insertPlayerTp, g_szSteamID[client], mapname, szName, g_fFinalTime[client], g_Tp_Final[client]);
@@ -5892,9 +5892,9 @@ public db_updatePoints(client)
 		if (IsValidClient(client))
 		{
 			decl String:szUName[MAX_NAME_LENGTH];
-			GetClientName(client, szUName, MAX_NAME_LENGTH);
-			decl String:szName[MAX_NAME_LENGTH*2+1];
-			SQL_QuoteString(g_hDb, szUName, szName, MAX_NAME_LENGTH*2+1);
+ 			GetClientName(client, szUName, MAX_NAME_LENGTH);
+ 			decl String:szName[MAX_NAME_LENGTH*2+1];
+ 			SQL_QuoteString(g_hDb, szUName, szName, MAX_NAME_LENGTH*2+1);
 			GetClientAuthId(client, AuthId_Steam2, szSteamId, sizeof(szSteamId), true);	
 			Format(szQuery, 512, sql_updatePlayerRankPoints2, szName, g_pr_points[client], g_pr_finishedmaps_tp[client],g_pr_finishedmaps_pro[client],g_Challenge_WinRatio[client],g_Challenge_PointsRatio[client],g_szCountry[client], szSteamId); 
 			SQL_TQuery(g_hDb, sql_updatePlayerRankPointsCallback, szQuery, client, DBPrio_Low);
@@ -6470,4 +6470,4 @@ public db_selectTop100PlayersCallback(Handle:owner, Handle:hndl, const String:er
 	{
 		PrintToChat(client, "%t", "NoPlayerTop", MOSSGREEN,WHITE);
 	}
-}}
+}

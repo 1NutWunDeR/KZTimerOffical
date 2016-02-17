@@ -82,13 +82,13 @@ public CL_OnStartTimerPress(client)
 			if(g_hRecording[client] != INVALID_HANDLE)
 				StopRecording(client);
 			StartRecording(client);
-		}		
+		}	
+			
 	}
 	
 	//noclip check
 	new Float:time;
-	time = GetEngineTime() - g_fLastTimeNoClipUsed[client];
-			
+	time = GetEngineTime() - g_fLastTimeNoClipUsed[client];			
 	if ((!g_bSpectate[client] && !g_bNoClip[client] && time > 2.0) || IsFakeClient(client))
 	{	
 	
@@ -161,6 +161,9 @@ public CL_OnStartTimerPress(client)
 	
 	//sound
 	PlayButtonSound(client);	
+	Call_StartForward(g_hFWD_TimerStart);
+	Call_PushCell(client);
+	Call_Finish();
 }
 
 // - Climb Button OnEndPress -
@@ -228,6 +231,7 @@ public CL_OnEndTimerPress(client)
 	new Float: difference;
 	new String:mapname[128];
 	Format(mapname, 128, "%s", g_szMapName);	
+	new bool:bNewRecord;
 	
 	g_FinishingType[client] = -1;
 	g_Sound_Type[client] = -1;
@@ -318,6 +322,7 @@ public CL_OnEndTimerPress(client)
 	//NEW PRO RECORD
 	if((g_fFinalTime[client] < g_fRecordTimePro) && g_Tp_Final[client] <= 0)
 	{
+		bNewRecord=true;
 		if (g_FinishingType[client] != 3 && g_FinishingType[client] != 4 && g_FinishingType[client] != 5)
 			g_FinishingType[client] = 2;
 		g_fRecordTimePro = g_fFinalTime[client]; 
@@ -340,6 +345,7 @@ public CL_OnEndTimerPress(client)
 	//NEW TP RECORD
 	if((g_fFinalTime[client] < g_fRecordTime) && g_Tp_Final[client] > 0)
 	{
+		bNewRecord=true;
 		if (g_FinishingType[client] != 3 && g_FinishingType[client] != 4 && g_FinishingType[client] != 5)
 			g_FinishingType[client] = 1;
 		g_fRecordTime = g_fFinalTime[client];
@@ -358,6 +364,13 @@ public CL_OnEndTimerPress(client)
 		}
 		db_InsertLatestRecords(g_szSteamID[client], szName, g_fFinalTime[client], g_Tp_Final[client]);	
 	}
+	
+	Call_StartForward(g_hFWD_TimerStopped);
+	Call_PushCell(client);
+	Call_PushCell(g_Tp_Final[client]);
+	Call_PushFloat(g_fFinalTime[client]);
+	Call_PushCell(bNewRecord);
+	Call_Finish();	
 		
 	if (newbest && g_Sound_Type[client] == -1)
 		g_Sound_Type[client] = 5;

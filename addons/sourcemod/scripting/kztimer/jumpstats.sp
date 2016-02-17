@@ -406,15 +406,16 @@ public Prethink (client, bool:ladderjump)
 	//reset vars
 	g_js_Good_Sync_Frames[client] = 0.0;
 	g_js_Sync_Frames[client] = 0.0;
-	for( new i = 0; i < 100; i++ )
+	for( new i = 0; i < 25; i++ )
 	{
 		g_js_Strafe_Air_Time[client][i] = 0.0;
 		g_js_Strafe_Good_Sync[client][i] = 0.0;
-		g_js_Strafe_Frames[client][i] = 0.0;
+		g_js_Strafe_Frames[client][i] = 0;
 		g_js_Strafe_Gained[client][i] = 0.0;
 		g_js_Strafe_Lost[client][i] = 0.0;
 		g_js_Strafe_Max_Speed[client][i] = 0.0;
 	}	
+	
 	decl Float:fVelocity[3];
 	GetEntPropVector(client, Prop_Data, "m_vecVelocity", fVelocity);			
 	g_js_fMax_Speed[client] = 0.0;
@@ -463,7 +464,7 @@ public Prethink (client, bool:ladderjump)
 	//ladder jump?
 	if (ladderjump)
 	{
-		g_js_fPreStrafe[client] = SquareRoot(Pow(fVelocity[0], 2.0) + Pow(fVelocity[1], 2.0));
+		g_js_fPreStrafe[client] = GetSpeed(client);
 		g_js_fJump_JumpOff_Pos[client] = g_fLastPosition[client];
 		g_bLadderJump[client]=true;
 		g_js_LadderDirectionCounter[client] = 0;
@@ -471,7 +472,7 @@ public Prethink (client, bool:ladderjump)
 		g_bBeam[client] = true;
 	}
 	else
-		g_js_fPreStrafe[client] = SquareRoot(Pow(fVelocity[0], 2.0) + Pow(fVelocity[1], 2.0) + Pow(fVelocity[2], 2.0));	
+		g_js_fPreStrafe[client] = GetSpeed(client);	
 
 	//reset beam
 	if (!ladderjump)
@@ -480,7 +481,7 @@ public Prethink (client, bool:ladderjump)
 			g_bBeam[client] = false;
 		g_bLadderJump[client]=false;
 	}
-	
+
 	//last InitialLastHeight
 	g_js_fJump_JumpOff_PosLastHeight[client] = g_js_fJump_JumpOff_Pos[client][2];
 	
@@ -558,22 +559,22 @@ public Postthink(client)
 	decl String:szStrafeSync[255];
 	decl String:szStrafeSync2[255];
 	decl strafe_sync;
-	if (g_bStrafeSync[client] && strafes > 1 && strafes < 100)
+	if (g_bStrafeSync[client] && strafes > 2 && strafes < 25)
 	{
-		for (new i = 0; i < strafes; i++)
+		for (new i = 1; i <= strafes; i++)
 		{
 			if (i==0)
 				Format(szStrafeSync, 255, "[%cKZ%c] %cSync:",MOSSGREEN,WHITE,GRAY);
-			if (g_js_Strafe_Frames[client][i] == 0.0 || g_js_Strafe_Good_Sync[client][i] == 0.0) 
+			if (g_js_Strafe_Frames[client][i] == 0 || g_js_Strafe_Good_Sync[client][i] == 0.0) 
 				strafe_sync = 0;
 			else
-				strafe_sync = RoundToNearest(g_js_Strafe_Good_Sync[client][i] / g_js_Strafe_Frames[client][i] * 100.0);
+				strafe_sync = RoundToNearest(g_js_Strafe_Good_Sync[client][i] / g_js_Strafe_Frames[client][i] * 100);
 			if (i==0)	
-				Format(szStrafeSync2, 255, " %c%i.%c %i%c",GRAY, (i+1),LIMEGREEN,strafe_sync,PERCENT);
+				Format(szStrafeSync2, 255, " %c%i.%c %i%c",GRAY, (i),LIMEGREEN,strafe_sync,PERCENT);
 			else
-				Format(szStrafeSync2, 255, "%c - %i.%c %i%c",GRAY, (i+1),LIMEGREEN,strafe_sync,PERCENT);
+				Format(szStrafeSync2, 255, "%c - %i.%c %i%c",GRAY, (i),LIMEGREEN,strafe_sync,PERCENT);
 			StrCat(szStrafeSync, sizeof(szStrafeSync), szStrafeSync2);
-			if ((i+1) == strafes)
+			if ((i) == strafes)
 			{
 				Format(szStrafeSync2, 255, " %c[%c%i%c%c]",GRAY,PURPLE, sync,PERCENT,GRAY);
 				StrCat(szStrafeSync, sizeof(szStrafeSync), szStrafeSync2);
@@ -587,26 +588,32 @@ public Postthink(client)
 	decl String:szGained[16];
 	decl String:szLost[16];
 	
-	//Format StrafeStats Console 
-	if(strafes > 1 && strafes < 50)
+	
+	
+	//Format StrafeStats Console
+	if(2 < strafes <= 25)
 	{	
 		new Float:FSync;
 		decl Float:fStrafeAirtime;
 		decl Float:fStrafeAirtimePerc;
 		Format(szStrafeStats,1024, " #. Sync        Gained      Lost        MaxSpeed    AirTime\n");
-		for( new i = 0; i < strafes; i++ )
-		{
-			if (i == 0)		
+		for( new i = 1; i <= strafes; i++ )
+		{		
+			if (i == 1)		
 				fStrafeAirtime = g_js_Strafe_Air_Time[client][i+1] - g_fJumpOffTime[client];
 			else
-				if ((i+1) == strafes)		
+			{		
+				if (i == strafes)		
 					fStrafeAirtime = g_fLandingTime[client] - g_js_Strafe_Air_Time[client][i];
 				else
-					fStrafeAirtime = g_js_Strafe_Air_Time[client][i+1] - g_js_Strafe_Air_Time[client][i];
+					if (i < strafes )
+						fStrafeAirtime = g_js_Strafe_Air_Time[client][i+1] - g_js_Strafe_Air_Time[client][i];
+			}
+			
 			fStrafeAirtimePerc = FloatAbs(fStrafeAirtime / g_fAirTime[client] * 100.0);
-			FSync += g_js_Strafe_Good_Sync[client][i] / g_js_Strafe_Frames[client][i] * 100.0		
+			FSync += g_js_Strafe_Good_Sync[client][i] / g_js_Strafe_Frames[client][i] * 100;		
 			decl sync2;
-			sync2 = RoundToNearest(g_js_Strafe_Good_Sync[client][i] / g_js_Strafe_Frames[client][i] * 100.0);
+			sync2 = RoundToNearest(g_js_Strafe_Good_Sync[client][i] / g_js_Strafe_Frames[client][i] * 100);
 			if (sync2 < 0)
 				sync2 = 0;
 			if (g_js_Strafe_Gained[client][i] < 10.0)
@@ -619,7 +626,7 @@ public Postthink(client)
 				Format(szLost,16, "%.3f", g_js_Strafe_Lost[client][i]);				
 			Format(szStrafeStats,1024, "%s%2i. %3i%s        %s      %s      %3.3f     %.0f%c\n",\
 			szStrafeStats,\
-			i + 1,\
+			i,\
 			sync2,\
 			PERCENT,\
 			szGained,\
@@ -634,8 +641,6 @@ public Postthink(client)
 		Format(szStrafeStats,1024, "");
 	
 	
-	
-					
 	//ladderjump
 	if (g_bLadderJump[client])
 	{
@@ -675,6 +680,7 @@ public Postthink(client)
 		maxdiff2 = maxdiff * -1;
 	}
 
+	
 	if (fGroundDiff2 > maxdiff || fGroundDiff2 < maxdiff2 || fGroundDiff != 0.0)
 	{	
 		if (g_js_block_lj_valid[client])
@@ -1010,13 +1016,13 @@ public Postthink(client)
 		
 		decl String:sPerfectTakeOff[32];	
 		if (g_js_bPerfJumpOff[client])
-			Format(sPerfectTakeOff, 32, "CJ: ✔ |", g_js_fJump_Distance[client]);
+			Format(sPerfectTakeOff, 32, "CrouchJump: yes |", g_js_fJump_Distance[client]);
 		else	
-			Format(sPerfectTakeOff, 32, "CJ: Х |", g_js_fJump_Distance[client]);
+			Format(sPerfectTakeOff, 32, "CrouchJump: no |", g_js_fJump_Distance[client]);
 		if (g_js_bPerfJumpOff2[client])
-			Format(sPerfectTakeOff, 32, "%s -W: ✔", sPerfectTakeOff,g_js_fJump_Distance[client]);
+			Format(sPerfectTakeOff, 32, "%s -Forward: yes", sPerfectTakeOff,g_js_fJump_Distance[client]);
 		else	
-			Format(sPerfectTakeOff, 32, "%s -W: Х", sPerfectTakeOff,g_js_fJump_Distance[client]);			
+			Format(sPerfectTakeOff, 32, "%s -Forward: no", sPerfectTakeOff,g_js_fJump_Distance[client]);			
 	
 		if (((g_js_fPersonal_Lj_Record[client] < g_js_fJump_Distance[client]) || (ljblock && g_js_Personal_LjBlock_Record[client] < g_BlockDist[client]) || (ljblock && g_js_Personal_LjBlock_Record[client] == g_BlockDist[client] && g_js_fPersonal_LjBlockRecord_Dist[client] < g_js_fJump_Distance[client])) && !IsFakeClient(client))
 		{

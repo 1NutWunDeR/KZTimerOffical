@@ -10,10 +10,15 @@
 		"#format"   "{1:c}"
 		"de"        " {1}PB"
 	}
-	"NewGlobalMapRank"
+	"NewGlobalMapRankPro"
 	{
 		"#format"   "{1:c},{2:c},{3:c},{4:s},{5:i},{6:s},{7:s},{8:i}"
-		"de"        "[{1}GLOBAL{2}] {3}{4} ist jetzt #{5} in der Global Top 20 auf {6}! [{7}, Tick{8}]"
+		"de"        "[{1}GLOBAL{2}] {3}{4} is now #{5} in the Global PRO-Top 20 on {6}! [{7}, Tick{8}]"
+	}
+	"NewGlobalMapRankTp"
+	{
+		"#format"   "{1:c},{2:c},{3:c},{4:s},{5:i},{6:s},{7:s},{8:i},{9:i}"
+		"de"        "[{1}GLOBAL{2}] {3}{4} is now #{5} in the Global TP-Top 20 on {6}! [{7}, TPs: {8}, Tick{9}]"
 	}
 	"UndoLadder"
 	{
@@ -58,6 +63,10 @@
 	"options_lang_cn"
 	{
 		"de"       "Language - Chinese"
+	}
+	"options_lang_pt"
+	{
+		"de"       "Language - Portuguese Brazilian"
 	}
 	"Route1"
 	{
@@ -634,25 +643,35 @@
 		"#format"   "{1:c},{2:c}"
 		"de"        "[{1}KZ{2}] Neuberechnung der Spielerpunkte gestoppt!"
 	}
-	"NewGlobalRecord102Pro"
+	"NewGlobalRecord102_Pro"
 	{
 		"#format"   "{1:c},{2:c},{3:c},{4:s},{5:c},{6:c}"
-		"de"        "[{1}KZ{2}] {3}{4}{5} erzielt einen neuen {6}GLOBAL REKORD (ProMode)"
-	}	
-	"NewGlobalRecord102"
-	{
-		"#format"   "{1:c},{2:c},{3:c},{4:s},{5:c},{6:c}"
-		"de"        "[{1}KZ{2}] {3}{4}{5} erzielt einen neuen {6}GLOBAL REKORD (102)"
+		"de"        "[{1}KZ{2}] {3}{4}{5} has beaten the {6}GLOBAL PRO RECORD (102)"
 	}
-	"NewGlobalRecord128"
+	"NewGlobalRecord128_Pro"
 	{
 		"#format"   "{1:c},{2:c},{3:c},{4:s},{5:c},{6:c}"
-		"de"        "[{1}KZ{2}] {3}{4}{5} erzielt einen neuen {6}GLOBAL REKORD (128)"
+		"de"        "[{1}KZ{2}] {3}{4}{5} has beaten the {6}GLOBAL PRO RECORD"
 	}
-	"NewGlobalRecord"
+	"NewGlobalRecord64_Pro"
 	{
 		"#format"   "{1:c},{2:c},{3:c},{4:s},{5:c},{6:c}"
-		"de"        "[{1}KZ{2}] {3}{4}{5} erzielt einen neuen {6}GLOBAL REKORD (64)"
+		"de"        "[{1}KZ{2}] {3}{4}{5} has beaten the {6}GLOBAL PRO RECORD (64)"
+	}
+	"NewGlobalRecord102_Tp"
+	{
+		"#format"   "{1:c},{2:c},{3:c},{4:s},{5:c},{6:c}"
+		"de"        "[{1}KZ{2}] {3}{4}{5} has beaten the {6}GLOBAL TP RECORD (102)"
+	}
+	"NewGlobalRecord128_Tp"
+	{
+		"#format"   "{1:c},{2:c},{3:c},{4:s},{5:c},{6:c}"
+		"de"        "[{1}KZ{2}] {3}{4}{5} has beaten the {6}GLOBAL TP RECORD"
+	}
+	"NewGlobalRecord64_Tp"
+	{
+		"#format"   "{1:c},{2:c},{3:c},{4:s},{5:c},{6:c}"
+		"de"        "[{1}KZ{2}] {3}{4}{5} has beaten the {6}GLOBAL TP RECORD (64)"
 	}
 	"ProRecord"
 	{
@@ -664,25 +683,35 @@
 		"#format"   "{1:c},{2:c},{3:c},{4:c},{5:s},{6:s}"
 		"de"        "[{1}KZ{2}] {3}TP REKORD{4}: {5} ({6})"
 	}
-	"GlobalRecord1"
+	"GlobalRecord1_Pro"
 	{
 		"#format"   "{1:c},{2:c},{3:c},{4:c},{5:s},{6:s}"
-		"de"        "[{1}KZ{2}] {3}GLOBAL REKORD (64){4}: {5} ({6})"
+		"de"        "[{1}KZ{2}] {3}GLOBAL PRO RECORD (64){4}: {5} ({6})"
 	}
-	"GlobalRecord2"
+	"GlobalRecord1_Tp"
 	{
 		"#format"   "{1:c},{2:c},{3:c},{4:c},{5:s},{6:s}"
-		"de"        "[{1}KZ{2}] {3}GLOBALER REKORD (102){4}: {5} ({6})"
+		"de"        "[{1}KZ{2}] {3}GLOBAL TP RECORD (64){4}: {5} ({6})"
 	}
-	"GlobalRecord3"
+	"GlobalRecord2_Pro"
 	{
 		"#format"   "{1:c},{2:c},{3:c},{4:c},{5:s},{6:s}"
-		"de"        "[{1}KZ{2}] {3}GLOBALER REKORD (128){4}: {5} ({6})"
+		"de"        "[{1}KZ{2}] {3}GLOBAL PRO RECORD (102){4}: {5} ({6})"
 	}
-	"GlobalRecord4"
+	"GlobalRecord2_Tp"
 	{
 		"#format"   "{1:c},{2:c},{3:c},{4:c},{5:s},{6:s}"
-		"de"        "[{1}KZ{2}] {3}GLOBALER REKORD (Pro Modus){4}: {5} ({6})"
+		"de"        "[{1}KZ{2}] {3}GLOBAL TP RECORD (102){4}: {5} ({6})"
+	}
+	"GlobalRecord3_Pro"
+	{
+		"#format"   "{1:c},{2:c},{3:c},{4:c},{5:s},{6:s}"
+		"de"        "[{1}KZ{2}] {3}GLOBAL PRO RECORD (128){4}: {5} ({6})"
+	}
+	"GlobalRecord3_Tp"
+	{
+		"#format"   "{1:c},{2:c},{3:c},{4:c},{5:s},{6:s}"
+		"de"        "[{1}KZ{2}] {3}GLOBAL TP RECORD (128){4}: {5} ({6})"
 	}
 	"NewProRecord"
 	{

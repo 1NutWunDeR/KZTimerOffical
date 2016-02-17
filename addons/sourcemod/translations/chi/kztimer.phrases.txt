@@ -5,12 +5,16 @@
 		"#format"   "{1:c}"
 		"chi"        " {1}PB"
 	}
-	"NewGlobalMapRank"
+	"NewGlobalMapRankPro"
 	{
 		"#format"   "{1:c},{2:c},{3:c},{4:s},{5:i},{6:s},{7:s},{8:i}"
-		"chi"        "[{1}GLOBAL{2}] {3}{4} 现在 #{5} 在全球TOP 20以内 {6}! [{7}, Tick{8}]"
+		"chi"        "[{1}GLOBAL{2}] {3}{4} 现在 #{5} 在全球PRO-TOP 20以内 {6}! [{7}, Tick{8}]"
 	}
-
+	"NewGlobalMapRankTp"
+	{
+		"#format"   "{1:c},{2:c},{3:c},{4:s},{5:i},{6:s},{7:s},{8:i},{9:i}"
+		"chi"        "[{1}GLOBAL{2}] {3}{4} 现在 #{5} 在全球TP-TOP 20以内 {6}! [{7}, Tps: {8}, Tick{9}]"
+	}
 	"UndoLadder"
 	{
 		"#format"   "{1:c},{2:c},{3:c}"
@@ -602,25 +606,40 @@
 		"#format"   "{1:c},{2:c}"
 		"chi"        "[{1}KZ{2}] 重新计算停止!"
 	}
-	"NewGlobalRecord102Pro"
+	"NewGlobalRecord102_Pro"
 	{
 		"#format"   "{1:c},{2:c},{3:c},{4:s},{5:c},{6:c}"
-		"chi"        "[{1}KZ{2}] {3}{4}{5} 刷新了 {6}全球记录 (ProMode)"
-	}	
-	"NewGlobalRecord102"
-	{
-		"#format"   "{1:c},{2:c},{3:c},{4:s},{5:c},{6:c}"
-		"chi"        "[{1}KZ{2}] {3}{4}{5} 刷新了 {6}全球记录 (102)"
+		"chi"        "[{1}KZ{2}] {3}{4}{5} 已经打破了 {6}的全球 裸跳 记录 (102)"
 	}
-	"NewGlobalRecord128"
+	"NewGlobalRecord128_Pro"
 	{
 		"#format"   "{1:c},{2:c},{3:c},{4:s},{5:c},{6:c}"
-		"chi"        "[{1}KZ{2}] {3}{4}{5} 刷新了 {6}全球记录 (128)"
+		"chi"        "[{1}KZ{2}] {3}{4}{5} 已经打破了 {6}的全球 裸跳 记录"
 	}
-	"NewGlobalRecord"
+	"NewGlobalRecord64_Pro"
 	{
 		"#format"   "{1:c},{2:c},{3:c},{4:s},{5:c},{6:c}"
-		"chi"        "[{1}KZ{2}] {3}{4}{5} 刷新了 {6}全球记录 (64)"
+		"chi"        "[{1}KZ{2}] {3}{4}{5} 已经打破了 {6}的全球 裸跳 记录 (64)"
+	}
+	"NewGlobalRecord102_Tp"
+	{
+		"#format"   "{1:c},{2:c},{3:c},{4:s},{5:c},{6:c}"
+		"chi"        "[{1}KZ{2}] {3}{4}{5} 已经打破了 {6}的全球 存点 记录 (102)"
+	}
+	"NewGlobalRecord128_Tp"
+	{
+		"#format"   "{1:c},{2:c},{3:c},{4:s},{5:c},{6:c}"
+		"chi"        "[{1}KZ{2}] {3}{4}{5} 已经打破了 {6}的全球 存点 记录"
+	}
+	"NewGlobalRecord64_Tp"
+	{
+		"#format"   "{1:c},{2:c},{3:c},{4:s},{5:c},{6:c}"
+		"chi"        "[{1}KZ{2}] {3}{4}{5} 已经打破了 {6}的全球 存点 记录 (64)"
+	}
+	"GlobalRecord1_Pro"
+	{
+		"#format"   "{1:c},{2:c},{3:c},{4:c},{5:s},{6:s}"
+		"chi"        "[{1}KZ{2}] {3}全球裸跳记录 (64){4}: {5} ({6})"
 	}
 	"NewProRecord"
 	{
@@ -637,25 +656,35 @@
 		"#format"   "{1:c},{2:c},{3:c},{4:c},{5:s},{6:s}"
 		"chi"        "[{1}KZ{2}] {3}读点记录{4}: {5} ({6})"
 	}
-	"GlobalRecord1"
+	"GlobalRecord1_Pro"
 	{
 		"#format"   "{1:c},{2:c},{3:c},{4:c},{5:s},{6:s}"
-		"chi"        "[{1}KZ{2}] {3}全球记录 (64){4}: {5} ({6})"
+		"chi"        "[{1}KZ{2}] {3}全球裸跳记录 (64){4}: {5} ({6})"
 	}
-	"GlobalRecord2"
+	"GlobalRecord1_Tp"
 	{
 		"#format"   "{1:c},{2:c},{3:c},{4:c},{5:s},{6:s}"
-		"chi"        "[{1}KZ{2}] {3}全球记录 (102){4}: {5} ({6})"
+		"chi"        "[{1}KZ{2}] {3}全球存点记录 (64){4}: {5} ({6})"
 	}
-	"GlobalRecord3"
+	"GlobalRecord2_Pro"
 	{
 		"#format"   "{1:c},{2:c},{3:c},{4:c},{5:s},{6:s}"
-		"chi"        "[{1}KZ{2}] {3}全球记录 (128){4}: {5} ({6})"
+		"chi"        "[{1}KZ{2}] {3}全球裸跳记录 (102){4}: {5} ({6})"
 	}
-	"GlobalRecord4"
+	"GlobalRecord2_Tp"
 	{
 		"#format"   "{1:c},{2:c},{3:c},{4:c},{5:s},{6:s}"
-		"chi"        "[{1}KZ{2}] {3}全球记录 (ProMode){4}: {5} ({6})"
+		"chi"        "[{1}KZ{2}] {3}全球存点记录 (102){4}: {5} ({6})"
+	}
+	"GlobalRecord3_Pro"
+	{
+		"#format"   "{1:c},{2:c},{3:c},{4:c},{5:s},{6:s}"
+		"chi"        "[{1}KZ{2}] {3}全球裸跳记录 (128){4}: {5} ({6})"
+	}
+	"GlobalRecord3_Tp"
+	{
+		"#format"   "{1:c},{2:c},{3:c},{4:c},{5:s},{6:s}"
+		"chi"        "[{1}KZ{2}] {3}全球存点记录 (128){4}: {5} ({6})"
 	}
 	"NewTpRecord"
 	{
@@ -1399,5 +1428,9 @@
 	"options_lang_cn"
 	{
 		"chi"       "Language - Chinese"
+	}
+	"options_lang_pt"
+	{
+		"chi"       "Language - Portuguese Brazilian"
 	}
 }

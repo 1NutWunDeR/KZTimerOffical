@@ -1,4 +1,2 @@
-The provided source files don't contain the global record system of kztimer.
-
-
-SM-Compiler version: 1.7.3
+The code of kztimer global is private. The kztimer code of the none-global version is available at: https://github.com/1NutWunDeR/KZTimer
+We will release a public version of KZTimerGlobal in the near future!

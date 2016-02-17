@@ -5,10 +5,15 @@
 		"#format"   "{1:c}"
 		"sv"        " {1}PB"
 	}
-	"NewGlobalMapRank"
+	"NewGlobalMapRankPro"
 	{
 		"#format"   "{1:c},{2:c},{3:c},{4:s},{5:i},{6:s},{7:s},{8:i}"
-		"sv"        "[{1}GLOBAL{2}] {3}{4} is now #{5} in the Global Top 20 on {6}! [{7}, Tick{8}]"
+		"sv"        "[{1}GLOBAL{2}] {3}{4} is now #{5} in the Global PRO-Top 20 on {6}! [{7}, Tick{8}]"
+	}
+	"NewGlobalMapRankTp"
+	{
+		"#format"   "{1:c},{2:c},{3:c},{4:s},{5:i},{6:s},{7:s},{8:i},{9:i}"
+		"sv"        "[{1}GLOBAL{2}] {3}{4} is now #{5} in the Global TP-Top 20 on {6}! [{7}, TPs: {8}, Tick{9}]"
 	}
 	"UndoLadder"
 	{
@@ -53,6 +58,10 @@
 	"options_lang_cn"
 	{
 		"sv"       "Language - Chinese"
+	}
+	"options_lang_pt"
+	{
+		"sv"       "Language - Portuguese Brazilian"
 	}
 	"Route1"
 	{
@@ -629,25 +638,35 @@
 		"#format"   "{1:c},{2:c}"
 		"sv"        "[{1}KZ{2}] Omberäkning stoppad!"
 	}
-	"NewGlobalRecord102Pro"
+	"NewGlobalRecord102_Pro"
 	{
 		"#format"   "{1:c},{2:c},{3:c},{4:s},{5:c},{6:c}"
-		"sv"        "[{1}KZ{2}] {3}{4}{5} fick ett nytt {6}GLOBAL RECORD (ProMode)"
-	}	
-	"NewGlobalRecord102"
-	{
-		"#format"   "{1:c},{2:c},{3:c},{4:s},{5:c},{6:c}"
-		"sv"        "[{1}KZ{2}] {3}{4}{5} fick ett nytt {6}GLOBAL RECORD (102)"
+		"sv"        "[{1}KZ{2}] {3}{4}{5} has beaten the {6}GLOBAL PRO RECORD (102)"
 	}
-	"NewGlobalRecord128"
+	"NewGlobalRecord128_Pro"
 	{
 		"#format"   "{1:c},{2:c},{3:c},{4:s},{5:c},{6:c}"
-		"sv"        "[{1}KZ{2}] {3}{4}{5} fick ett nytt {6}GLOBAL RECORD (128)"
+		"sv"        "[{1}KZ{2}] {3}{4}{5} has beaten the {6}GLOBAL PRO RECORD"
 	}
-	"NewGlobalRecord"
+	"NewGlobalRecord64_Pro"
 	{
 		"#format"   "{1:c},{2:c},{3:c},{4:s},{5:c},{6:c}"
-		"sv"        "[{1}KZ{2}] {3}{4}{5} fick ett nytt {6}GLOBAL RECORD (64)"
+		"sv"        "[{1}KZ{2}] {3}{4}{5} has beaten the {6}GLOBAL PRO RECORD (64)"
+	}
+	"NewGlobalRecord102_Tp"
+	{
+		"#format"   "{1:c},{2:c},{3:c},{4:s},{5:c},{6:c}"
+		"sv"        "[{1}KZ{2}] {3}{4}{5} has beaten the {6}GLOBAL TP RECORD (102)"
+	}
+	"NewGlobalRecord128_Tp"
+	{
+		"#format"   "{1:c},{2:c},{3:c},{4:s},{5:c},{6:c}"
+		"sv"        "[{1}KZ{2}] {3}{4}{5} has beaten the {6}GLOBAL TP RECORD"
+	}
+	"NewGlobalRecord64_Tp"
+	{
+		"#format"   "{1:c},{2:c},{3:c},{4:s},{5:c},{6:c}"
+		"sv"        "[{1}KZ{2}] {3}{4}{5} has beaten the {6}GLOBAL TP RECORD (64)"
 	}
 	"NewProRecord"
 	{
@@ -1368,25 +1387,35 @@
 		"#format"   "{1:c},{2:c},{3:c},{4:c},{5:s},{6:s}"
 		"sv"        "[{1}KZ{2}] {3}TP RECORD{4}: {5} ({6})"
 	}
-	"GlobalRecord1"
+	"GlobalRecord1_Pro"
 	{
 		"#format"   "{1:c},{2:c},{3:c},{4:c},{5:s},{6:s}"
-		"sv"        "[{1}KZ{2}] {3}GLOBAL RECORD (64){4}: {5} ({6})"
+		"sv"        "[{1}KZ{2}] {3}GLOBAL PRO RECORD (64){4}: {5} ({6})"
 	}
-	"GlobalRecord2"
+	"GlobalRecord1_Tp"
 	{
 		"#format"   "{1:c},{2:c},{3:c},{4:c},{5:s},{6:s}"
-		"sv"        "[{1}KZ{2}] {3}GLOBAL RECORD (102){4}: {5} ({6})"
+		"sv"        "[{1}KZ{2}] {3}GLOBAL TP RECORD (64){4}: {5} ({6})"
 	}
-	"GlobalRecord3"
+	"GlobalRecord2_Pro"
 	{
 		"#format"   "{1:c},{2:c},{3:c},{4:c},{5:s},{6:s}"
-		"sv"        "[{1}KZ{2}] {3}GLOBAL RECORD (128){4}: {5} ({6})"
+		"sv"        "[{1}KZ{2}] {3}GLOBAL PRO RECORD (102){4}: {5} ({6})"
 	}
-	"GlobalRecord4"
+	"GlobalRecord2_Tp"
 	{
 		"#format"   "{1:c},{2:c},{3:c},{4:c},{5:s},{6:s}"
-		"sv"        "[{1}KZ{2}] {3}GLOBAL RECORD (ProMode){4}: {5} ({6})"
+		"sv"        "[{1}KZ{2}] {3}GLOBAL TP RECORD (102){4}: {5} ({6})"
+	}
+	"GlobalRecord3_Pro"
+	{
+		"#format"   "{1:c},{2:c},{3:c},{4:c},{5:s},{6:s}"
+		"sv"        "[{1}KZ{2}] {3}GLOBAL PRO RECORD (128){4}: {5} ({6})"
+	}
+	"GlobalRecord3_Tp"
+	{
+		"#format"   "{1:c},{2:c},{3:c},{4:c},{5:s},{6:s}"
+		"sv"        "[{1}KZ{2}] {3}GLOBAL TP RECORD (128){4}: {5} ({6})"
 	}
 	"LanguageSwitch"
 	{
