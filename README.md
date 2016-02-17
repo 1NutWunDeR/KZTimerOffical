@@ -38,14 +38,21 @@ DieterM75 (cP mod), Zephyrus (Cleaner), Peace-Maker (Botmimic2), exvel/bara(csgo
 **KZTimer Global Changelog**
 =======
 <SPOILER>
-v1.82b Hotfix
-- fixed bhop triggers
-- updated files: KZTimerGlobal.smx
+v1.83
+- fixed wrong spawn positions on challenges after reconnecting
+- divided global times in pro, tp and overall top20 lists
+- added mp_drop_knife_enable (0) to kz settings enforcer
+- removed server convar kz_global_banlist (enabled by default from now on)
+- added 'forwards' KZTimer_TimerStarted, KZTimer_TimerStopped, KZTimer_TimerStoppedValid (Credits to Tanskin @ kz-endo)
+- added client language option 'Portuguese Brazilian' (Credits to FaZ)
+- minor optimizations
+- Added files: sound\quake\ownage.mp3 (*golden serect*)
+- Updated files: addons\sourcemod\plugins\KZTimerGlobal.smx, addons\sourcemod\configs\geoip\GeoIP.dat, addons\sourcemod\scripting\include\KZTimer.inc, sourcemod\configs\kztimer\sounds.cfg and , addons\sourcemod\translations\*ALL FILES*
 
 v1.82
 - fixed a glitch which did not allow you to do checkpoints on valid grounds
 - updated files: KZTimerGlobal.smx
-
+ 
 v1.81
 - fixed checkpoint exploit which allowed players to do checkpoints mid-air 
 - added mappers access to vip servers
