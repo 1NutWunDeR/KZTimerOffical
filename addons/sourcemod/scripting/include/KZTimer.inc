@@ -14,6 +14,42 @@ native Float:KZTimer_GetAvgTimeTp(); //avg tp time - returns (float) 0.0 if less
 native Float:KZTimer_GetAvgTimePro(); //avg pro time - returns (float) 0.0 if less than 5 map times (kztimer calculates the avg time on mapstart and if someone set a new time)
 native KZTimer_GetSkillGroup(client); // skill group - returns (int) 0=NORANK, 1=NEWB,2=SCRUB,..,9=PRO 
 //KZTimer_GetSkillGroup can be helpful to set up a high ranked only server. This server has to share the database with your 'main' kztimer server
+
+/**
+ * Called when the timer is started.
+ *
+ * @param client that starts the timer.
+ *
+ * @noreturn
+ */
+forward KZTimer_TimerStarted(client);
+
+/**
+ * Called when the timer is stopped.
+ *
+ * @param client that stops the timer.
+ * @param teleports
+ * @param finish time
+ * @param server record(1 = true)
+ *
+ * @noreturn
+ */
+forward KZTimer_TimerStopped(client, teleports, Float:time, record);
+
+/**
+ * Called when the timer is stopped.
+ *
+ * @note This is only called if the run is saved.
+ *
+ * @param client that stops the timer.
+ * @param teleports
+ * @param rank
+ * @param finish time
+ *
+ * @noreturn
+ */
+forward KZTimer_TimerStoppedValid(client, teleports, rank, Float:time);
+
 public SharedPlugin:__pl_KZTimer =
 {
 	name = "KZTimer",
