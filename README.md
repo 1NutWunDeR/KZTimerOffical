@@ -1,17 +1,14 @@
-**KZTimer Global** is a powerful climb timer plugin including ranking system, global ranking system, replay bots, jumpstats, strafestats, failstats, anticheat-system, mysql&sqlite access, custom models, prestrafe, prespeed cap, double-duck, autobhop, client options and more.
+Global Stats: www.kzstats.com |
+Steam Group: www.steamcommunity.com/groups/KZTIMER 
 
-**Please show your appreciation for the work on KZTimer and support future development by [donating!](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7REZX9RD6G6QL)**
+**About**
 
-- Latest version: 1.82b Global (SM-Compiler 1.7.3)
+KZTimer is a powerful climb timer plugin including ranking system, global ranking system, replay bots, jumpstats, strafestats, failstats, anticheat-system, mysql&sqlite access, custom models, prestrafe, prespeed cap, double-duck, autobhop, client options and more.
+- Latest version: 1.83 Global (SM-Compiler 1.7.3)
 - SQLite & MySQL support
-- Sourcebans support
-- Workshop maps support
 - Console command to enable/disable KZTimer: rcon sm plugins load/unload KZTimerGlobal
-- Multi-Language support (english, chinese, french, german, russian and swedish)
-- KZTimer is in the final version (only bugs will be fixed from now on!)
-- KZTimer Steam Group: http://steamcommunity.com/groups/KZTIMER 
-- KZTimer Global Stats: http://www.kzstats.com/
-- KZ-Climb Community: http://www.kz-climb.com/index.php?forums/
+- Multi-Language support (english, chinese, french, german, russian, portuguese brazilian  and swedish)
+
 
 **Please read the following information carefully before you start asking stupid questions:**
 - KZTimer Client/Admin Commands: http://pastebin.com/H5ULxsdJ
@@ -34,6 +31,8 @@
 
 **Credits to**
 DieterM75 (cP mod), Zephyrus (Cleaner), Peace-Maker (Botmimic2), exvel/bara(csgo fix) (color.inc), GoD-Tony (setname methods), Dr!fter/Powerlord (Dhooks), Inami/ThatOneGuy (Macrodox), DaFox (Measure Plugin), berni & Chanz (smlib), psychonic and tsunami (sdkhooks)
+
+**Please show your appreciation for the work on KZTimer and support future development by [donating!](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7REZX9RD6G6QL)**
 
 **KZTimer Global Changelog**
 =======
