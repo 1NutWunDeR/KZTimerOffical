@@ -1,2 +1,1 @@
-The code of kztimer global is private. The kztimer code of the none-global version is available at: https://github.com/1NutWunDeR/KZTimer
-We will release a public version of KZTimerGlobal in the near future!
+The code of kztimer global is private. We will release a public version of KZTimerGlobal in the near future!
