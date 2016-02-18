@@ -5,7 +5,7 @@ Steam Group: www.steamcommunity.com/groups/KZTIMER
 - Latest version: *1.83 Global* (SM-Compiler 1.7.3)
 - Multi-Language support (english, chinese, french, german, russian, portuguese brazilian  and swedish)
 
-KZTimer is a powerful climb timer plugin including ranking system, global ranking system, replay bots, jumpstats, strafestats, failstats, anticheat-system, mysql&sqlite access, custom models, prestrafe, prespeed cap, double-duck, autobhop, client options and more.
+KZTimer is a powerful climb timer plugin including local ranking system, global ranking system, replay bots, jumpstats, strafestats, failstats, anticheat-system, sourcebans support, mysql&sqlite access, custom models, prestrafe, prespeed cap, double-duck, autobhop, client options and more.
 
 
 **Please read the following information carefully before you start asking stupid questions:**
