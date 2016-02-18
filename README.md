@@ -42,7 +42,7 @@ v1.83
 - added mp_drop_knife_enable (0) to kz settings enforcer
 - removed server convar kz_global_banlist (enabled by default from now on)
 - added 'forwards' KZTimer_TimerStarted, KZTimer_TimerStopped, KZTimer_TimerStoppedValid (Credits to Tanskin @ kz-endo)
-- added client language option 'Portuguese Brazilian' (Credits to FaZ)
+- added client language option 'Portuguese Brazilian' (Credits to FrZ)
 - minor optimizations
 - Added files: sound\quake\ownage.mp3 (*golden serect*)
 - Updated files: addons\sourcemod\plugins\KZTimerGlobal.smx, addons\sourcemod\configs\geoip\GeoIP.dat, addons\sourcemod\scripting\include\KZTimer.inc, sourcemod\configs\kztimer\sounds.cfg and , addons\sourcemod\translations\*ALL FILES*
