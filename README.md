@@ -30,7 +30,7 @@ KZTimer is a powerful climb timer plugin including ranking system, global rankin
 - 8. Done.
 
 **Credits to**
-DieterM75 (cP mod), Zephyrus (Cleaner), Peace-Maker (Botmimic2), exvel/bara(csgo fix) (color.inc), GoD-Tony (setname methods), Dr!fter/Powerlord (Dhooks), Inami/ThatOneGuy (Macrodox), DaFox (Measure Plugin), berni & Chanz (smlib), psychonic and tsunami (sdkhooks)
+DieterM75 (cP mod), Zephyrus (Cleaner), Peace-Maker (Botmimic2), exvel/bara(csgo fix) (color.inc), GoD-Tony (setname methods), Dr!fter/Powerlord (Dhooks), Inami/ThatOneGuy (Macrodox), DaFox (Measure Plugin), berni & Chanz (smlib), psychonic and tsunami (sdkhooks), Tanskin, Klyve, Chuckles, so0le, Kenneth, versaceLORD
 
 **Please show your appreciation for the work on KZTimer and support future development by [donating!](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7REZX9RD6G6QL)**
 
