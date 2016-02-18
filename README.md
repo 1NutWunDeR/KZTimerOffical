@@ -16,6 +16,7 @@ KZTimer is a powerful climb timer plugin including local ranking system, global 
 - KZTimer interferes with menus of other plugins. You are able to add exceptions in addons\sourcemod\configs\kztimer\exceptions_list.txt for sourcemod commands which create menus (e.g. sm_knife)
 (Example for menus which requires an internal fix: https://forums.alliedmods.net/showpost.php?p=2265536&postcount=487)
 - Download includes DHooks2 extension (https://forums.alliedmods.net/showthread.php?t=180114), Cleaner extension (https://forums.alliedmods.net/showthread.php?t=195008)  and latest GeoIP database (http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/)
+- How do I get my server whitelisted? Send an email to sooletus@gmail.com with your server's information. 
 
 **Installation**
 - 1. KZTimer requires sourcemod and metamod
