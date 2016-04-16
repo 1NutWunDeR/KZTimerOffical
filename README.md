@@ -2,7 +2,7 @@ Global Stats: www.kzstats.com |
 Steam Group: www.steamcommunity.com/groups/KZTIMER 
 
 **About**
-- Latest version: *1.83 Global* (SM-Compiler 1.7.3)
+- Latest version: *1.84 Global* (SM-Compiler 1.7.3)
 - Multi-Language support (english, chinese, french, german, russian, portuguese brazilian  and swedish)
 
 KZTimer is a powerful climb timer plugin including local ranking system, global ranking system, replay bots, jumpstats, strafestats, failstats, anticheat-system, sourcebans support, mysql&sqlite access, custom models, prestrafe, prespeed cap, double-duck, autobhop, client options and more.
@@ -36,6 +36,9 @@ DieterM75 (cP mod), Zephyrus (Cleaner), Peace-Maker (Botmimic2), exvel/bara(csgo
 **KZTimer Global Changelog**
 =======
 <SPOILER>
+v1.84
+- Changed the global database to a new host
+- Increased some of the golden jump stats
 v1.83
 - fixed wrong spawn positions on challenges after reconnecting
 - divided global times in pro, tp and overall top20 lists
