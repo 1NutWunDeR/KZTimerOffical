@@ -39,6 +39,7 @@ DieterM75 (cP mod), Zephyrus (Cleaner), Peace-Maker (Botmimic2), exvel/bara(csgo
 v1.84
 - Changed the global database to a new host
 - Increased some of the golden jump stats
+
 v1.83
 - fixed wrong spawn positions on challenges after reconnecting
 - divided global times in pro, tp and overall top20 lists
