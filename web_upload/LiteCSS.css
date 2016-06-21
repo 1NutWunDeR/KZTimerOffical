@@ -6,6 +6,8 @@
 
 body {
 	margin:0;
+	padding:0;
+	height: 100%
 }
 
 .container {
@@ -21,6 +23,11 @@ body {
 	margin-right:auto;
 	padding:0;
 	padding-bottom: 20px
+}
+
+.footer {
+	text-align: center;
+	font-size: 12px;
 }
 
 ul {

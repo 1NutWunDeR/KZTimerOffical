@@ -54,6 +54,7 @@ require_once("dbconnect_temp.php");
         }
       ?>
     </table></div>
+    <?php echo file_get_contents('footer.php');?>
   </div>
 </body>
 </html>

@@ -51,6 +51,7 @@ if (!isset($_GET['map'])) {
 		}
 		?>
 	</table></div>
+	<?php echo file_get_contents('footer.php');?>
 	</div>
 </body>
 </html>

@@ -79,6 +79,7 @@ if (!isset($_GET['sid'])) {
       }
       ?>
   </div>
+  <?php echo file_get_contents('footer.php');?>
   </div>
 </body>
 </html>
