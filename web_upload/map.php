@@ -1,10 +1,10 @@
 <?php
-require_once("dbconnect_temp.php");
+require_once("dbconnect.php");
 if (!isset($_GET['map'])) {
 		header("Location: index.php");
 		return;
 } else {
-		$map = $_GET['map'];
+		$map = mysqli_real_escape_string($conn, $_GET['map']);
 }
 ?>
 

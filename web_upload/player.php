@@ -1,10 +1,10 @@
 <?php
-require_once("dbconnect_temp.php");
+require_once("dbconnect.php");
 if (!isset($_GET['sid'])) {
     header("Location: index.php");
     return;
 } else {
-    $sid = $_GET['sid'];
+    $sid = mysqli_real_escape_string($conn, $_GET['sid']);
 }
 ?>
 

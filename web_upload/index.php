@@ -1,5 +1,5 @@
 <?php
-require_once("dbconnect_temp.php");
+require_once("dbconnect.php");
 ?>
 
 <!DOCTYPE html>
