@@ -1,0 +1,85 @@
+/*
+*	LiteCSS v0.0.3
+*	Copyright 2016, Karl Bauer
+*	glocken.tech - github.com/karl-bauer
+*/
+
+body {
+	margin:0;
+	padding:0;
+	height: 100%
+}
+
+.container {
+	width: 78%;
+	margin-right: auto;
+  margin-left: auto;
+	padding:0;
+	padding-bottom: 5px
+}
+
+.content {
+	margin-left:auto;
+	margin-right:auto;
+	padding:0;
+	padding-bottom: 20px
+}
+
+.footer {
+	text-align: center;
+	font-size: 12px;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+li {
+  float: left;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 5px;
+  text-decoration: none;
+}
+
+li a:hover {
+  background-color: #111;
+}
+
+table {
+  border-collapse: collapse;
+  width: 80%;
+	margin-left:auto;
+	margin-right:auto;
+	padding:0;
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+}
+
+tr:nth-child(even){background-color: #f2f2f2}
+tr:nth-child(odd){background-color: #cccccc}
+
+th {
+  background-color: #7293A0;
+  color: white;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	margin-top: 0;
+	margin-bottom: 16px;
+	font-weight: 350;
+}
+
+a { color: #21D19F;}
+a:hover { color: #45B69C;}
